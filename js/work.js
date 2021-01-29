@@ -1,99 +1,56 @@
+import queryData from './helper/query.js';
+import randomizeChance from './helper/randomize.js';
 
-import db from '../db_config.js'
-import Discord from 'discord.js';
-
-async function work(message, workingCommand) {
-    let itemID = [
-        {
-            id: 1,
-            name: 'Rock',
-            min: 0,
-            max: 0,
-            xp: 8,
-            icon: '<:baby_slime:801079278132527144>'
-        },
-        {
-            id: 2,
-            name: 'Copper Ore',
-            min: 1,
-            max: 3,
-            xp: 9,
-            icon: '<:slime:801079335569457182>'
-        },
-        {
-            id: 3,
-            name: 'Tin Ore',
-            min: 1,
-            max: 3,
-            xp: 9,
-            icon: ':bat:'
-        },
-        {
-            id: 4,
-            name: 'Iron Ore',
-            min: 1,
-            max: 3,
-            xp: 9,
-            icon: ':crab:'
-        },
-        {
-            id: 5,
-            name: 'Lead Ore',
-            min: 1,
-            max: 3,
-            xp: 9,
-            icon: ':wolf:'
-        }
-    ]
-
-    let x = Math.random() * (5 - 1) + 1;
-    x = Math.round(x);
-    let y = Math.random();
-    let item = '';
-    if (y < 0.5) { // 50%
-        item = itemID[0];
-    } else if (y < 0.7) { // 20%
-        item = itemID[1];
-    } else if (y < 0.85) { // 15%
-        item = itemID[2];
-    } else if (y < 0.95) { // 10%
-        item = itemID[3];
-    } else { // 5 %
-        item = itemID[4];
-    }
-
-    const query = `SELECT
+async function work(message, workingCommand, playerStat) {
+    let discoveredArea = Math.floor(playerStat.discovered_area);
+    // Get player's tools
+    let data = await queryData(`SELECT
                  item.name as pickaxeName, IFNULL(item.emoji,"") as pickaxeEmoji, item.tier as pickaxeTier,
                  item2.name as axeName, IFNULL(item2.emoji,"") as axeEmoji, item2.tier as axeTier
             FROM tools 
             LEFT JOIN item ON (tools.item_id_pickaxe = item.id)
-            LEFT JOIN item as item2 ON (tools.item_id_axe = item2.id) WHERE player_id='${message.author.id}'`
+            LEFT JOIN item as item2 ON (tools.item_id_axe = item2.id) WHERE player_id='${message.author.id}' LIMIT 1`);
 
-    
-    // Get Data
-    db.query(query, async function (err, result) {
-        if (err) throw err;
-        let data = await result[0];
+    data = data[0];
 
-        if (data) {
-            let gainingItem = Math.round(Math.random() * (item.max - item.min) + item.min);
-            if (workingCommand === 'mine') {
-                if (item === itemID[0]) {
-                    message.channel.send(`${data.pickaxeEmoji} | **${message.author.username}** working with his **${data.pickaxeName}** \nand strike a rock gaining **${item.xp}xp**`)
+    if (data) {
+        if (workingCommand === 'mine') {
+            // get item drop list
+            let itemDropList = await queryData(`SELECT * FROM item WHERE available_area_id<="${discoveredArea}" AND type_id="7"`);
+            let itemDrop = randomizeChance(itemDropList, discoveredArea);
+                    
+            let maxGainingItem = itemDrop.id === 1 ? 3 * itemDrop.tier : 3;
+            let gainingItem = Math.round(Math.random() * (maxGainingItem - 1) + 1); // get random item gaining
+            if (itemDrop !== 0) {
+                if (data.pickaxeTier >= itemDrop.tier) {
+                    queryData(`CALL insert_item_backpack_procedure("${message.author.id}", "${itemDrop.id}", ${gainingItem})`);
+                    queryData(`UPDATE tools SET pickaxe_exp=pickaxe_exp + ${itemDrop.exp} WHERE player_id="${message.author.id}"`);
+                    message.channel.send(`${data.pickaxeEmoji} | **${message.author.username}** is working with his **${data.pickaxeName}**,\n${itemDrop.emoji} | Found **${gainingItem} ${itemDrop.name}** and gaining **${itemDrop.exp}xp**`)
                 } else {
-                    // db.query(`CALL insert_item_backpack_procedure("${message.author.id}", "${item.id}", ${gainingItem})`);
-                    message.channel.send(`${data.pickaxeEmoji} | **${message.author.username}** working with his **${data.pickaxeName}**,\n${item.icon} | Found **${gainingItem} ${item.name}** and gaining **${item.xp}xp**`)
+                    queryData(`UPDATE tools SET pickaxe_exp=pickaxe_exp + ${(itemDrop.exp / 2)} WHERE player_id="${message.author.id}"`);
+                    message.channel.send(`${data.axeEmoji} | **${message.author.username}** is working with his **${data.axeName}**,\n${itemDrop.emoji} | Found **${itemDrop.name}** but it harder than your tool, lucky you still gaining **${Math.round(itemDrop.exp / 2)}xp**`)
                 }
-            } else if (workingCommand === 'chop') {
-                if (item === itemID[0]) {
-                    message.channel.send(`${data.axeEmoji} | **${message.author.username}** working with his **${data.axeName}** \nand strike a rock gaining **${item.xp}xp**`)
-                } else {
-                    message.channel.send(`${data.axeEmoji} | **${message.author.username}** working with his **${data.axeName}**,\n${item.icon} | Found **${gainingItem} ${item.name}** and gaining **${item.xp}xp**`)
-                }
+            } else {
+                queryData(`UPDATE tools SET pickaxe_exp=pickaxe_exp + ${itemDrop.exp} WHERE player_id="${message.author.id}"`);
+                message.channel.send(`${data.pickaxeEmoji} | **${message.author.username}** is working with his **${data.pickaxeName}** \nand strike a rock gaining **1xp**`)
             }
-    
+        } else if (workingCommand === 'chop') {
+            // get item drop list
+            let itemDropList = await queryData(`SELECT * FROM item WHERE available_area_id<="${discoveredArea}" AND type_id="11"`);
+            let itemDrop = randomizeChance(itemDropList, discoveredArea);
+            let maxGainingItem = itemDrop.id === 1 ? 3 * itemDrop.tier : 3;
+            let gainingItem = Math.round(Math.random() * (maxGainingItem - 1) + 1); // get random item gaining
+            if (itemDrop !== 0) {
+                if (data.axeTier >= itemDrop.tier) {
+                    message.channel.send(`${data.axeEmoji} | **${message.author.username}** working with his **${data.axeName}**,\n${itemDrop.emoji} | got **${gainingItem} ${itemDrop.name}** and gaining **${itemDrop.exp}xp**`)
+                } else {
+                    message.channel.send(`${data.axeEmoji} | **${message.author.username}** working with his **${data.axeName}**,\n${itemDrop.emoji} | strike **${itemDrop.name}** but he didn't have stamina left to take it, \ncause by low tier tool, lucky you still gaining **${Math.round(itemDrop.exp / 2)}xp**`)
+                }
+            } else {
+                message.channel.send(`${data.axeEmoji} | **${message.author.username}** is working with his **${data.axeName}** \nbut he was too exhausted, at least he gaining **1xp**`)
+            }
         }
-    });
+    }
 }
 
 

@@ -300,46 +300,49 @@ client.on("message", function (message) {
         const body = message.content.replace(prefixCommand, '');
         
         // FIND USER REGISTRATION
-        db.query(`SELECT id FROM player WHERE id=${authorID}`, (err, result) => {
-        
-            if (waitingTime.has(message.author.id)) {
-                message.reply("Wait at least 1 second before getting typing this again.");
-                return;
-            } else {
-                if (result.length > 0) {
-                    if (command === 'p') {
-                        profile(message, client, authorID, authorUsername, message.author.avatar, 0, 'Noob');
-                    } else if (command === 'hunt') {
-                        hunt(message, 0, authorID, authorUsername);
-                    } else if (command === 'heal') {
-                        healingPotion(message, 0, authorID, authorUsername);
-                    } else if (command === 'mine' || command === 'chop') {
-                        work(message, command);
-                    } else if (command === 'backpack' || command === 'bp') {
-                        backpack(message);
-                    } else if (command === 'tools' || command === 'tool') {
-                        tools(message);
-                    }
-                } else if (command === 'start') {
-                    // INSERT USER
-                    let sql = `CALL start_procedure("${authorID}","${authorUsername}")`;
-                    message.reply('Welcome to teraRPG, type \`so hunt\` to begin your hunting')
-                    db.query(sql, function (err, result) {
-                        if (err) throw err;
-                        console.log("1 record inserted");
-                    });
+        db.query(`SELECT id, discovered_area FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${authorID}`, (err, result) => {
+            // try {
+                if (waitingTime.has(message.author.id)) {
+                    message.reply("Wait at least 1 second before getting typing this again.");
+                    return;
                 } else {
-                    message.channel.send(`<@${authorID}>, you are not registered yet, to start playing type \`${teraRPG}start\``)
-                }
+                    if (result.length > 0) {
+                        if (command === 'p') {
+                            profile(message, client, authorID, authorUsername, message.author.avatar, 0, 'Noob');
+                        } else if (command === 'hunt') {
+                            hunt(message, 0, authorID, authorUsername);
+                        } else if (command === 'heal') {
+                            healingPotion(message, 0, authorID, authorUsername);
+                        } else if (command === 'mine' || command === 'chop') {
+                            work(message, command, result[0]);
+                        } else if (command === 'backpack' || command === 'bp') {
+                            backpack(message);
+                        } else if (command === 'tools' || command === 'tool') {
+                            tools(message);
+                        }
+                    } else if (command === 'start') {
+                        // INSERT USER
+                        let sql = `CALL start_procedure("${authorID}","${authorUsername}")`;
+                        message.reply('Welcome to teraRPG, type \`so hunt\` to begin your hunting')
+                        db.query(sql, function (err, result) {
+                            if (err) throw err;
+                            console.log("1 record inserted");
+                        });
+                    } else {
+                        message.channel.send(`<@${authorID}>, you are not registered yet, to start playing type \`${teraRPG}start\``)
+                    }
 
                 
-                // Adds the user to the set so that they can't type for a second
-                waitingTime.add(message.author.id);
-                setTimeout(() => {
-                    // Removes the user from the set after a second
-                    waitingTime.delete(message.author.id);
-                }, 1500);
-            }
+                    // Adds the user to the set so that they can't type for a second
+                    waitingTime.add(message.author.id);
+                    setTimeout(() => {
+                        // Removes the user from the set after a second
+                        waitingTime.delete(message.author.id);
+                    }, 1500);
+                }
+            // } finally {
+            //     db.end();
+            // }
         });
     }
 

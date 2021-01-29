@@ -6,23 +6,24 @@ async function backpack(message) {
     const avatar = message.author.avatar;
     const id = message.author.id;
     const username = message.author.username;
-    const query = `SELECT * FROM backpack LEFT JOIN item ON (backpack.item_id = item.id) WHERE player_id="${id}"`
+    const query = `SELECT item.name, item.emoji, item.tier, item.item_group_id, backpack.quantity FROM backpack LEFT JOIN item ON (backpack.item_id = item.id) WHERE player_id="${id}"`
     let data;
     db.query(query, async function (err, result) {
         if (err) throw err;
         data = await result;
+        data.sort((a, b) => { return a.tier - b.tier });
         let items = "";
         let consumables = "";
         let nextConsumables = "";
         let nextItems = "";
         if (data.length > 0) {
                 for (const key of data) {
-                    if (key.is_material == 1) {
+                    if (key.item_group_id === 1) {
                         if (key.quantity > 0) {
                             items += `${nextItems}${key.emoji} **${key.name}**: ${key.quantity}`;
                             nextItems = "\n"
                         }
-                    } else if (key.is_consumable == 1) {
+                    } else if (key.item_group_id === 2) {
                         if (key.quantity > 0) {
                             consumables += `${nextConsumables}${key.emoji} **${key.name}**: ${key.quantity}`;
                             nextConsumables = "\n"

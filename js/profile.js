@@ -28,7 +28,7 @@ async function profile(message, client, id, username, avatar, rank, title) {
             timestamp: null,
             fields: [
                 {
-                    value: ` ** Level **: ${level} (${pLevel} %) \n** XP **: ${cExp} / ${maxExp}\n** Area **: Jungle \n** Time travels **: 1`,
+                    value: ` ** Level **: ${level} (${pLevel} %) \n** XP **: ${cExp} / ${maxExp}\n** Area **: ${data.discovered_area} (Jungle) \n** Time travels **: 1`,
                     name: "PROGRESS",
                     inline: false
                 },
