@@ -42,11 +42,15 @@ async function work(message, workingCommand, playerStat) {
             let gainingItem = Math.round(Math.random() * (maxGainingItem - 1) + 1); // get random item gaining
             if (itemDrop !== 0) {
                 if (data.axeTier >= itemDrop.tier) {
+                    queryData(`CALL insert_item_backpack_procedure("${message.author.id}", "${itemDrop.id}", ${gainingItem})`);
+                    queryData(`UPDATE tools SET axe_exp=axe_exp + ${(itemDrop.exp / 2)} WHERE player_id="${message.author.id}"`);
                     message.channel.send(`${data.axeEmoji} | **${message.author.username}** working with his **${data.axeName}**,\n${itemDrop.emoji} | got **${gainingItem} ${itemDrop.name}** and gaining **${itemDrop.exp}xp**`)
                 } else {
+                    queryData(`UPDATE tools SET axe_exp=axe_exp + ${(itemDrop.exp / 2)} WHERE player_id="${message.author.id}"`);
                     message.channel.send(`${data.axeEmoji} | **${message.author.username}** working with his **${data.axeName}**,\n${itemDrop.emoji} | strike **${itemDrop.name}** but he didn't have stamina left to take it, \ncause by low tier tool, lucky you still gaining **${Math.round(itemDrop.exp / 2)}xp**`)
                 }
             } else {
+                queryData(`UPDATE tools SET axe_exp=axe_exp + ${(itemDrop.exp)} WHERE player_id="${message.author.id}"`);
                 message.channel.send(`${data.axeEmoji} | **${message.author.username}** is working with his **${data.axeName}** \nbut he was too exhausted, at least he gaining **1xp**`)
             }
         }
