@@ -32,9 +32,9 @@ async function tools(message) {
             for (const key of data) {
                 tools = `${key.pickaxeEmoji} **${key.pickaxeName}** [Tier: ${key.pickaxeTier}] \n${key.axeEmoji} **${key.axeName}** [Tier: ${key.axeTier}]`;
                 craftingStations = key.workBenchName ? `${key.workBenchEmoji} **${key.workBenchName}** [Tier: ${key.workBenchTier}]` : '[ No Work Bench ]';
+                craftingStations += key.furnaceName ? `\n${key.furnaceEmoji} **${key.furnaceName}** [Tier: ${key.furnaceTier}]` : '\n[ No Furnace ]';
                 craftingStations += key.anvilName ? `\n${key.anvilEmoji} **${key.anvilName}** [Tier: ${key.anvilTier}]` : '\n[ No Anvil ]';
-                craftingStations += key.furnaceName ? `\n${key.furnaceEmoji} **${key.furnacehName}** [Tier: ${key.furnaceTier}]` : '\n[ No Furnace ]';
-                craftingStations += key.tinkererName ? `\n${key.tinkererEmoji} **${key.tinkererhName}** [Tier: ${key.tinkererTier}]` : '\n[ No Tinkerer\'s Workshop ]';
+                craftingStations += key.tinkererName ? `\n${key.tinkererEmoji} **${key.tinkererName}** [Tier: ${key.tinkererTier}]` : '\n[ No Tinkerer\'s Workshop ]';
             }
         } else {
             tools = "Empty";

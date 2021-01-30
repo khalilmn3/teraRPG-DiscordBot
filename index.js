@@ -19,6 +19,7 @@ import healingPotion from './js/healingPotion.js';
 import backpack from './js/backpack.js';
 import tools from './js/tools.js';
 import embeddedMessage from './js/embeddedMessage.js';
+import crafting from './js/crafting.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -40,123 +41,124 @@ client.on("message", function (message) {
     
         if (message.author.id === '555955826880413696') {
             if (message.embeds) {
+                // if (message.embeds.length > 0) {
+                //     console.log('hm');
+                //     MongoClient.connect(dbRPG, function (err, db) {
+                //         if (err) throw err;
+                //         // message.reply(message.embeds);
+                //         var dbo = db.db("mydb");
+                //         var myobj = { name: "Company Inc", address: "Highway 37" };
+                //         if (message.embeds.length > 0) {
+                //             dbo.collection('eRPG').insertOne(message.embeds[0], function (err, res) {
+                //                 if (err) throw err;
+                //                 console.log(message.embeds[0]);
+                //                 db.close();
+                //             });
+                //         }
+                //     });
+                //     return;
+                // }
+                // }
                 if (message.embeds.length > 0) {
-                    console.log('hm');
-                    MongoClient.connect(dbRPG, function (err, db) {
-                        if (err) throw err;
-                        // message.reply(message.embeds);
-                        var dbo = db.db("mydb");
-                        var myobj = { name: "Company Inc", address: "Highway 37" };
-                        if (message.embeds.length > 0) {
-                            dbo.collection('eRPG').insertOne(message.embeds[0], function (err, res) {
-                                if (err) throw err;
-                                console.log(message.embeds[0]);
-                                db.close();
-                            });
+                    if (message.embeds[0].author === undefined || message.embeds[0].author === null) return;
+                    const authorName = message.embeds[0].author.name;
+                    const authorStatus = authorName.split(' ');
+                    if (authorStatus < 1) return;
+                
+                    let author = [];
+                    let iconURL = message.embeds[0].author.iconURL;
+                    let authorGenerate = iconURL.split('/');
+                    let enchantAuthorId = authorGenerate[4];
+                
+                    // ENCHANT
+                    if (authorStatus[1] === 'enchant') {
+                        const textMessage = message.embeds[0].fields[0].name.toLowerCase();
+                        const enchantRank = {
+                            'normie': 1,
+                            'good': 2,
+                            'great': 3,
+                            'mega': 4,
+                            'epic': 5,
+                            'hyper': 6,
+                            'ultimate': 7,
+                            'perfect': 8,
+                            'edgy': 9,
+                            'ultra-edgy': 10,
+                            'omega': 11,
+                            'ultra-omega': 12,
+                            'godly': 13,
                         }
-                    });
-                    return;
-                }
-            }
-            if (message.embeds.length > 0) {
-                if (message.embeds[0].author === undefined || message.embeds[0].author === null) return;
-                const authorName = message.embeds[0].author.name;
-                const authorStatus = authorName.split(' ');
-                if (authorStatus < 1) return;
-                
-                let author = [];
-                let iconURL = message.embeds[0].author.iconURL;
-                let authorGenerate = iconURL.split('/');
-                let enchantAuthorId = authorGenerate[4];
-                
-                // ENCHANT
-                if (authorStatus[1] === 'enchant') {
-                    const textMessage = message.embeds[0].fields[0].name.toLowerCase();
-                    const enchantRank = {
-                        'normie': 1,
-                        'good': 2,
-                        'great': 3,
-                        'mega': 4,
-                        'epic': 5,
-                        'hyper': 6,
-                        'ultimate': 7,
-                        'perfect': 8,
-                        'edgy': 9,
-                        'ultra-edgy': 10,
-                        'omega': 11,
-                        'ultra-omega': 12,
-                        'godly': 13,
-                    }
-                    let enchantRankNumMessage = 1;
-                    let enchantRankMessage = 'normie';
-                    let enchantRankNumAuthor = '';
+                        let enchantRankNumMessage = 1;
+                        let enchantRankMessage = 'normie';
+                        let enchantRankNumAuthor = '';
             
-                    let query = "SELECT * FROM user WHERE id='" + enchantAuthorId + "'";
-                    db.query(query, async function (err, result) {
-                        author = await result[0];
-                        enchantRankNumAuthor = await enchantRank[author.enchant_rank];
-                        enchantTypeAuthor = await enchantRank[author.enchant_type];
-                        // ENCHANT
-                        if (author) {
-                            if (author.id === enchantAuthorId && author.is_enchant_notify) {
-                                Object.keys(enchantRank).forEach(function (key) {
-                                    if (textMessage.includes(key)) {
-                                        enchantRankMessage = key;
-                                        enchantRankNumMessage = enchantRank[key];
-                                    }
-                                });
-                                if (parseFloat(enchantRankNumMessage) >= parseFloat(enchantRankNumAuthor) && textMessage.includes(enchantTypeAuthor)) {
-                                    const MutedRole = '797311102383030302';
-                    
-                                    if (parseFloat(enchantRankNumMessage) === parseFloat(enchantRankNumAuthor)) {
-                                        message.channel.send(`You got \`${enchantRankMessage.toUpperCase()}\` enchant you wanted !!! <@${enchantAuthorId}> `);
-                                    } else if (parseFloat(enchantRankNumMessage) > parseFloat(enchantRankNumAuthor)) {
-                                        message.channel.send(`WOW!!! <@${enchantAuthorId}> got \`${enchantRankMessage.toUpperCase()}\`, it\'s even better than \`${author.enchant_type.toUpperCase()}\`!!!`);
-                                    }
-
-                                    message.guild.members.fetch(author.id).then(async (discordUser) => {
-                                        await discordUser.roles.set([MutedRole]).then(result=>{
-                                            channel.send(`You muted for 5 seconds`);
-                                            setTimeout(() => {
-                                                message.guild.members.fetch(author.id).then((discordUser) => {
-                                                    discordUser.roles.remove([MutedRole]);
-                                                });
-                                            }, 5000);
-                                        }).catch(error => {
-                                            console.log(error)
-                                            message.channel.send(
-                                                `> Sorry <@${enchantAuthorId}>, I couldn't mute you because I don't have permission to do that :persevere:.`
-                                            );
-                                        });
+                        let query = "SELECT * FROM user WHERE id='" + enchantAuthorId + "'";
+                        db.query(query, async function (err, result) {
+                            author = await result[0];
+                            enchantRankNumAuthor = await enchantRank[author.enchant_rank];
+                            enchantTypeAuthor = await enchantRank[author.enchant_type];
+                            // ENCHANT
+                            if (author) {
+                                if (author.id === enchantAuthorId && author.is_enchant_notify) {
+                                    Object.keys(enchantRank).forEach(function (key) {
+                                        if (textMessage.includes(key)) {
+                                            enchantRankMessage = key;
+                                            enchantRankNumMessage = enchantRank[key];
+                                        }
                                     });
+                                    if (parseFloat(enchantRankNumMessage) >= parseFloat(enchantRankNumAuthor) && textMessage.includes(enchantTypeAuthor)) {
+                                        const MutedRole = '797311102383030302';
+                    
+                                        if (parseFloat(enchantRankNumMessage) === parseFloat(enchantRankNumAuthor)) {
+                                            message.channel.send(`You got \`${enchantRankMessage.toUpperCase()}\` enchant you wanted !!! <@${enchantAuthorId}> `);
+                                        } else if (parseFloat(enchantRankNumMessage) > parseFloat(enchantRankNumAuthor)) {
+                                            message.channel.send(`WOW!!! <@${enchantAuthorId}> got \`${enchantRankMessage.toUpperCase()}\`, it\'s even better than \`${author.enchant_type.toUpperCase()}\`!!!`);
+                                        }
+
+                                        message.guild.members.fetch(author.id).then(async (discordUser) => {
+                                            await discordUser.roles.set([MutedRole]).then(result => {
+                                                channel.send(`You muted for 5 seconds`);
+                                                setTimeout(() => {
+                                                    message.guild.members.fetch(author.id).then((discordUser) => {
+                                                        discordUser.roles.remove([MutedRole]);
+                                                    });
+                                                }, 5000);
+                                            }).catch(error => {
+                                                console.log(error)
+                                                message.channel.send(
+                                                    `> Sorry <@${enchantAuthorId}>, I couldn't mute you because I don't have permission to do that :persevere:.`
+                                                );
+                                            });
+                                        });
+                                    }
                                 }
+                
+                                if (err) throw err;
                             }
+                        });
+                    } else if (authorStatus[1] === 'cooldowns') {
+                        // cooldownsReminder('daily', enchantAuthorId);
+                        // cooldownsReminder('weekly', enchantAuthorId);
+                        // cooldownsReminder('lootbox', enchantAuthorId);
+                        // cooldownsReminder('vote', enchantAuthorId);
+                        // cooldownsReminder('hunt', enchantAuthorId);
+                        // cooldownsReminder('adventure', enchantAuthorId);
+                        // cooldownsReminder('training', enchantAuthorId);
+                        // cooldownsReminder('duel', enchantAuthorId);
+                        // cooldownsReminder('quest', enchantAuthorId);
+                        // cooldownsReminder('worker', enchantAuthorId);
+                        // cooldownsReminder('horse', enchantAuthorId);
+                        // cooldownsReminder('arena', enchantAuthorId);
+                        // cooldownsReminder('dungeon', enchantAuthorId);
+                    }
                 
-                            if (err) throw err;
-                        }
-                    });
-                } else if (authorStatus[1] === 'cooldowns') {
-                    // cooldownsReminder('daily', enchantAuthorId);
-                    // cooldownsReminder('weekly', enchantAuthorId);
-                    // cooldownsReminder('lootbox', enchantAuthorId);
-                    // cooldownsReminder('vote', enchantAuthorId);
-                    // cooldownsReminder('hunt', enchantAuthorId);
-                    // cooldownsReminder('adventure', enchantAuthorId);
-                    // cooldownsReminder('training', enchantAuthorId);
-                    // cooldownsReminder('duel', enchantAuthorId);
-                    // cooldownsReminder('quest', enchantAuthorId);
-                    // cooldownsReminder('worker', enchantAuthorId);
-                    // cooldownsReminder('horse', enchantAuthorId);
-                    // cooldownsReminder('arena', enchantAuthorId);
-                    // cooldownsReminder('dungeon', enchantAuthorId);
+                    // EPIC GUARD CHECK
                 }
-                
-            // EPIC GUARD CHECK
-            } 
-            else if (message.content.includes('stop there')) {
-                message.channel.send(':man_police_officer: : ***THERE IS POLICE OFFICER NEARBY !!!***');
-            } else if (message.content.includes('you are in the')) {
-                message.channel.send(':man_police_officer: : ***YOU ARE IN THE JAIL NOW !!!***, lets protest before you got ***Death Penalty***');
+                else if (message.content.includes('stop there')) {
+                    message.channel.send(':man_police_officer: : ***THERE IS POLICE OFFICER NEARBY !!!***');
+                } else if (message.content.includes('you are in the')) {
+                    message.channel.send(':man_police_officer: : ***YOU ARE IN THE JAIL NOW !!!***, lets protest before you got ***Death Penalty***');
+                }
             }
         }
         return;
@@ -317,8 +319,11 @@ client.on("message", function (message) {
                             work(message, command, result[0]);
                         } else if (command === 'backpack' || command === 'bp') {
                             backpack(message);
-                        } else if (command === 'tools' || command === 'tool') {
+                        } else if (command === 'workspace' || command === 'ws') {
                             tools(message);
+                            
+                        } else if (command === 'craft'){
+                            crafting(message, args[0], args[1], args[2]);
                         }
                     } else if (command === 'start') {
                         // INSERT USER
@@ -329,7 +334,7 @@ client.on("message", function (message) {
                             console.log("1 record inserted");
                         });
                     } else {
-                        message.channel.send(`<@${authorID}>, you are not registered yet, to start playing type \`${teraRPG}start\``)
+                        message.reply(`you are not registered yet, to start playing type \`${teraRPG}start\``)
                     }
 
                 
