@@ -39,6 +39,13 @@ client.on("message", function (message) {
       };
     if (message.author.bot) {
     
+        // if (message.author.id === '172002275412279296') {
+        //     console.log(message.content)
+        //     console.log(message.embeds)
+        //     message.reply(message.content)
+        //     message.reply(message.embeds)
+        //     return;
+        // }
         if (message.author.id === '555955826880413696') {
             if (message.embeds) {
                 // if (message.embeds.length > 0) {

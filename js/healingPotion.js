@@ -16,9 +16,9 @@ async function healingPotion(message, client, id, username) {
         // PLAYER DIED
         if (bHp < maxHp) {
             db.query(`UPDATE stat SET hp=${maxHp} WHERE player_id="${id}"`);
-            message.channel.send(`${username} HP has been restored.`)
+            message.channel.send(`:adhesive_bandage: | **${username}** HP has been restored.`)
         } else {
-            message.channel.send(`${username} current HP is maxed out.`)
+            message.channel.send(`**${username}** current HP is maxed out.`)
         }
     })
 }

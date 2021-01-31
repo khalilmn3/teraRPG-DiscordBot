@@ -1,6 +1,7 @@
 
 import db from '../db_config.js'
 import Discord from 'discord.js';
+import queryData from './helper/query.js';
 
 async function hunt(message, client, id, username) { 
     let monsterID = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -78,7 +79,11 @@ async function hunt(message, client, id, username) {
         monster = monsterData[4];
     }
 
-    const query = `SELECT stat.*, armor.def, level.experience FROM level,stat LEFT JOIN armor ON (stat.armor_id = armor.id) WHERE level.id > stat.level AND stat.player_id="${id}" LIMIT 1`;
+    const query = `SELECT stat.*, armor.def, level.experience, item.name as weapon FROM level,stat 
+    LEFT JOIN armor ON (stat.armor_id = armor.id)
+    LEFT JOIN weapon ON (stat.weapon_id = weapon.id)
+    LEFT JOIN item ON (weapon.item_id = item.id)
+    WHERE level.id > stat.level AND stat.player_id="${id}" LIMIT 1`;
     db.query(query, async (err, result) => {
         if (err) throw err;
         let stat = await result[0];
@@ -110,34 +115,26 @@ async function hunt(message, client, id, username) {
                 
             } else {
                 db.query(`UPDATE stat SET hp=1, current_experience=0 WHERE player_id="${id}"`);
-                message.channel.send(`${username} Lost in battle,\n Be carefull next time and make sure \n you already prepared before going to wild.`);
+                message.channel.send(`:skull_crossbones: | **${username}** Lost in battle with ${monster.icon} ** ${monster.name} **,\n Be carefull next time and make sure \n you already prepared before going to wild.`);
                 
             }
             return;
         }
         if (totalXP >= stat.experience) {
             // LEVEL UP
-            db.query(`SELECT id, experience FROM level WHERE experience<=${totalXP} ORDER BY id DESC LIMIT 1`, async (err, result) => {
-                if (err) throw err;
-                let nLevel = await result[0].id;
-                let cExp = await totalXP - result[0].experience;
-                maxHp = 5 * (nLevel + stat.basic_hp);
-                maxMp = 5 * (nLevel + stat.basic_mp);
-                db.query(`UPDATE stat SET level="${nLevel}", current_experience=${cExp}, hp="${maxHp}", mp="${maxMp}" WHERE player_id="${id}"`);
-                message.channel.send(`${username} Level up +${result[0].id - stat.level}, HP restored`);
-            })
+            let data = await queryData(`SELECT id, experience FROM level WHERE experience<=${totalXP} ORDER BY id DESC LIMIT 1`)
+            let nLevel = data[0].id;
+            let cExp = totalXP - data[0].experience;
+            maxHp = 5 * (nLevel + stat.basic_hp);
+            maxMp = 5 * (nLevel + stat.basic_mp);
+            queryData(`UPDATE stat SET level="${nLevel}", current_experience=${cExp}, hp="${maxHp}", mp="${maxMp}" WHERE player_id="${id}"`);
+            levelUPmessage = `${username} Level up +${result[0].id - stat.level}, HP restored`
         }
-        let itemID = 1;
-        let itemQty = 3;
+        let weapon = stat.weapon ? stat.weapon : '👊bare hand'
+        let hpLost = lostHP > 0 ? `\nbut also lost ${lostHP} HP, remaining HP is ${cHp} / ${maxHp}` : "";
         // Update data
-        db.query(`UPDATE stat SET hp="${cHp}", current_experience=current_experience + ${exp} WHERE player_id="${id}"`);
-        // FOUND ITEM
-        db.query(`CALL insert_item_backpack_procedure("${id}", "${itemID}", ${itemQty})`);
-        db.query(`CALL insert_item_backpack_procedure("${id}", "${5}", ${2})`);
-        db.query(`CALL insert_item_backpack_procedure("${id}", "${7}", ${5})`);
-        // console.log(id);
-    
-        message.channel.send(`**${username}** found and killed a ${monster.icon} ** ${monster.name} ** \nEarned ${coin} gold and ${exp} exp \nLost ${lostHP} HP, remaining HP is ${cHp} / ${maxHp} ${levelUPmessage}`)
+        queryData(`UPDATE stat SET hp="${cHp}", gold=gold+${coin}, current_experience=current_experience + ${exp} WHERE player_id="${id}"`);
+        message.channel.send(`**${username}** encountered a ${monster.icon} ** ${monster.name} ** and \nsuccessfully beaten it down with **${weapon}** ${hpLost} \nGained **${coin}** 𝑔𝑜𝓁𝒹 and **${exp}** 𝑒𝓍𝓅`,levelUPmessage)
     })
 }
 

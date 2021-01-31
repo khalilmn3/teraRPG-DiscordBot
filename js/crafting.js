@@ -131,9 +131,10 @@ async function craftBar(message,playerId,username, itemIdCrafted, itemIdMaterial
                     qty = await existMaterials[0].quantity / 10;
                     materialsReq = qty * 10;
                 }
-                queryData(`CALL insert_item_backpack_procedure("${playerId}", "${itemIdCrafted}", "${qty}")`);
+                let amount = await queryData(`CALL insert_item_backpack_procedure("${playerId}", "${itemIdCrafted}", "${qty}")`);
+                amount = amount.length > 0 ? amount[0][0]['@qty'] : 0;
                 queryData(`UPDATE backpack SET quantity=quantity-${materialsReq} WHERE player_id="${playerId}" AND item_id="${itemIdMaterial}"`)
-                message.channel.send(`**${username}** has successfully crafted x${qty} ${emoji} **${args1} ${args2}**`)
+                message.channel.send(`<:Furnace:804145327513796688> | **${username}** has successfully crafted x${qty} ${emoji} **${args1} ${args2}**, \nYou now have x${amount} ${emoji} **${args1} ${args2}** in your backpack`)
             } else {
                 message.reply(`:no_entry_sign: | you don't have enough materials to craft x${qty} ${emoji} **${args1} ${args2}**,\ngo work and get the materials it need, you can also check crafter material receipts with \`tera craft\`!`)
             }
