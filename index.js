@@ -23,6 +23,7 @@ import crafting from './js/crafting.js';
 import queryData from './js/helper/query.js';
 import teleport from './js/teleport.js';
 import help from './js/help.js';
+import workspace from './js/workspace.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -34,7 +35,7 @@ const rpgPrefix = 'rpg ';
 const teraRPGPrefix = 'tera ';
 client.on('ready', () => {
     client.user.setActivity({
-        type: "CUSTOM_STATUS",
+        type: "LISTENING",
         name: "tera help",
     });
 })
@@ -346,6 +347,8 @@ client.on("message", async function (message) {
                 } else if (command === 'backpack' || command === 'bp') {
                     backpack(message);
                 } else if (command === 'workspace' || command === 'ws') {
+                    workspace(message);
+                } else if (command === 'tool' || command === 'tools') {
                     tools(message);
                 } else if (command === 'craft') {
                     crafting(message, args[0], args[1], args[2]);
