@@ -2,7 +2,7 @@ import queryData from './helper/query.js';
 import randomizeChance from './helper/randomize.js';
 
 async function work(message, workingCommand, playerStat) {
-    let discoveredArea = Math.floor(playerStat.discovered_area);
+    let discoveredZone = playerStat.zone_id;
     const notFoundItemXP = 1;
     // Get player's tools
     let data = await queryData(`SELECT
@@ -17,8 +17,8 @@ async function work(message, workingCommand, playerStat) {
     if (data) {
         if (workingCommand === 'mine') {
             // get item drop list
-            let itemDropList = await queryData(`SELECT * FROM item WHERE available_area_id<="${discoveredArea}" AND type_id="7" AND dropable="1"`);
-            let itemDrop = randomizeChance(itemDropList, discoveredArea);
+            let itemDropList = await queryData(`SELECT * FROM item WHERE available_area_id<="${discoveredZone}" AND type_id="7" AND dropable="1"`);
+            let itemDrop = randomizeChance(itemDropList, discoveredZone);
                     
             let maxGainingItem = itemDrop.id === 1 ? 3 * itemDrop.tier : 3;
             let gainingItem = Math.round(Math.random() * (maxGainingItem - 1) + 1); // get random item gaining
@@ -37,8 +37,8 @@ async function work(message, workingCommand, playerStat) {
             }
         } else if (workingCommand === 'chop') {
             // get item drop list
-            let itemDropList = await queryData(`SELECT * FROM item WHERE available_area_id<="${discoveredArea}" AND type_id="11" AND dropable="1"`);
-            let itemDrop = randomizeChance(itemDropList, discoveredArea);
+            let itemDropList = await queryData(`SELECT * FROM item WHERE available_area_id<="${discoveredZone}" AND type_id="11" AND dropable="1"`);
+            let itemDrop = randomizeChance(itemDropList, discoveredZone);
             let maxGainingItem = itemDrop.id === 1 ? 3 * itemDrop.tier : 3;
             let gainingItem = Math.round(Math.random() * (maxGainingItem - 1) + 1); // get random item gaining
             if (itemDrop !== 0) {

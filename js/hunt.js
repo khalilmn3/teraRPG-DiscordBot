@@ -2,140 +2,76 @@
 import db from '../db_config.js'
 import Discord from 'discord.js';
 import queryData from './helper/query.js';
+import randomizeChance from './helper/randomize.js';
 
-async function hunt(message, client, id, username) { 
-    let monsterID = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    let monsterData = [
-        {
-            id: 1,
-            name: 'Baby Slime',
-            minDamage: 10,
-            maxDamage: 20,
-            minExp: 5,
-            maxExp: 10,
-            minCoin: 20,
-            maxCoin: 80,
-            icon: '<:baby_slime:801079278132527144>'
-        },
-        {
-            id: 2,
-            name: 'Slime',
-            minDamage: 15,
-            maxDamage: 25,
-            minExp: 7,
-            maxExp: 12,
-            minCoin: 40,
-            maxCoin: 100,
-            icon: '<:slime:801079335569457182>'
-        },
-        {
-            id: 3,
-            name: 'Bat',
-            minDamage: 13,
-            maxDamage: 23,
-            minExp: 10,
-            maxExp: 15,
-            minCoin: 60,
-            maxCoin: 120,
-            icon: ':bat:'
-        },
-        {
-            id: 4,
-            name: 'Crab',
-            minDamage: 5,
-            maxDamage: 12,
-            minExp: 8,
-            maxExp: 18,
-            minCoin: 80,
-            maxCoin: 140,
-            icon: ':crab:'
-        },
-        {
-            id: 5,
-            name: 'Wolf',
-            minDamage: 15,
-            maxDamage: 30,
-            minExp: 10,
-            maxExp: 25,
-            minCoin: 100,
-            maxCoin: 160,
-            icon: ':wolf:'
-        }
-    ]
-
-    let x = Math.random() * (5 - 1) + 1;
-    x = Math.round(x);
-    let y = Math.random();
+async function hunt(message, client, id, username, zone) {
+    let stat = await queryData(`SELECT stat.*, level.*, IFNULL(itemWeapon.emoji, '') as wEmoji, itemWeapon.name as weapon, weapon.attack, 
+        armor1.def as helmetDef,armor2.def as chestDef,armor3.def as pantsDef
+        FROM level, stat
+        LEFT JOIN equipment ON (stat.player_id = equipment.player_id)
+        LEFT JOIN armor as armor1 ON (equipment.helmet_id = armor1.id)
+        LEFT JOIN armor as armor2 ON (equipment.shirt_id = armor2.id)
+        LEFT JOIN armor as armor3 ON (equipment.pants_id = armor3.id)
+        LEFT JOIN weapon ON (equipment.weapon_id = weapon.id)
+        LEFT JOIN item as itemArmor1 ON (armor1.item_id = itemArmor1.id)
+        LEFT JOIN item as itemArmor2 ON (armor2.item_id = itemArmor2.id)
+        LEFT JOIN item as itemArmor3 ON (armor3.item_id = itemArmor3.id)
+        LEFT JOIN item as itemWeapon ON (weapon.item_id = itemWeapon.id)
+        WHERE level.id > stat.level AND stat.player_id="${id}" LIMIT 1`);
+    stat = stat[0];
+    let monsterData = await queryData(`SELECT emoji, name, min_damage, max_damage, min_exp, max_exp, coin, chance FROM enemy WHERE is_boss="0" AND zone_id=${stat.zone_id}`)
+    
     let monster = '';
-    if (y < 0.5) { // 50%
-        monster = monsterData[0];
-    } else if (y < 0.7) { // 20%
-        monster = monsterData[1];
-    } else if (y < 0.85) { // 15%
-        monster = monsterData[2];
-    } else if (y < 0.95) { // 10%
-        monster = monsterData[3];
-    } else { // 5 %
-        monster = monsterData[4];
-    }
+    monster = await randomizeChance(monsterData);
+    
+    let def = stat.basic_def + stat.level + stat.helmetDef + stat.chestDef + stat.pantsDef;
+    let maxHp = 5 * (stat.level + stat.basic_hp);
+    let maxMp = 5 * (stat.level + stat.basic_mp);
+    let bHp = stat.hp;
+    let subArea = stat.sub_zone;
+    let damage = subArea >= 2 ? Math.round(Math.random() * (monster.max_damage - monster.min_damage) + monster.min_damage) : monster.min_damage;
+    let exp =  subArea >= 2 ? Math.round(Math.random() * (monster.max_exp - monster.min_exp) + monster.min_exp) : monster.min_exp;
+    let coin = monster.coin; //Math.round(Math.random() * (monster.maxCoin - monster.minCoin) + monster.minCoin);
 
-    const query = `SELECT stat.*, armor.def, level.experience, item.name as weapon FROM level,stat 
-    LEFT JOIN armor ON (stat.armor_id = armor.id)
-    LEFT JOIN weapon ON (stat.weapon_id = weapon.id)
-    LEFT JOIN item ON (weapon.item_id = item.id)
-    WHERE level.id > stat.level AND stat.player_id="${id}" LIMIT 1`;
-    db.query(query, async (err, result) => {
-        if (err) throw err;
-        let stat = await result[0];
-        console.log(stat);
-        let def = stat.basic_def * stat.level + stat.def + (stat.def * stat.armor_enchant * 0.3);
-        let maxHp = 5 * (stat.level + stat.basic_hp);
-        let maxMp = 5 * (stat.level + stat.basic_mp);
-        let bHp = stat.hp;
-        let damage = Math.round(Math.random() * (monster.maxDamage - monster.minDamage) + monster.minDamage);
-        let exp = Math.round(Math.random() * (monster.maxExp - monster.minExp) + monster.minExp);
-        let coin = Math.round(Math.random() * (monster.maxCoin - monster.minCoin) + monster.minCoin);
-
-        let cHp = bHp - ((damage - def) > 0 ? (damage - def) : 0);
+    let cHp = bHp - ((damage - def) > 0 ? (damage - def) : 0);
         
-        let lostHP = bHp - cHp;
-        let totalXP = stat.current_experience + exp;
-        console.log("damage :"+damage);
-        console.log("def :"+def);
-        console.log("hp :" + cHp);
-        let levelUPmessage = '';
-        // PLAYER DIED
-        if (cHp <= 0) {
-            cHp = 0;
-            if (stat.level > 1) {
-                maxHp = 5 * ((stat.level - 1) + stat.basic_hp);
-                maxMp = 5 * ((stat.level - 1) + stat.basic_mp);
-                db.query(`UPDATE stat SET hp=${maxHp}, mp=${maxMp}, level=level - 1, current_experience=0 WHERE player_id="${id}"`);
-                message.channel.send(`${username} Lost in battle, he also lost his level by 1, \nBe carefull next time and make sure \nyou already prepared before going to wild.`);
+    let lostHP = bHp - cHp;
+    let totalXP = stat.current_experience + exp;
+    console.log("damage :" + damage);
+    console.log("def :" + def);
+    console.log("hp :" + cHp);
+    let levelUPmessage = '';
+    // PLAYER DIED
+    if (cHp <= 0) {
+        cHp = 0;
+        if (stat.level > 1) {
+            maxHp = 5 * ((stat.level - 1) + stat.basic_hp);
+            maxMp = 5 * ((stat.level - 1) + stat.basic_mp);
+            db.query(`UPDATE stat SET hp=${maxHp}, mp=${maxMp}, level=level - 1, current_experience=0 WHERE player_id="${id}"`);
+            message.channel.send(`${username} Lost in battle, he also lost his level by 1, \nBe carefull next time and make sure \nyou already prepared before going to wild.`);
                 
-            } else {
-                db.query(`UPDATE stat SET hp=1, current_experience=0 WHERE player_id="${id}"`);
-                message.channel.send(`:skull_crossbones: | **${username}** Lost in battle with ${monster.icon} ** ${monster.name} **,\n Be carefull next time and make sure \n you already prepared before going to wild.`);
+        } else {
+            db.query(`UPDATE stat SET hp=1, current_experience=0 WHERE player_id="${id}"`);
+            message.channel.send(`:skull_crossbones: | **${username}** Lost in battle with ${monster.emoji} ** ${monster.name} **,\n Be carefull next time and make sure \n you already prepared before going to wild.`);
                 
-            }
-            return;
         }
-        if (totalXP >= stat.experience) {
-            // LEVEL UP
-            let data = await queryData(`SELECT id, experience FROM level WHERE experience<=${totalXP} ORDER BY id DESC LIMIT 1`)
-            let nLevel = data[0].id;
-            let cExp = totalXP - data[0].experience;
-            maxHp = 5 * (nLevel + stat.basic_hp);
-            maxMp = 5 * (nLevel + stat.basic_mp);
-            queryData(`UPDATE stat SET level="${nLevel}", current_experience=${cExp}, hp="${maxHp}", mp="${maxMp}" WHERE player_id="${id}"`);
-            levelUPmessage = `${username} Level up +${result[0].id - stat.level}, HP restored`
-        }
-        let weapon = stat.weapon ? stat.weapon : '👊bare hand'
-        let hpLost = lostHP > 0 ? `\nbut also lost ${lostHP} HP, remaining HP is ${cHp} / ${maxHp}` : "";
-        // Update data
-        queryData(`UPDATE stat SET hp="${cHp}", gold=gold+${coin}, current_experience=current_experience + ${exp} WHERE player_id="${id}"`);
-        message.channel.send(`**${username}** encountered a ${monster.icon} ** ${monster.name} ** and \nsuccessfully beaten it down with **${weapon}** ${hpLost} \nGained **${coin}** 𝑔𝑜𝓁𝒹 and **${exp}** 𝑒𝓍𝓅`,levelUPmessage)
-    })
+        return;
+    }
+    if (totalXP >= stat.experience) {
+        // LEVEL UP
+        let data = await queryData(`SELECT id, experience FROM level WHERE experience<=${totalXP} ORDER BY id DESC LIMIT 1`)
+        let nLevel = data[0].id;
+        let cExp = totalXP - data[0].experience;
+        maxHp = 5 * (nLevel + stat.basic_hp);
+        maxMp = 5 * (nLevel + stat.basic_mp);
+        queryData(`UPDATE stat SET level="${nLevel}", current_experience=${cExp}, hp="${maxHp}", mp="${maxMp}" WHERE player_id="${id}"`);
+        levelUPmessage = `${username} Level up +${result[0].id - stat.level}, HP restored`
+    }
+    let weapon = stat.weapon ? `${stat.wEmoji} ${stat.weapon}` : '👊bare hand'
+    let hpLost = lostHP > 0 ? `\nbut also lost ${lostHP} HP, remaining HP is ${cHp} / ${maxHp}` : "";
+    // Update data
+    queryData(`UPDATE stat SET hp="${cHp}", gold=gold+${coin}, current_experience=current_experience + ${exp} WHERE player_id="${id}"`);
+    message.channel.send(`**${username}** encountered a ${monster.emoji} ** ${monster.name} ** and \nsuccessfully beaten it down with **${weapon}** ${hpLost} \nGained **${coin}** 𝑔𝑜𝓁𝒹 and **${exp}** 𝑒𝓍𝓅`, levelUPmessage)
 }
 
 

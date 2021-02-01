@@ -3,7 +3,7 @@ import db from '../db_config.js'
 import Discord from 'discord.js';
 
 async function profile(message, client, id, username, avatar, rank, title) {
-    const query = `SELECT stat.*, level.*, IFNULL(itemWeapon.emoji, '') as wEmoji, itemWeapon.name as weapon, weapon.attack, 
+    const query = `SELECT stat.*, level.*, IFNULL(itemWeapon.emoji, '') as wEmoji, itemWeapon.name as weapon, weapon.attack, zone.name as zone,
         IFNULL(itemArmor1.emoji, '') as helmetEmoji, itemArmor1.name as helmet, armor1.def as helmetDef,
         IFNULL(itemArmor2.emoji, '') as chestEmoji, itemArmor2.name as chest, armor2.def as chestDef,
         IFNULL(itemArmor3.emoji, '') as pantsEmoji, itemArmor3.name as pants, armor3.def as pantsDef
@@ -17,6 +17,7 @@ async function profile(message, client, id, username, avatar, rank, title) {
         LEFT JOIN item as itemArmor2 ON (armor2.item_id = itemArmor2.id)
         LEFT JOIN item as itemArmor3 ON (armor3.item_id = itemArmor3.id)
         LEFT JOIN item as itemWeapon ON (weapon.item_id = itemWeapon.id)
+        LEFT JOIN zone ON (stat.zone_id = zone.id)
         WHERE level.id > stat.level AND stat.player_id = '${id}' LIMIT 1`;
     let data;
     db.query(query, async function (err, result) {
@@ -38,6 +39,7 @@ async function profile(message, client, id, username, avatar, rank, title) {
         let helmet = data.helmet ? `\n${data.helmetEmoji} [+${data.helmetDef}] **${data.helmet}**` : '\n:white_medium_small_square: [no helmet]';
         let chest = data.chest ? `\n${data.chestEmoji} [+${data.chestDef}] **${data.chest}**` : '\n:white_medium_small_square: [no chest]';
         let pants = data.pants ? `\n${data.pantsEmoji} [+${data.pantsDef}] **${data.pants}**` : '\n:white_medium_small_square: [no pants]';
+        let currentZone = `${data.zone_id}.${data.sub_zone} [${data.zone}]` 
         let embedded = new Discord.MessageEmbed({
             type: "rich",
             title: null,
@@ -47,7 +49,7 @@ async function profile(message, client, id, username, avatar, rank, title) {
             timestamp: null,
             fields: [
                 {
-                    value: `\n[ HP: ${hp} / ${maxHp} ] \n${hpBar} \n[ MP: ${mp} / ${maxMp} ] \n${mpBar} \n** Level **: ${level} (${pLevel} %) \n** XP **: ${cExp} / ${maxExp}\n** Zone **: ${data.discovered_area} [Jungle]`,
+                    value: `\n[ HP: ${hp} / ${maxHp} ] \n${hpBar} \n[ MP: ${mp} / ${maxMp} ] \n${mpBar} \n** Level **: ${level} (${pLevel} %) \n** XP **: ${cExp} / ${maxExp}\n** Zone **: ${currentZone}`,
                     name: "__STATUS__",
                     inline: false
                 },

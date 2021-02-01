@@ -80,6 +80,7 @@ function profile(client, id, username, avatar, rank, title) {
 		},
 		files: []
 	});
+	
 }
 export default {
 	exampleEmbed,

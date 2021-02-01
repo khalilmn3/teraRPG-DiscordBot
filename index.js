@@ -20,6 +20,9 @@ import backpack from './js/backpack.js';
 import tools from './js/tools.js';
 import embeddedMessage from './js/embeddedMessage.js';
 import crafting from './js/crafting.js';
+import queryData from './js/helper/query.js';
+import teleport from './js/teleport.js';
+import help from './js/help.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -28,15 +31,20 @@ client.login(config.BOT_TOKEN);
 // Command Prefix
 const prefix = "!";
 const rpgPrefix = 'rpg ';
-const teraRPG = 'tera ';
-
-client.on("message", function (message) {
+const teraRPGPrefix = 'tera ';
+client.on('ready', () => {
+    client.user.setActivity({
+        type: "CUSTOM_STATUS",
+        name: "tera help",
+    });
+})
+client.on("message", async function (message) {
     
     const authorID = message.author.id;
     let authorUsername = message.author.username;
     const data = {
         authorID: message.author.id
-      };
+    };
     if (message.author.bot) {
     
         // if (message.author.id === '172002275412279296') {
@@ -293,70 +301,100 @@ client.on("message", function (message) {
             agendaRun(authorID, 'rpg duel', `time for \`RPG ${command.toUpperCase()}\`!!!`, '2h');
 
         } else if (command === 'buy ed lb' || command === 'buy common lootbox' || command === 'buy edgy lootbox' || command === 'buy uncommon lootbox'
-        || command === 'buy rare lootbox' || command === 'buy epic lootbox') {
+            || command === 'buy rare lootbox' || command === 'buy epic lootbox') {
 
             agendaRun(authorID, 'rpg lootbox', `time for \`RPG ${command.toUpperCase()}\`!!!`, '3h');
 
         }
     }
-// ================================================================================================================================
+    // ================================================================================================================================
     // CO COMMAND
-    if (content.startsWith(teraRPG)) {
-        const commandBody = message.content.slice(teraRPG.length);
+    if (content.startsWith(teraRPGPrefix)) {
+        const commandBody = message.content.slice(teraRPGPrefix.length);
         const args = commandBody.split(' ');
         const command = args.shift().toLowerCase();
-        const prefixCommand = teraRPG + command;
+        const prefixCommand = teraRPGPrefix + command;
         const body = message.content.replace(prefixCommand, '');
         
         // FIND USER REGISTRATION
-        db.query(`SELECT id, discovered_area FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${authorID}`, (err, result) => {
-            // try {
-                if (waitingTime.has(message.author.id)) {
-                    message.reply("Wait at least 1 second before getting typing this again.");
-                    return;
-                } else {
-                    if (result.length > 0) {
-                        if (command === 'p') {
-                            profile(message, client, authorID, authorUsername, message.author.avatar, 0, 'Noob');
-                        } else if (command === 'hunt') {
-                            hunt(message, 0, authorID, authorUsername);
-                        } else if (command === 'heal') {
-                            healingPotion(message, 0, authorID, authorUsername);
-                        } else if (command === 'mine' || command === 'chop') {
-                            work(message, command, result[0]);
-                        } else if (command === 'backpack' || command === 'bp') {
-                            backpack(message);
-                        } else if (command === 'workspace' || command === 'ws') {
-                            tools(message);
-                            
-                        } else if (command === 'craft'){
-                            crafting(message, args[0], args[1], args[2]);
-                        }
-                    } else if (command === 'start') {
-                        // INSERT USER
-                        let sql = `CALL start_procedure("${authorID}","${authorUsername}")`;
-                        message.reply('Welcome to teraRPG, type \`so hunt\` to begin your hunting')
-                        db.query(sql, function (err, result) {
-                            if (err) throw err;
-                            console.log("1 record inserted");
-                        });
-                    } else {
-                        message.reply(`you are not registered yet, to start playing type \`${teraRPG}start\``)
-                    }
+        let isUserRegistred = await queryData(`SELECT id, zone_id, is_active FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${authorID}`)
+        if (waitingTime.has(message.author.id)) {
+            message.reply("Wait at least 1 second before getting typing this again.");
+            return;
+        }
 
-                
-                    // Adds the user to the set so that they can't type for a second
-                    waitingTime.add(message.author.id);
-                    setTimeout(() => {
-                        // Removes the user from the set after a second
-                        waitingTime.delete(message.author.id);
-                    }, 1500);
+        if (isUserRegistred.length > 0) {
+            if (isUserRegistred[0].is_active) { // Check Banned User  
+                if (command === "ping") {
+                    let timeTaken = Date.now() - message.createdTimestamp;
+                    if (timeTaken < 0) {
+                        timeTaken = -timeTaken;
+                    }
+                    message.channel.send(`Pong! ${timeTaken}ms.`);
+                } else if (command === 'help') {
+                    help(message, client);
+                } else if (command === 'start') {
+                    message.reply(`You already registered, type \`${teraRPGPrefix} help\` for more commands`)
+                } else if (command === 'p') {
+                    profile(message, client, authorID, authorUsername, message.author.avatar, 0, 'Noob');
+                } else if (command === 'explore' | command === 'exp') {
+                    hunt(message, 0, authorID, authorUsername);
+                } else if (command === 'heal') {
+                    healingPotion(message, 0, authorID, authorUsername);
+                } else if (command === 'mine' || command === 'chop') {
+                    work(message, command, result[0]);
+                } else if (command === 'backpack' || command === 'bp') {
+                    backpack(message);
+                } else if (command === 'workspace' || command === 'ws') {
+                    tools(message);
+                } else if (command === 'craft') {
+                    crafting(message, args[0], args[1], args[2]);
+                } else if (command === 'teleport' || command === 'tel') {
+                    teleport(message, args);
                 }
-            // } finally {
-            //     db.end();
-            // }
-        });
+            }
+        } else if (command === 'start') {
+            // INSERT USER
+            let log = await queryData(`CALL start_procedure("${authorID}","${authorUsername}")`)
+            log = log.length > 0 ? log[0][0].log : 0;
+            message.reply(`Welcome to teraRPGPrefix, type \`${teraRPGPrefix} hunt\` to begin your hunting`)
+            if (log <= 0) return;
+            client.channels.cache.get('805591887821799434').send(
+                new Discord.MessageEmbed({
+                    type: "rich",
+                    title: null,
+                    description: null,
+                    url: null,
+                    color: 10115509,
+                    fields: [
+                        {
+                            value: `:bust_in_silhouette: ${message.author.tag} | :id: ${message.author.id}`,
+                            name: 'User',
+                            inline: true
+                        },
+                    ],
+                    author: {
+                        name: ` #${log} | User Registered`,
+                        url: null,
+                        iconURL: `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
+                        proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`,
+                    },
+                    provider: null,
+                    timestamp: new Date(),
+                })
+            )
+        } else {
+            message.reply(`you are not registered yet, to start playing type \`${teraRPGPrefix}start\``)
+        }
+
+        // Adds the user to the set so that they can't type for a second
+        waitingTime.add(message.author.id);
+        setTimeout(() => {
+            // Removes the user from the set after a second
+            waitingTime.delete(message.author.id);
+        }, 1200);
     }
+
 
 
 
