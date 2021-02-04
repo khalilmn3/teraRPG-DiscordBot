@@ -19,7 +19,7 @@ async function hunt(message, client, id, username, zone) {
         LEFT JOIN item as itemWeapon ON (weapon.item_id = itemWeapon.id)
         WHERE level.id > stat.level AND stat.player_id="${id}" LIMIT 1`);
     stat = stat[0];
-    let monsterData = await queryData(`SELECT emoji, name, min_damage, max_damage, min_exp, max_exp, coin, chance FROM enemy WHERE is_boss="0" AND zone_id=${stat.zone_id}`)
+    let monsterData = await queryData(`SELECT emoji, name, min_damage, max_damage, min_exp, max_exp, min_coin, max_coin, chance FROM enemy WHERE is_boss="0" AND zone_id=${stat.zone_id}`)
     
     let monster = '';
     monster = await randomizeChance(monsterData);
@@ -31,7 +31,7 @@ async function hunt(message, client, id, username, zone) {
     let subArea = stat.sub_zone;
     let damage = subArea >= 2 ? Math.round(Math.random() * (monster.max_damage - monster.min_damage) + monster.min_damage) : monster.min_damage;
     let exp =  subArea >= 2 ? Math.round(Math.random() * (monster.max_exp - monster.min_exp) + monster.min_exp) : monster.min_exp;
-    let coin = monster.coin; //Math.round(Math.random() * (monster.maxCoin - monster.minCoin) + monster.minCoin);
+    let coin = subArea >= 2 ? Math.round(Math.random() * (monster.max_coin - monster.min_coin) + monster.min_coin) : monster.min_coin;
 
     let cHp = bHp - ((damage - def) > 0 ? (damage - def) : 0);
         
@@ -71,7 +71,7 @@ async function hunt(message, client, id, username, zone) {
     let hpLost = lostHP > 0 ? `\nbut also lost ${lostHP} HP, remaining HP is ${cHp} / ${maxHp}` : "";
     // Update data
     queryData(`UPDATE stat SET hp="${cHp}", gold=gold+${coin}, current_experience=current_experience + ${exp} WHERE player_id="${id}"`);
-    message.channel.send(`**${username}** encountered a ${monster.emoji} ** ${monster.name} ** and \nsuccessfully beaten it down with **${weapon}** ${hpLost} \nGained **${coin}** 𝑔𝑜𝓁𝒹 and **${exp}** 𝑒𝓍𝓅`, levelUPmessage)
+    message.channel.send(`**${username}** encountered a ${monster.emoji} **${monster.name}** and \nsuccessfully beaten it down with **${weapon}** ${hpLost} \nGained **${coin}** 𝑔𝑜𝓁𝒹 and **${exp}** 𝑒𝓍𝓅`, levelUPmessage)
 }
 
 

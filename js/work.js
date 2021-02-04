@@ -1,8 +1,8 @@
 import queryData from './helper/query.js';
 import randomizeChance from './helper/randomize.js';
 
-async function work(message, workingCommand, playerStat) {
-    let discoveredZone = playerStat.zone_id;
+async function work(message, workingCommand, zone_id) {
+    let discoveredZone = zone_id;
     const notFoundItemXP = 1;
     // Get player's tools
     let data = await queryData(`SELECT

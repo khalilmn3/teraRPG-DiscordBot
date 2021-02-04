@@ -24,6 +24,7 @@ import queryData from './js/helper/query.js';
 import teleport from './js/teleport.js';
 import help from './js/help.js';
 import workspace from './js/workspace.js';
+import sellItem from './js/sellItem.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -343,7 +344,7 @@ client.on("message", async function (message) {
                 } else if (command === 'heal') {
                     healingPotion(message, 0, authorID, authorUsername);
                 } else if (command === 'mine' || command === 'chop') {
-                    work(message, command, result[0]);
+                    work(message, command, isUserRegistred[0].zone_id);
                 } else if (command === 'backpack' || command === 'bp') {
                     backpack(message);
                 } else if (command === 'workspace' || command === 'ws') {
@@ -354,6 +355,10 @@ client.on("message", async function (message) {
                     crafting(message, args[0], args[1], args[2]);
                 } else if (command === 'teleport' || command === 'tel') {
                     teleport(message, args);
+                } else if (command === 'sell') {
+                    let itemName = commandBody.slice(command.length + 1)
+                    // console.log(itemName);
+                    sellItem(message, itemName)                    
                 }
             }
         } else if (command === 'start') {

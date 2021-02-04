@@ -3,10 +3,11 @@ import db from '../db_config.js'
 import Discord from 'discord.js';
 
 async function profile(message, client, id, username, avatar, rank, title) {
-    const query = `SELECT stat.*, level.*, IFNULL(itemWeapon.emoji, '') as wEmoji, itemWeapon.name as weapon, weapon.attack, zone.name as zone,
+    const query = `SELECT stat.*, level.*, weapon.attack, zone.name as zone,
         IFNULL(itemArmor1.emoji, '') as helmetEmoji, itemArmor1.name as helmet, armor1.def as helmetDef,
         IFNULL(itemArmor2.emoji, '') as chestEmoji, itemArmor2.name as chest, armor2.def as chestDef,
-        IFNULL(itemArmor3.emoji, '') as pantsEmoji, itemArmor3.name as pants, armor3.def as pantsDef
+        IFNULL(itemArmor3.emoji, '') as pantsEmoji, itemArmor3.name as pants, armor3.def as pantsDef,
+        IFNULL(itemWeapon.emoji, '') as wEmoji, itemWeapon.name as weaponName
         FROM level, stat 
         LEFT JOIN equipment ON (stat.player_id = equipment.player_id)
         LEFT JOIN armor as armor1 ON (equipment.helmet_id = armor1.id)
@@ -59,7 +60,7 @@ async function profile(message, client, id, username, avatar, rank, title) {
                     inline: false
                 },
                 {
-                    value: (data.weapon ? `${data.wEmoji} [+${data.attack}] **${data.weapon}**` : ':white_medium_small_square: [no weapon]') + helmet + chest + pants,
+                    value: (data.weaponName ? `${data.wEmoji} [+${data.attack}] **${data.weaponName}**` : ':white_medium_small_square: [no weapon]') + helmet + chest + pants,
                     name: "__EQUIPMENT__",
                     inline: true
                 },

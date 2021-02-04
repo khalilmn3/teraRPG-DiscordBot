@@ -113,6 +113,8 @@ async function crafting(message, args1, args2, args3) {
         craftBar(message, id, username, goldBarId, goldOreId, '<:Gold_Bar:803907956424441856>', args1, args2, args3);
     } else if (args1 === 'platinum' && args2 === 'bar') {
         craftBar(message, id, username, platinumBarId, platinumOreId, '<:Platinum_Bar:803907956327317524>', args1, args2, args3);
+    } else if (args2 === 'sword') {
+        craftWeapon(message, id, username, args1, args2)
     }
 }
 
@@ -141,5 +143,46 @@ async function craftBar(message,playerId,username, itemIdCrafted, itemIdMaterial
         } else {
             message.reply(`:no_entry_sign: | you need <:Furnace:804145327513796688> **furnace** to craft this item!`)
         }
+}
+
+async function craftWeapon(message, playerId, username, args1, args2) {
+    const weaponList = await queryData('SELECT weapon.id, item.name, item.emoji FROM weapon LEFT JOIN item ON (weapon.item_id = item.id) WHERE weapon.id<=7');
+    let weaponCraft;
+    weaponList.forEach(element => {
+        let name = element.name;
+        if (name.toString().toLowerCase() === `${args1} ${args2}`) {
+            weaponCraft = element
+        }
+    });
+    if (!weaponCraft) return;
+    let existStations = [];
+    if (args1 === 'wooden' && args2 === 'sword') {
+        existStations = await queryData(`SELECT item_id_work_bench FROM tools WHERE player_id="${playerId}" AND item_id_work_bench="170" LIMIT 1`);
+    } else {
+        existStations = await queryData(`SELECT item_id_anvil FROM tools WHERE player_id="${playerId}" AND item_id_anvil=173 LIMIT 1`);
+    }
+    if (existStations.length > 0) {
+        let existItem = await queryData(`SELECT weapon_id FROM equipment WHERE player_id="${playerId}" AND weapon_id=${weaponCraft.id} LIMIT 1`);
+        if (existItem.length > 0) {
+            message.channel.send(`**${username}**, you already have this item`)
+        } else {
+            let existMaterials = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" AND item_id=179 AND quantity>=7 LIMIT 1`);
+            if (existMaterials.length > 0) {
+                queryData(`UPDATE backpack SET quantity=quantity - 7 WHERE player_id="${playerId}" AND item_id=179 LIMIT 1`)
+                queryData(`INSERT INTO equipment SET weapon_id=${weaponCraft.id}, player_id="${playerId}" ON DUPLICATE KEY UPDATE weapon_id=${weaponCraft.id}`)
+                message.channel.send(`**${username}** has successfuly crafted ${weaponCraft.emoji} **${weaponCraft.name}**`);
+            } else {
+                message.reply(`:no_entry_sign: | you don't have enough materials to craft ${weaponCraft.emoji} **${weaponCraft.name}**,\ngo work and get the materials it need, you can also check crafter material receipts with \`tera craft\`!`)
+            }
+        }
+    } else {
+        let stations = '';
+        if (args1 === 'wooden' && args2 === 'sword') {
+            stations = '<:Work_Bench:804145756918775828> **Work Bench**';
+        } else {
+            stations = '<:Iron_Anvil:804145327435284500> **Anvil**';
+        }
+        message.reply(`:no_entry_sign: | you need ${stations} to craft this item!`)
+    }
 }
 export default crafting
