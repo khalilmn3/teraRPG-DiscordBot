@@ -35,6 +35,7 @@ async function work(message, workingCommand, zone_id) {
                 queryData(`UPDATE tools SET pickaxe_exp=pickaxe_exp + ${notFoundItemXP} WHERE player_id="${message.author.id}"`);
                 message.channel.send(`${data.pickaxeEmoji} | **${message.author.username}** is working with his **${data.pickaxeName}** \nand strike a rock gaining **1xp**`)
             }
+            queryData(`UPDATE stat SET depth=depth + ${5 + (data.pickaxeTier * 0.3)} WHERE player_id="${message.author.id}"`);
         } else if (workingCommand === 'chop') {
             // get item drop list
             let itemDropList = await queryData(`SELECT * FROM item WHERE available_area_id<="${discoveredZone}" AND type_id="11" AND dropable="1"`);

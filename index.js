@@ -25,6 +25,7 @@ import teleport from './js/teleport.js';
 import help from './js/help.js';
 import workspace from './js/workspace.js';
 import sellItem from './js/sellItem.js';
+import coinFlip from './js/coinFlip.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -359,6 +360,8 @@ client.on("message", async function (message) {
                     let itemName = commandBody.slice(command.length + 1)
                     // console.log(itemName);
                     sellItem(message, itemName)                    
+                } else if (command === `flip`) {
+                    coinFlip(message, args)
                 }
             }
         } else if (command === 'start') {

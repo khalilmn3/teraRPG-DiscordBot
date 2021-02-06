@@ -8,13 +8,16 @@ async function tools(message) {
     const query = `SELECT 
     item1.name as pickaxeName, IFNULL(item1.emoji,"") as pickaxeEmoji, item1.tier as pickaxeTier,
     tools.pickaxe_exp, tools.axe_exp, pickaxeTier.exp as pickaxeTierExp, axeTier.exp as axeTierExp,
-    item2.name as axeName, IFNULL(item2.emoji,"") as axeEmoji, item2.tier as axeTier
+    item2.name as axeName, IFNULL(item2.emoji,"") as axeEmoji, item2.tier as axeTier,
+    stat.depth, layers.name as depthName
         FROM tools
+            LEFT JOIN stat ON (tools.player_id = stat.player_id)
+            LEFT JOIN layers ON (stat.depth >= layers.depth)
             LEFT JOIN item as item1 ON (tools.item_id_pickaxe = item1.id)
             LEFT JOIN item as item2 ON (tools.item_id_axe = item2.id)
             LEFT JOIN tool_tier as pickaxeTier ON (item1.tier = pickaxeTier.id)
             LEFT JOIN tool_tier as axeTier ON (item2.tier = axeTier.id)
-        WHERE player_id="${id}"`
+        WHERE tools.player_id="${id}"`
     let data;
     // Get Data
     db.query(query, async function (err, result) {
@@ -34,14 +37,14 @@ async function tools(message) {
                 "fields":
                 [
                     {
-                        "value": `**Tier** : ${data.pickaxeTier}\n**EXP** : ${data.pickaxe_exp}/${data.pickaxeTierExp} \n${generateIcon(data.pickaxe_exp, data.pickaxeTierExp)}`,
+                        "value": `**Tier** : ${data.pickaxeTier} \n**Depth** : ${data.depth}m [${data.depthName}] \n**EXP** : ${data.pickaxe_exp}/${data.pickaxeTierExp}\n${generateIcon(data.pickaxe_exp, data.pickaxeTierExp)}`,
                         "name": `${data.pickaxeEmoji} **${data.pickaxeName}**`,
-                        "inline": true
+                        "inline": false
                         },
                         {
                         "value":`**Tier** : ${data.axeTier}\n**EXP** : ${data.axe_exp}/${data.axeTierExp} \n${generateIcon(data.axe_exp, data.axeTierExp)}`,
                         "name": `${data.axeEmoji} **${data.axeName}**`,
-                        "inline": true
+                        "inline": false
                     },
                 ],
                 "thumbnail": null,
@@ -66,10 +69,10 @@ function generateIcon(current, max) {
     let pointEmoji = ''
     let lostEmoji = ''
     for (let index = 0; index < point; index++) {
-        pointEmoji +=':white_large_square:';
+        pointEmoji +=':green_square:';
     }
     for (let index = 0; index < lost; index++) {
-        lostEmoji += ':white_square_button:';
+        lostEmoji += ':red_square:';
     }
     return pointEmoji + lostEmoji;
 }
