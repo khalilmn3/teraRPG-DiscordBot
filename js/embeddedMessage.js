@@ -79,11 +79,34 @@ function profile(client, id, username, avatar, rank, title) {
 			proxyIconURL: `https://images-ext-1.discordapp.net/external/DIxgPOIeSdmfHuboNFOPhyAJyjRQ9bUoQMePmqundGg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${client.user.id}/${client.user.avatar}.png`
 		},
 		files: []
-	});
-	
+	});	
 }
-export default {
+
+function cooldownMessage(id, username, avatar, command, time) {
+	return new Discord.MessageEmbed({
+		type: "rich",
+		description: null,
+		url: null,
+		color: 10115509,
+		timestamp: null,
+		fields: [
+			{
+				value: `You are on cooldown, please try again after **${time} !**`,
+				name: `:hourglass_flowing_sand: | ${command}`,
+				inline: false
+			}],
+		author: {
+			name: `${username}'s cooldown`,
+			url: null,
+			iconURL: `https://cdn.discordapp.com/avatars/${id}/${avatar}.png?size=512`,
+			proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${id}/${avatar}.png`
+		},
+		files: []
+	});
+}
+export {
 	exampleEmbed,
 	profile,
-    enchantSet
+	enchantSet,
+	cooldownMessage,
 }

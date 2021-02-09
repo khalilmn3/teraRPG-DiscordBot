@@ -18,7 +18,6 @@ import work from './js/work.js';
 import healingPotion from './js/healingPotion.js';
 import backpack from './js/backpack.js';
 import tools from './js/tools.js';
-import embeddedMessage from './js/embeddedMessage.js';
 import crafting from './js/crafting.js';
 import queryData from './js/helper/query.js';
 import teleport from './js/teleport.js';
@@ -26,6 +25,8 @@ import help from './js/help.js';
 import workspace from './js/workspace.js';
 import sellItem from './js/sellItem.js';
 import coinFlip from './js/coinFlip.js';
+import rewards from './js/rewards.js';
+import cooldowns from './js/cooldowns.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -320,7 +321,7 @@ client.on("message", async function (message) {
         const body = message.content.replace(prefixCommand, '');
         
         // FIND USER REGISTRATION
-        let isUserRegistred = await queryData(`SELECT id, zone_id, is_active FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${authorID}`)
+        let isUserRegistred = await queryData(`SELECT id, zone_id, is_active, stat.level, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${authorID}`)
         if (waitingTime.has(message.author.id)) {
             message.reply("Wait at least 1 second before getting typing this again.");
             return;
@@ -362,6 +363,10 @@ client.on("message", async function (message) {
                     sellItem(message, itemName)                    
                 } else if (command === `flip`) {
                     coinFlip(message, args)
+                } else if (command === 'vote' || command === 'hourly' || command === 'daily' || command === 'weekly') {
+                    rewards(message, command, isUserRegistred[0]);
+                } else if (command === 'cd' || command === 'cooldowns' || command === 'rd' || command === 'ready') {
+                    cooldowns(message, authorID, command)
                 }
             }
         } else if (command === 'start') {
