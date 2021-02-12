@@ -27,6 +27,8 @@ import sellItem from './js/sellItem.js';
 import coinFlip from './js/coinFlip.js';
 import rewards from './js/rewards.js';
 import cooldowns from './js/cooldowns.js';
+import lottery from './js/lottery.js';
+import lotteryWinnerRunSchedule from './js/helper/lotterySchedule.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -41,6 +43,7 @@ client.on('ready', () => {
         type: "LISTENING",
         name: "tera help",
     });
+    lotterySchedule(client);
 })
 client.on("message", async function (message) {
     
@@ -321,7 +324,7 @@ client.on("message", async function (message) {
         const body = message.content.replace(prefixCommand, '');
         
         // FIND USER REGISTRATION
-        let isUserRegistred = await queryData(`SELECT id, zone_id, is_active, stat.level, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${authorID}`)
+        let isUserRegistred = await queryData(`SELECT id, zone_id, is_active, stat.gold, stat.level, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${authorID} LIMIT 1`)
         if (waitingTime.has(message.author.id)) {
             message.reply("Wait at least 1 second before getting typing this again.");
             return;
@@ -360,14 +363,15 @@ client.on("message", async function (message) {
                 } else if (command === 'sell') {
                     let itemName = commandBody.slice(command.length + 1)
                     // console.log(itemName);
-                    sellItem(message, itemName)                    
+                    sellItem(message, itemName)
                 } else if (command === `flip`) {
                     coinFlip(message, args)
                 } else if (command === 'vote' || command === 'hourly' || command === 'daily' || command === 'weekly') {
                     rewards(message, command, isUserRegistred[0]);
                 } else if (command === 'cd' || command === 'cooldowns' || command === 'rd' || command === 'ready') {
                     cooldowns(message, authorID, command)
-                }
+                } else if (command === 'lottery')
+                    lottery(message, client, args, isUserRegistred[0]);
             }
         } else if (command === 'start') {
             // INSERT USER
@@ -426,6 +430,7 @@ client.on("message", async function (message) {
             await agenda.schedule(time, `${command} ${authorID}`);
         }
     
+        
     async function cooldownsReminder(item, authorID) {
         let a = null;
         let b = null;
@@ -538,5 +543,19 @@ client.on("message", async function (message) {
     }
 
 });                                     
+async function lotterySchedule(client) {
+    agenda.define(`lotteryWinner`, async job => {
+        job.repeatEvery('* 9 * * *', {
+            skipImmediate: true
+        });
+        await lotteryWinnerRunSchedule(client);
+        await job.save();
+    });
+
+    await agenda.start();
+    await agenda.cancel({ name: `lotteryWinner` });
+    // await agenda.every('tomorrow at 5pm', `lottery`);
+    await agenda.schedule('at 9am', `lotteryWinner`);
+}
 
 client.login(config.BOT_TOKEN);

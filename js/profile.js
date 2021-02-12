@@ -49,8 +49,14 @@ async function profile(message, client, id, username, avatar, rank, title) {
             color: 10115509,
             timestamp: null,
             fields: [
+                // TODO MP
+                // {
+                //     value: `\n[ HP: ${hp} / ${maxHp} ] \n${hpBar} \n[ MP: ${mp} / ${maxMp} ] \n${mpBar} \n** Level **: ${level} (${pLevel} %) \n** XP **: ${cExp} / ${maxExp}\n** Zone **: ${currentZone}`,
+                //     name: "__STATUS__",
+                //     inline: false
+                // },
                 {
-                    value: `\n[ HP: ${hp} / ${maxHp} ] \n${hpBar} \n[ MP: ${mp} / ${maxMp} ] \n${mpBar} \n** Level **: ${level} (${pLevel} %) \n** XP **: ${cExp} / ${maxExp}\n** Zone **: ${currentZone}`,
+                    value: `\n[ HP: ${hp} / ${maxHp} ] \n${hpBar}\n** Level **: ${level} (${pLevel} %) \n** XP **: ${cExp} / ${maxExp}\n** Zone **: ${currentZone}`,
                     name: "__STATUS__",
                     inline: false
                 },
@@ -103,11 +109,11 @@ function generateIcon(current, max, isHp) {
     let lost = 10 - point;
     let pointEmoji = ''
     let lostEmoji = ''
-    for (let index = 0; index < point; index++) {
-        pointEmoji += isHp ? ':red_square:' : ':blue_square:';
+    for (let index = 0; index < point && index < 10; index++) {
+        pointEmoji += isHp ? ':green_square:' : ':blue_square:';
     }
-    for (let index = 0; index < lost; index++) {
-        lostEmoji += ':white_large_square:';
+    for (let index = 0; index < lost && index < 10; index++) {
+        lostEmoji += isHp ? ':red_square:' :':white_large_square:';
     }
     return pointEmoji + lostEmoji;
 }

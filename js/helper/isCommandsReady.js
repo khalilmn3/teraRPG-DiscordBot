@@ -1,6 +1,6 @@
 import queryData from "./query.js";
 
-async function isCommandsReady(playerId, commands) {
+async function isCommandsReady(playerId, commands, zone) {
     let field = '';
     let timeLimit = '';
     let timeCooldowns = 0;

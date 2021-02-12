@@ -7,8 +7,9 @@ async function cooldowns(message, playerId, command) {
         let currentTime = Math.round(new Date().getTime() / 1000);
         cooldowns = cooldowns.length > 0 ? cooldowns[0] : 0;
         let explore = (currentTime - cooldowns.explore) > 60 ? 0 : 60 - (currentTime - cooldowns.explore);
-        let work = (currentTime - cooldowns.work) > 300 ? 0 : 300 - (currentTime - cooldowns.work);
-        let hourly = (currentTime - cooldowns.hourly) > 3600 ? 0 : 3600 - (currentTime - cooldowns.hourly);
+    let work = (currentTime - cooldowns.work) > 300 ? 0 : 300 - (currentTime - cooldowns.work);
+    // TODO hourly reward
+        // let hourly = (currentTime - cooldowns.hourly) > 3600 ? 0 : 3600 - (currentTime - cooldowns.hourly);
         let daily = (currentTime - cooldowns.daily) > 86400 ? 0 : 86400 - (currentTime - cooldowns.daily);
         let weekly = (currentTime - cooldowns.weekly) > 604800 ? 0 : 604800 - (currentTime - cooldowns.weekly);
     let vote = (currentTime - cooldowns.vote) > 43200 ? 0 : 43200 - (currentTime - cooldowns.vote);
@@ -30,14 +31,15 @@ async function cooldowns(message, playerId, command) {
                     name: `Work [ mine | chop ]`,
                     inline: false
                 },
-                {
-                    value: hourly > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(hourly)}` : `:white_check_mark: | READY`,
-                    name: `-------------------**REWARDS**-------------------\nHourly`,
-                    inline: false
-                },
+                // TODO hourly
+                // {
+                //     value: hourly > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(hourly)}` : `:white_check_mark: | READY`,
+                //     name: `-------------------**REWARDS**-------------------\nHourly`,
+                //     inline: false
+                // },
                 {
                     value: daily > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(daily)}` : `:white_check_mark: | READY`,
-                    name: `Daily`,
+                    name: `-------------------**REWARDS**-------------------\nDaily`,
                     inline: false
                 },
                 {
@@ -66,7 +68,9 @@ async function cooldowns(message, playerId, command) {
     } else {
         let grindings = (explore === 0 ? `**Explore** \n:white_check_mark: | READY \n` : '') + 
                 (work === 0 ? `**Work** \n:white_check_mark: | READY \n` : '')
-        let rewards = (hourly === 0 ? `**Hourly** \n:white_check_mark: | READY \n` : '') +
+        let rewards =
+                // TODO hourly
+                // (hourly === 0 ? `**Hourly** \n:white_check_mark: | READY \n` : '') +
                 (daily === 0 ? `**Daily** \n:white_check_mark: | READY \n` : '') +
                 (weekly === 0 ? `**Weekly** \n:white_check_mark: | READY \n` : '') +
             (vote === 0 ? `**Vote** \n:white_check_mark: | READY` : '');
