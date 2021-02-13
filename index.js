@@ -29,6 +29,7 @@ import rewards from './js/rewards.js';
 import cooldowns from './js/cooldowns.js';
 import lottery from './js/lottery.js';
 import lotteryWinnerRunSchedule from './js/helper/lotterySchedule.js';
+import fishing from './js/fishing.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -331,6 +332,7 @@ client.on("message", async function (message) {
         }
 
         if (isUserRegistred.length > 0) {
+            let stat = isUserRegistred[0];
             if (isUserRegistred[0].is_active) { // Check Banned User  
                 if (command === "ping") {
                     let timeTaken = Date.now() - message.createdTimestamp;
@@ -370,8 +372,11 @@ client.on("message", async function (message) {
                     rewards(message, command, isUserRegistred[0]);
                 } else if (command === 'cd' || command === 'cooldowns' || command === 'rd' || command === 'ready') {
                     cooldowns(message, authorID, command)
-                } else if (command === 'lottery')
-                    lottery(message, client, args, isUserRegistred[0]);
+                } else if (command === 'lottery') {
+                    lottery(message,client,args,stat)
+                } else if (command === 'fish') {
+                    fishing(message, stat);   
+                }     
             }
         } else if (command === 'start') {
             // INSERT USER

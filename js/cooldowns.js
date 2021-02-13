@@ -10,6 +10,7 @@ async function cooldowns(message, playerId, command) {
     let work = (currentTime - cooldowns.work) > 300 ? 0 : 300 - (currentTime - cooldowns.work);
     // TODO hourly reward
         // let hourly = (currentTime - cooldowns.hourly) > 3600 ? 0 : 3600 - (currentTime - cooldowns.hourly);
+        let fish = (currentTime - cooldowns.fish) > 5400 ? 0 : 5400 - (currentTime - cooldowns.fish);
         let daily = (currentTime - cooldowns.daily) > 86400 ? 0 : 86400 - (currentTime - cooldowns.daily);
         let weekly = (currentTime - cooldowns.weekly) > 604800 ? 0 : 604800 - (currentTime - cooldowns.weekly);
     let vote = (currentTime - cooldowns.vote) > 43200 ? 0 : 43200 - (currentTime - cooldowns.vote);
@@ -29,6 +30,11 @@ async function cooldowns(message, playerId, command) {
                 {
                     value: work > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(work)}` : `:white_check_mark: | READY`,
                     name: `Work [ mine | chop ]`,
+                    inline: false
+                },
+                {
+                    value: fish > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(fish)}` : `:white_check_mark: | READY`,
+                    name: `Fish`,
                     inline: false
                 },
                 // TODO hourly

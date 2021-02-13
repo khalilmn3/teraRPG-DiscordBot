@@ -23,6 +23,9 @@ async function isCommandsReady(playerId, commands, zone) {
     } else if (commands === 'weekly') {
         field = 'weekly'
         timeLimit = 604800
+    } else if (commands === 'fish') {
+        field = 'fish'
+        timeLimit = 5400
     }
     let lastTime = await queryData(`SELECT ${field} FROM cooldowns WHERE player_id="${playerId}" LIMIT 1`);
     console.log(lastTime);

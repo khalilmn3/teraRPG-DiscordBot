@@ -8,6 +8,8 @@ function setCooldowns(id, command) {
         field = 'explore'
     } else if (command === 'work') {
         field = 'work'
+    } else if (command === 'fish') {
+        field = 'fish'  
     } else if (command === 'vote') {
         field = 'vote'
     } else if (command === 'hourly') {

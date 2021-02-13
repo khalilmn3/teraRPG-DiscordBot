@@ -35,7 +35,7 @@ async function backpack(message) {
                     items += `${nextItems}${key.emoji} **${key.name}**: ${key.quantity}`;
                     nextItems = "\n"
                 }
-            } else if (key.item_group_id === 2) {
+            } else if (key.item_group_id === 2 || key.item_group_id === 6) {
                 if (key.quantity > 0) {
                     consumables += `${nextConsumables}${key.emoji} **${key.name}**: ${key.quantity}`;
                     nextConsumables = "\n"
@@ -56,11 +56,11 @@ async function backpack(message) {
         "timestamp": null,
         "fields": [{
             "value": items ? items : 'Empty',
-            "name": "MATERIALS",
+            "name": "__MATERIALS__",
             "inline": true
         }, {
             "value": consumables ? consumables : 'Empty',
-            "name": "CONSUMABLES",
+            "name": "__CONSUMABLES__",
             "inline": true
         }],
         "thumbnail": null,
