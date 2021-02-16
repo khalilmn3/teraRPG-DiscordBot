@@ -56,7 +56,6 @@ async function lottery(message, client, args, stat) {
         let totalPrice = lotteryList.length > 0 ? lotteryList[0].totalTicketSold * 500 : 0;
         let lotteryDraw = await queryData(`SELECT * FROM lottery_draw ORDER BY id DESC LIMIT 1`);
         let lastWinner = lotteryDraw.length > 0 ? lotteryDraw[0].username : '';
-        let lastDraw = lotteryDraw.length > 0 ? lotteryDraw[0].last_draw_at : '';
         let lastPrize = lotteryDraw.length > 0 ? lotteryDraw[0].total_prize : 0;
         let cDate = new Date();
         let h = cDate.getUTCHours();

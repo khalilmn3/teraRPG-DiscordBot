@@ -38,6 +38,20 @@ async function lotteryWinnerRunSchedule(client) {
             },
             timestamp: new Date()
         }));
+        // SEND DM TO THE WINNER
+        client.users.cache.get(winner.player_id).send(new Discord.MessageEmbed({
+            type: "rich",
+            description: null,
+            url: null,
+            color: 10115509,
+            fields: [
+            {
+                name: `:tada:__Congratulations ${client.users.cache.get(winner.player_id).username}__:tada:`,
+                value: `You win the Lottery -- <:gold_coin:801440909006209025> **${currencyFormat(prize)}**`,
+                inline: false,
+                }],
+            timestamp: new Date()
+        }));
     } else {
         client.channels.cache.get('809445672872050729').send(new Discord.MessageEmbed({
             type: "rich",

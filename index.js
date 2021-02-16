@@ -553,7 +553,7 @@ client.on("message", async function (message) {
 });                                     
 async function lotterySchedule(client) {
     agenda.define(`lotteryWinner`, async job => {
-        job.repeatEvery('* 9 * * *', {
+        job.repeatEvery('24 hours', {
             skipImmediate: true
         });
         await lotteryWinnerRunSchedule(client);
