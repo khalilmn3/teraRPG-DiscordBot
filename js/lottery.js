@@ -58,8 +58,19 @@ async function lottery(message, client, args, stat) {
         let lastWinner = lotteryDraw.length > 0 ? lotteryDraw[0].username : '';
         let lastDraw = lotteryDraw.length > 0 ? lotteryDraw[0].last_draw_at : '';
         let lastPrize = lotteryDraw.length > 0 ? lotteryDraw[0].total_prize : 0;
-        let cTime = Math.round(new Date().getTime() / 1000);
-        let nextDraw = secondsToDHms(86400 - (cTime - (new Date(lastDraw).getTime() / 1000)));
+        let cDate = new Date();
+        let h = cDate.getUTCHours();
+        let m = cDate.getUTCMinutes();
+        let s = cDate.getUTCSeconds();
+        let hSeconds = h * 60 * 60;
+        let mSeconds = m * 60;
+        let totalSeconds = hSeconds + mSeconds + s;
+        let nextDraw = 'Invalid Time';
+        if (h > 1 && m > 0) {
+            nextDraw = secondsToDHms(86400 - totalSeconds);
+        } else {
+            nextDraw = secondsToDHms( 1 * 60 * 60 - totalSeconds);
+        }
         message.channel.send(new Discord.MessageEmbed({
             type: "rich",
             description: null,
