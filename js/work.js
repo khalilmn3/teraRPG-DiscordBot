@@ -3,6 +3,7 @@ import queryData from './helper/query.js';
 import randomizeChance from './helper/randomize.js';
 import setCooldowns from './helper/setTime.js';
 import { cooldownMessage } from './embeddedMessage.js';
+import randomNumber from './helper/randomNumberWithMinMax.js';
 
 async function work(message, workingCommand, zone_id) {
     let cooldowns = await isCommandsReady(message.author.id, 'work');
@@ -27,7 +28,7 @@ async function work(message, workingCommand, zone_id) {
                 let itemDrop = randomizeChance(itemDropList, discoveredZone);
                     
                 let maxGainingItem = itemDrop.id === 1 ? 3 * itemDrop.tier : 3;
-                let gainingItem = Math.round(Math.random() * (maxGainingItem - 1) + 1); // get random item gaining
+                let gainingItem = randomNumber(1, maxGainingItem);// get random item gaining
                 if (itemDrop !== 0) {
                     if (data.pickaxeTier >= itemDrop.tier) {
                         queryData(`CALL insert_item_backpack_procedure("${message.author.id}", "${itemDrop.id}", ${gainingItem})`);
@@ -47,7 +48,7 @@ async function work(message, workingCommand, zone_id) {
                 let itemDropList = await queryData(`SELECT * FROM item WHERE available_area_id<="${discoveredZone}" AND type_id="11" AND dropable="1"`);
                 let itemDrop = randomizeChance(itemDropList, discoveredZone);
                 let maxGainingItem = itemDrop.id === 1 ? 3 * itemDrop.tier : 3;
-                let gainingItem = Math.round(Math.random() * (maxGainingItem - 1) + 1); // get random item gaining
+                let gainingItem = randomNumber(1, maxGainingItem); // get random item gaining
                 if (itemDrop !== 0) {
                     if (data.axeTier >= itemDrop.tier) {
                         queryData(`CALL insert_item_backpack_procedure("${message.author.id}", "${itemDrop.id}", ${gainingItem})`);

@@ -2,6 +2,7 @@ import { cooldownMessage } from "./embeddedMessage.js";
 import isCommandsReady from "./helper/isCommandsReady.js";
 import queryData from "./helper/query.js";
 import randomizeChance from "./helper/randomize.js";
+import randomNumber from "./helper/randomNumberWithMinMax.js";
 import setCooldowns from "./helper/setTime.js";
 
 async function fishing(message,stat) {
@@ -16,7 +17,7 @@ async function fishing(message,stat) {
             let catchList = await queryData(`SELECT item.id, item.emoji, item.name,item.type_id, item.chance, item.exp FROM item WHERE item_group_id=6 AND tier<=${fishingPole.tier} AND available_area_id LIKE "%${stat.zone_id}%"`);
             let itemCatch = randomizeChance(catchList);
             if (itemCatch === 0) {
-                let randomJunk = Math.round(Math.random() * (2 - 0) + 0);
+                let randomJunk = randomNumber(0,2);
                 let junk = catchList.filter(item => item.type_id === 14);
                 queryData(`UPDATE fishing_pole SET exp=exp+${junk[randomJunk]['exp']} WHERE player_id="${message.author.id}" LIMIT 1`)
                 message.channel.send(`${fishingPole.emoji} | **${message.author.username}** Cast **${fishingPole.name}** and caught a ${junk[randomJunk]['emoji']} **${junk[randomJunk]['name']}**. \na junk? you just trow it away...`)

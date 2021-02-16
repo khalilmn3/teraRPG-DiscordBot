@@ -6,6 +6,7 @@ import randomizeChance from './helper/randomize.js';
 import setCooldowns from './helper/setTime.js';
 import isCommandsReady from './helper/isCommandsReady.js';
 import { cooldownMessage } from './embeddedMessage.js';
+import randomNumber from './helper/randomNumberWithMinMax.js';
 
 async function hunt(message, client, id, username, zone) {
     let cooldowns = await isCommandsReady(id, 'explore');
@@ -35,9 +36,9 @@ async function hunt(message, client, id, username, zone) {
         let maxMp = 5 * (stat.level + stat.basic_mp);
         let bHp = stat.hp;
         let subArea = stat.sub_zone;
-        let damage = subArea >= 2 ? Math.round(Math.random() * (monster.max_damage - monster.min_damage) + monster.min_damage) : monster.min_damage;
-        let exp = subArea >= 2 ? Math.round(Math.random() * (monster.max_exp - monster.min_exp) + monster.min_exp) : monster.min_exp;
-        let coin = subArea >= 2 ? Math.round(Math.random() * (monster.max_coin - monster.min_coin) + monster.min_coin) : monster.min_coin;
+        let damage = subArea >= 2 ? randomNumber(monster.min_damage, monster.max_damage) : monster.min_damage;
+        let exp = subArea >= 2 ? randomNumber(monster.min_exp, monster.max_exp) : monster.min_exp;
+        let coin = subArea >= 2 ? randomNumber(monster.min_coin, monster.max_coin) : monster.min_coin;
 
         let cHp = bHp - ((damage - def) > 0 ? (damage - def) : 0);
         

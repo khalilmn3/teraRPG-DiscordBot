@@ -8,8 +8,6 @@
     })
   
     if( found ) {
-        console.log('match found for: ' + rand)
-        console.log(found);
         return found;
     } else {
         return 0;

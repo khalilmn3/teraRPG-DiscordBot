@@ -30,6 +30,7 @@ import cooldowns from './js/cooldowns.js';
 import lottery from './js/lottery.js';
 import lotteryWinnerRunSchedule from './js/helper/lotterySchedule.js';
 import fishing from './js/fishing.js';
+import openCrate from './js/openCrate.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -376,7 +377,9 @@ client.on("message", async function (message) {
                     lottery(message,client,args,stat)
                 } else if (command === 'fish') {
                     fishing(message, stat);   
-                }     
+                } else if (command === 'open') {
+                    openCrate(message, args);   
+                }
             }
         } else if (command === 'start') {
             // INSERT USER

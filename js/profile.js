@@ -1,6 +1,7 @@
 
 import db from '../db_config.js'
 import Discord from 'discord.js';
+import currencyFormat from './helper/currency.js';
 
 async function profile(message, client, id, username, avatar, rank, title) {
     const query = `SELECT stat.*, level.*, weapon.attack, zone.name as zone,
@@ -24,7 +25,6 @@ async function profile(message, client, id, username, avatar, rank, title) {
     db.query(query, async function (err, result) {
         if (err) throw err;
         data = await result[0];
-        console.log(data);
         let maxExp = data.experience.toLocaleString('en-US', {maximumFractionDigits:2});;
         let level = data.level.toLocaleString('en-US');;
         let pLevel = ((data.current_experience / data.experience) * 100).toFixed(2);
@@ -61,7 +61,7 @@ async function profile(message, client, id, username, avatar, rank, title) {
                     inline: false
                 },
                 {
-                    value: ` <:gold_coin:801440909006209025> ** Gold **: ${data.gold}\n<:diamond:801441006247084042> ** Diamond **: ${data.diamond}\n<:piggy_bank:801444684194906142> ** Bank **: ${data.bank}`,
+                    value: ` <:gold_coin:801440909006209025> ** Gold **: ${currencyFormat(data.gold)}\n<:diamond:801441006247084042> ** Diamond **: ${currencyFormat(data.diamond)}\n<:piggy_bank:801444684194906142> ** Bank **: ${currencyFormat(data.bank)}`,
                     name: "__MONEY__",
                     inline: false
                 },
@@ -71,7 +71,7 @@ async function profile(message, client, id, username, avatar, rank, title) {
                     inline: true
                 },
                 {
-                    value: ` <:so_sword:801443762130780170> ** AT **: ${attack}\n<:so_shield:801443854254342154> ** DEF **: ${def}`,
+                    value: ` <:so_sword:801443762130780170> ** AT **: ${currencyFormat(attack)}\n<:so_shield:801443854254342154> ** DEF **: ${currencyFormat(def)}`,
                     name: "__STATS__",
                     inline: true
                 }],

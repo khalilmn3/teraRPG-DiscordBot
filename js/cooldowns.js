@@ -73,7 +73,8 @@ async function cooldowns(message, playerId, command) {
         }));
     } else {
         let grindings = (explore === 0 ? `**Explore** \n:white_check_mark: | READY \n` : '') + 
-                (work === 0 ? `**Work** \n:white_check_mark: | READY \n` : '')
+                (work === 0 ? `**Work** \n:white_check_mark: | READY \n` : '') +
+                (fish === 0 ? `**Fish** \n:white_check_mark: | READY \n` : '')
         let rewards =
                 // TODO hourly
                 // (hourly === 0 ? `**Hourly** \n:white_check_mark: | READY \n` : '') +
@@ -92,6 +93,13 @@ async function cooldowns(message, playerId, command) {
             fields.push({
                 value: rewards,
                 name: `-----------------------**REWARDS**-----------------------`,
+                inline: false
+            });
+        }
+        if (rewards === '' && grindings === '') {
+            fields.push({
+                value: 'All commands in cooldown',
+                name: `-----------------------**COMMANDS**-----------------------`,
                 inline: false
             });
         }

@@ -49,7 +49,7 @@ async function rewards(message,command, stat) {
             let isStreak = cooldowns.timeCooldowns <= 172800;
             let dailyStreak = isStreak ? streak + 1 : 1;
             let multiply = 150;
-            let gold = currencyFormat(2000 + (dailyStreak > 100 ? 100 * multiply : dailyStreak * multiply));
+            let gold = 2000 + (dailyStreak > 100 ? 100 * multiply : dailyStreak * multiply);
             // add diamond if user check in for 7 days in a row
             if ((dailyStreak % 7) === 0) {
                 queryData(`UPDATE stat SET diamond=diamond + 1, gold=gold + ${gold} WHERE player_id="${message.author.id}" LIMIT 1`);
@@ -64,7 +64,7 @@ async function rewards(message,command, stat) {
                 color: 10115509,
                 fields: [{
                     name: 'Claimed daily reward',
-                    value: `<:gold_coin:801440909006209025> \`+${gold} gold\` ${dailyStreak >= 100 ? '[max]' : ''}` + ((dailyStreak % 7) === 0 ? '\n<:diamond:801441006247084042> \`+1 diamond\` [ :tada:bonus ]' : ''),
+                    value: `<:gold_coin:801440909006209025> \`+${currencyFormat(gold)} gold\` ${dailyStreak >= 100 ? '[max]' : ''}` + ((dailyStreak % 7) === 0 ? '\n<:diamond:801441006247084042> \`+1 diamond\` [ :tada:bonus ]' : ''),
                     inline: false,
                 }],
                 author: {
