@@ -4,6 +4,13 @@ import Discord from 'discord.js';
 import currencyFormat from './helper/currency.js';
 
 async function profile(message, client, id, username, avatar, rank, title) {
+    let idMention = message.mentions.users.first();
+    let tag = message.author.tag
+    if (idMention) {
+        id = message.mentions.users.first().id;
+        avatar = message.mentions.users.first().avatar;
+        tag =  message.mentions.users.first().tag;
+    }
     const query = `SELECT stat.*, level.*, weapon.attack, zone.name as zone,
         IFNULL(itemArmor1.emoji, '') as helmetEmoji, itemArmor1.name as helmet, armor1.def as helmetDef,
         IFNULL(itemArmor2.emoji, '') as chestEmoji, itemArmor2.name as chest, armor2.def as chestDef,
@@ -99,7 +106,7 @@ async function profile(message, client, id, username, avatar, rank, title) {
             timestamp: new Date(),
             files: []
         });
-        message.channel.send(`> **Displaying [ ${message.author.tag} ] profile...**`, embedded)
+        message.channel.send(`> **Displaying [ ${tag} ] profile...**`, embedded)
     });
 }
 
