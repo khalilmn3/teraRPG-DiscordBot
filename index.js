@@ -31,6 +31,7 @@ import lottery from './js/lottery.js';
 import lotteryWinnerRunSchedule from './js/helper/lotterySchedule.js';
 import fishing from './js/fishing.js';
 import openCrate from './js/openCrate.js';
+import invite from './js/invite.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -379,7 +380,16 @@ client.on("message", async function (message) {
                     fishing(message, stat);   
                 } else if (command === 'open') {
                     openCrate(message, args);   
-                }
+                } else if (command === 'invite') {
+                    invite(message);   
+                } else if (command === "math") {
+                    try {
+                        const num = eval(body);
+                        message.reply(num);
+                    } catch (error) {
+                        return;
+                    }
+                } 
             }
         } else if (command === 'start') {
             // INSERT USER
@@ -562,7 +572,6 @@ async function lotterySchedule(client) {
 
     await agenda.start();
     await agenda.cancel({ name: `lotteryWinner` });
-    // await agenda.every('tomorrow at 5pm', `lottery`);
     await agenda.schedule('at 9am', `lotteryWinner`);
 }
 
