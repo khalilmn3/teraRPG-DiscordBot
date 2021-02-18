@@ -7,9 +7,9 @@ async function profile(message, client, id, username, avatar, rank, title) {
     let idMention = message.mentions.users.first();
     let tag = message.author.tag
     if (idMention) {
-        id = message.mentions.users.first().id;
-        avatar = message.mentions.users.first().avatar;
-        tag =  message.mentions.users.first().tag;
+        id = idMention.id;
+        avatar = idMention.avatar;
+        tag =  idMention.tag;
     }
     const query = `SELECT stat.*, level.*, weapon.attack, zone.name as zone,
         IFNULL(itemArmor1.emoji, '') as helmetEmoji, itemArmor1.name as helmet, armor1.def as helmetDef,

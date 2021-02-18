@@ -5,10 +5,10 @@ function generateIcon(current, max, isHp) {
     let pointEmoji = ''
     let lostEmoji = ''
     for (let index = 0; index < point; index++) {
-        pointEmoji += isHp ? ':red_square:' : ':blue_square:';
+        pointEmoji += isHp ? '🟩' : '🟦';
     }
     for (let index = 0; index < lost; index++) {
-        lostEmoji += ':white_large_square:';
+        lostEmoji += isHp ? '🟥' : '⬜';
     }
     return pointEmoji + lostEmoji;
 }

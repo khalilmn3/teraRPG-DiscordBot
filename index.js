@@ -32,6 +32,7 @@ import lotteryWinnerRunSchedule from './js/helper/lotterySchedule.js';
 import fishing from './js/fishing.js';
 import openCrate from './js/openCrate.js';
 import invite from './js/invite.js';
+import battle from './js/battle.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -389,7 +390,9 @@ client.on("message", async function (message) {
                     } catch (error) {
                         return;
                     }
-                } 
+                } else if (command === 'battle') {
+                    battle(message, stat);
+                }
             }
         } else if (command === 'start') {
             // INSERT USER
