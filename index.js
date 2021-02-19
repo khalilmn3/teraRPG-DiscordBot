@@ -33,6 +33,7 @@ import fishing from './js/fishing.js';
 import openCrate from './js/openCrate.js';
 import invite from './js/invite.js';
 import battle from './js/battle.js';
+import { statusCommand } from './js/helper/setActiveCommand.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -328,7 +329,7 @@ client.on("message", async function (message) {
         const body = message.content.replace(prefixCommand, '');
         
         // FIND USER REGISTRATION
-        let isUserRegistred = await queryData(`SELECT id, zone_id, is_active, stat.gold, stat.level, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${authorID} LIMIT 1`)
+        let isUserRegistred = await queryData(`SELECT id, active_command,  zone_id, is_active, stat.gold, stat.level, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${authorID} LIMIT 1`)
         if (waitingTime.has(message.author.id)) {
             message.reply("Wait at least 1 second before getting typing this again.");
             return;
@@ -336,7 +337,11 @@ client.on("message", async function (message) {
 
         if (isUserRegistred.length > 0) {
             let stat = isUserRegistred[0];
-            if (isUserRegistred[0].is_active) { // Check Banned User  
+            if (isUserRegistred[0].is_active) { // Check Banned User
+                if (isUserRegistred[0].active_command === 1) {
+                    message.reply(`you have an active command, end it before processing another!`)
+                    return;
+                }
                 if (command === "ping") {
                     let timeTaken = Date.now() - message.createdTimestamp;
                     if (timeTaken < 0) {

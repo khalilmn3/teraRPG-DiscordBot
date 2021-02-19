@@ -5,6 +5,7 @@ import damage from "./helper/damage.js";
 import generateIcon from "./helper/emojiGenerate.js";
 import {attack, defense, manaPoint, hitPoint} from "./helper/getBattleStat.js";
 import queryData from "./helper/query.js";
+import { activeCommand, deactiveCommand } from "./helper/setActiveCommand.js";
 
 async function battle(message, stat) {
     let player1 = message.author;
@@ -37,7 +38,7 @@ async function battle(message, stat) {
             message.channel.send(`All team member must be in the same zone`);
             return
         }
-        
+        activeCommand([player1.id, player2.id]);
         let bossStat = await queryData(`SELECT * FROM enemy WHERE is_boss='1' AND zone_id='${playerList[0].zone_id}' LIMIT 1`);
         bossStat = bossStat.length > 0 ? bossStat[0] : [];
         bossStat.attack = playerList[0].sub_zone >= 2 ? bossStat.max_damage : bossStat.min_damage;
@@ -59,6 +60,7 @@ async function battle(message, stat) {
                     .catch(collected => {
                         message2.delete();
                         message2.channel.send('Timeout, battle cancelled')
+                        deactiveCommand([player1.id, player2.id])
                     });
         
             }).catch(function () {
@@ -128,6 +130,7 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
     while (st == 1 && bossStat.hp > 0 && (player1Stat.hp > 0 || player2Stat.hp > 0));
 
     // Battle end
+    deactiveCommand([player1.id, player2.id]);
     if (st === 1 && bossStat.hp === 0) {
         let expReward = bossStat.min_exp * 100;
         message.channel.send(new Discord.MessageEmbed({
@@ -167,6 +170,22 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
                 inline: false,
             }],
         }));
+    } else {
+        message.channel.send(new Discord.MessageEmbed({
+            type: "rich",
+            color: 10115509,
+            fields: [{
+                name: `Battle cancelled`,
+                value: `You are standing too long, \n**${bossStat.name}** has running away`,
+                inline: false,
+            }],
+            author: {
+                name: `${message.author.username}'s party`,
+                url: null,
+                iconURL: `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
+                proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
+            },
+        }))
     }
 }
 async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2Stat, bossStat, maxBossStat, player, turnX) {
@@ -290,21 +309,7 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                 return 1;
             })
             .catch(errors => {
-                msg.channel.send(new Discord.MessageEmbed({
-                    type: "rich",
-                    color: 10115509,
-                    fields: [{
-                        name: `Battle cancelled`,
-                        value: `You are standing too long, \n**${bossStat.name}** has running away`,
-                        inline: false,
-                    }],
-                    author: {
-                        name: `${msg.author.username}'s party`,
-                        url: null,
-                        iconURL: `https://cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png?size=512`,
-                        proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png`
-                    },
-                }))
+                
                 return 0;
             });
     })

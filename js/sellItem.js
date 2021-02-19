@@ -1,4 +1,5 @@
 import queryData from "./helper/query.js";
+import { activeCommand, deactiveCommand } from "./helper/setActiveCommand.js";
 
 async function sellItem(message, itemName) {
     let args = itemName.split(' ');
@@ -46,7 +47,8 @@ async function sellItem(message, itemName) {
             if (value === 'ALL') { value = itemExist[0].quantity }
             let totalPrice = value * itemExist[0].sell_price
             let filter = m => m.author.id === message.author.id
-            message.reply(`Are you sure to sell x${value} **${itemName}** for **${totalPrice}** gold? \`YES\` / \`NO\``).then(() => {
+            activeCommand(message.author.id);
+            await message.reply(`Are you sure to sell x${value} **${itemName}** for **${totalPrice}** gold? \`YES\` / \`NO\``).then(() => {
                 message.channel.awaitMessages(filter, {
                     max: 1,
                     time: 30000,
@@ -63,16 +65,18 @@ async function sellItem(message, itemName) {
                         } else {
                             message.channel.send(`Terminated: Invalid Response`);
                         }
+                        deactiveCommand(message.author.id)
                     })
                     .catch(collected => {
-                        message.channel.send('Timeout');
+                        deactiveCommand(message.author.id)
+                        message.channel.send('Timeout, transaction cancelled');
                     });
             })
         } else {
             message.reply(`You dont have that much **${itemName}** in your backpack`);
         }
     } else {
-            message.reply(`what are you trying to sell, cek the item's name in your backpack before trying to sell something?`);
+        message.reply(`what are you trying to sell, cek the item's name in your backpack before trying to sell something?`);
     }
 }
 
