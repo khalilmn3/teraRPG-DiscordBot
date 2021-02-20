@@ -1,7 +1,7 @@
 import isCommandsReady from './helper/isCommandsReady.js';
 import queryData from './helper/query.js';
 import randomizeChance from './helper/randomize.js';
-import setCooldowns from './helper/setTime.js';
+import setCooldowns from './helper/setCooldowns.js';
 import { cooldownMessage } from './embeddedMessage.js';
 import randomNumber from './helper/randomNumberWithMinMax.js';
 

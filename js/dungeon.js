@@ -1,16 +1,29 @@
 import Discord from "discord.js";
+import { cooldownMessage } from "./embeddedMessage.js";
 import addExpGold from "./helper/addExp.js";
 import currencyFormat from "./helper/currency.js";
 import damage from "./helper/damage.js";
 import generateIcon from "./helper/emojiGenerate.js";
 import {attack, defense, manaPoint, hitPoint} from "./helper/getBattleStat.js";
+import isCommandsReady from "./helper/isCommandsReady.js";
 import queryData from "./helper/query.js";
 import { activeCommand, deactiveCommand } from "./helper/setActiveCommand.js";
+import setCooldowns from "./helper/setCooldowns.js";
 
-async function battle(message, stat) {
+async function dungeon(message) {
     let player1 = message.author;
     let player2 = message.mentions.users.first();
     if (player2 && player2.id != message.author.id) {
+        let cooldowns = await isCommandsReady(player1.id, 'dungeon');
+        let cooldowns2 = await isCommandsReady(player2.id, 'dungeon');
+        if (!cooldowns.isReady) {
+            message.channel.send(cooldownMessage(player1.id, player1.username, player1.avatar, 'Dungeon', cooldowns.waitingTime));
+            return;
+        }
+        if (!cooldowns2.isReady) {
+            message.channel.send(cooldownMessage(player2.id, player2.username, player2.avatar, 'Dungeon', cooldowns2.waitingTime));
+            return;
+        }
         let playerList = await queryData(`SELECT player.is_active, hp, mp, current_experience, level, basic_hp, basic_mp, basic_attack, basic_def, weapon.attack,weapon_enchant, zone_id, sub_zone,
             IFNULL(armor1.def,0) as helmetDef,
             IFNULL(armor2.def,0) as chestDef,
@@ -52,14 +65,22 @@ async function battle(message, stat) {
                         if (collected.has('❎')) {
                             message2.delete();
                             message2.channel.send('declined')
+                            deactiveCommand([player1.id, player2.id])
                         } else {
                             message2.delete();
+                            try {
+                                setCooldowns(player1.id, 'dungeon');
+                                setCooldowns(player2.id, 'dungeon');
+                            } catch (err) {
+                                console.log(err)
+                            }
                             battleBegun(message, playerList, bossStat, player1, player2)
+                            
                         }
                     })
                     .catch(collected => {
                         message2.delete();
-                        message2.channel.send('Timeout, battle cancelled')
+                        message2.channel.send('Timeout, dungeon cancelled')
                         deactiveCommand([player1.id, player2.id])
                     });
         
@@ -292,7 +313,7 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                 }
                 let statusMessage =  new Discord.MessageEmbed({
                     type: "rich",
-                    description: `**Boss Battle**`,
+                    description: `**Dungeon Boss**`,
                     color: 10115509,
                     fields: [{
                         name: `${bossStat.emoji} ${bossStat.name}`,
@@ -314,4 +335,4 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
             });
     })
 }
-export default battle;
+export default dungeon;

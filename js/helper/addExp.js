@@ -10,7 +10,7 @@ async function addExpGold(message,player, stat, expAdd, goldAdd, playerStat) {
         let cExp = totalExp - levelEXP[0].experience;
         let maxHp = 5 * (nLevel + stat.basic_hp);
         let maxMp = 5 * (nLevel + stat.basic_mp);
-        queryData(`UPDATE stat SET level="${nLevel}", current_experience=${cExp}, gold=gold + ${goldAdd},  hp="${maxHp}", mp="${maxMp}" WHERE player_id="${player.id}" LIMIT 1`);
+        queryData(`UPDATE stat SET level="${nLevel}", current_experience='${cExp}', gold=gold + ${goldAdd},  hp="${maxHp}", mp="${maxMp}" WHERE player_id="${player.id}" LIMIT 1`);
         levelUPmessage = `> :tada: | **${player.username}** Level up +${nLevel - stat.level}, HP restored`;
         
         message.channel.send(levelUPmessage);

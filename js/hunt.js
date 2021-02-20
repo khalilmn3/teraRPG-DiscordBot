@@ -3,7 +3,7 @@ import db from '../db_config.js'
 import Discord from 'discord.js';
 import queryData from './helper/query.js';
 import randomizeChance from './helper/randomize.js';
-import setCooldowns from './helper/setTime.js';
+import setCooldowns from './helper/setCooldowns.js';
 import isCommandsReady from './helper/isCommandsReady.js';
 import { cooldownMessage } from './embeddedMessage.js';
 import randomNumber from './helper/randomNumberWithMinMax.js';

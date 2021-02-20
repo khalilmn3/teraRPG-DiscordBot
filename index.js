@@ -32,8 +32,9 @@ import lotteryWinnerRunSchedule from './js/helper/lotterySchedule.js';
 import fishing from './js/fishing.js';
 import openCrate from './js/openCrate.js';
 import invite from './js/invite.js';
-import battle from './js/battle.js';
+import dungeon from './js/dungeon.js';
 import { statusCommand } from './js/helper/setActiveCommand.js';
+import junken from './js/junken.js';
 // Discord
 const client = new Discord.Client();
 const guildMember = new Discord.GuildMember();
@@ -379,7 +380,7 @@ client.on("message", async function (message) {
                 } else if (command === 'vote' || command === 'hourly' || command === 'daily' || command === 'weekly') {
                     rewards(message, command, isUserRegistred[0]);
                 } else if (command === 'cd' || command === 'cooldowns' || command === 'rd' || command === 'ready') {
-                    cooldowns(message, authorID, command)
+                    cooldowns(message, command)
                 } else if (command === 'lottery') {
                     lottery(message,client,args,stat)
                 } else if (command === 'fish') {
@@ -395,8 +396,10 @@ client.on("message", async function (message) {
                     } catch (error) {
                         return;
                     }
-                } else if (command === 'battle') {
-                    battle(message, stat);
+                } else if (command === 'dungeon') {
+                    dungeon(message, stat);
+                } else if (command === 'junken') {
+                    junken(message);
                 }
             }
         } else if (command === 'start') {

@@ -1,6 +1,6 @@
 import queryData from "./query.js";
 
-function setCooldowns(id, command) {
+function setCooldowns(playerId, command) {
     let time = new Date();
     let inTime = time.getTime();
     let field = '';
@@ -18,9 +18,13 @@ function setCooldowns(id, command) {
         field = 'daily'
     } else if (command === 'weekly') {
         field = 'weekly'
+    } else if (command === 'junken') {
+        field = 'junken'
+    } else if (command === 'dungeon') {
+        field = 'dungeon'
     }
     
-    queryData(`INSERT cooldowns SET player_id="${id}", ${field}="${inTime}", timestamp=NOW() ON DUPLICATE KEY UPDATE ${field}="${inTime}"`);
+    queryData(`INSERT cooldowns SET player_id="${playerId}", ${field}="${inTime}", timestamp=NOW() ON DUPLICATE KEY UPDATE ${field}="${inTime}"`);
 }
 
 export default setCooldowns;

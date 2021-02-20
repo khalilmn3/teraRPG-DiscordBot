@@ -2,15 +2,19 @@
 import queryData from "./helper/query.js";
 import Discord from 'discord.js';
 
-async function cooldowns(message, playerId, command) {
-        let cooldowns = await queryData(`SELECT * FROM cooldowns WHERE player_id="${playerId}" LIMIT 1`);
-        let currentTime = Math.round(new Date().getTime() / 1000);
-        cooldowns = cooldowns.length > 0 ? cooldowns[0] : 0;
-        let explore = (currentTime - cooldowns.explore) > 60 ? 0 : 60 - (currentTime - cooldowns.explore);
+async function cooldowns(message, command) {
+    let mentions = message.mentions.users.first();
+    let user = mentions ? mentions : message.author;
+    let cooldowns = await queryData(`SELECT * FROM cooldowns WHERE player_id="${user.id}" LIMIT 1`);
+    let currentTime = Math.round(new Date().getTime() / 1000);
+    cooldowns = cooldowns.length > 0 ? cooldowns[0] : 0;
+    let explore = (currentTime - cooldowns.explore) > 60 ? 0 : 60 - (currentTime - cooldowns.explore);
     let work = (currentTime - cooldowns.work) > 300 ? 0 : 300 - (currentTime - cooldowns.work);
     // TODO hourly reward
         // let hourly = (currentTime - cooldowns.hourly) > 3600 ? 0 : 3600 - (currentTime - cooldowns.hourly);
+        let junken = (currentTime - cooldowns.junken) > 3600 ? 0 : 3600 - (currentTime - cooldowns.junken);
         let fish = (currentTime - cooldowns.fish) > 5400 ? 0 : 5400 - (currentTime - cooldowns.fish);
+        let dungeon = (currentTime - cooldowns.dungeon) > 43200 ? 0 : 5400 - (currentTime - cooldowns.dungeon);
         let daily = (currentTime - cooldowns.daily) > 86400 ? 0 : 86400 - (currentTime - cooldowns.daily);
         let weekly = (currentTime - cooldowns.weekly) > 604800 ? 0 : 604800 - (currentTime - cooldowns.weekly);
     let vote = (currentTime - cooldowns.vote) > 43200 ? 0 : 43200 - (currentTime - cooldowns.vote);
@@ -24,7 +28,7 @@ async function cooldowns(message, playerId, command) {
             fields: [
                 {
                     value: explore > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(explore)}` : `:white_check_mark: | READY`,
-                    name: `-------------------**GRINDING**-------------------\nExplore`,
+                    name: `-----------**GRINDING**-----------\nExplore`,
                     inline: false
                 },
                 {
@@ -37,6 +41,16 @@ async function cooldowns(message, playerId, command) {
                     name: `Fish`,
                     inline: false
                 },
+                {
+                    value: junken > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(junken)}` : `:white_check_mark: | READY`,
+                    name: `Junken`,
+                    inline: false
+                },
+                {
+                    value: dungeon > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(dungeon)}` : `:white_check_mark: | READY`,
+                    name: `Dungeon`,
+                    inline: false
+                },
                 // TODO hourly
                 // {
                 //     value: hourly > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(hourly)}` : `:white_check_mark: | READY`,
@@ -45,7 +59,7 @@ async function cooldowns(message, playerId, command) {
                 // },
                 {
                     value: daily > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(daily)}` : `:white_check_mark: | READY`,
-                    name: `-------------------**REWARDS**-------------------\nDaily`,
+                    name: `-----------**REWARDS**-----------\nDaily`,
                     inline: false
                 },
                 {
@@ -59,13 +73,13 @@ async function cooldowns(message, playerId, command) {
                     inline: false
                 },],
             author: {
-                name: `${message.author.username}'s cooldowns`,
+                name: `${user.username}'s cooldowns`,
                 url: null,
-                iconURL: `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
-                proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
+                iconURL: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=512`,
+                proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
             },
             footer: {
-                text: `You can also check commands ready with \`tera rd\``,
+                text: `Short version \`tera rd\``,
                 iconURL: null,
                 proxyIconURL: null
             },
@@ -73,8 +87,10 @@ async function cooldowns(message, playerId, command) {
         }));
     } else {
         let grindings = (explore === 0 ? `**Explore** \n:white_check_mark: | READY \n` : '') + 
-                (work === 0 ? `**Work** \n:white_check_mark: | READY \n` : '') +
-                (fish === 0 ? `**Fish** \n:white_check_mark: | READY \n` : '')
+                (work === 0 ? `**Work [ mine | chop ]** \n:white_check_mark: | READY \n` : '') +
+                (fish === 0 ? `**Fish** \n:white_check_mark: | READY \n` : '') +
+                (junken === 0 ? `**Junken** \n:white_check_mark: | READY \n` : '') +
+                (dungeon === 0 ? `**Dungeon** \n:white_check_mark: | READY \n` : '')
         let rewards =
                 // TODO hourly
                 // (hourly === 0 ? `**Hourly** \n:white_check_mark: | READY \n` : '') +
@@ -85,21 +101,21 @@ async function cooldowns(message, playerId, command) {
         if (grindings !== '') {
             fields.push({
                 value: grindings,
-                name: `-----------------------**GRINDING**-----------------------`,
+                name: `-----------**GRINDING**-----------`,
                 inline: false
             },);  
         } 
         if (rewards !== '') {
             fields.push({
                 value: rewards,
-                name: `-----------------------**REWARDS**-----------------------`,
+                name: `-----------**REWARDS**-----------`,
                 inline: false
             });
         }
         if (rewards === '' && grindings === '') {
             fields.push({
                 value: 'All commands in cooldown',
-                name: `-----------------------**COMMANDS**-----------------------`,
+                name: `-----------**COMMANDS**-----------`,
                 inline: false
             });
         }
@@ -110,13 +126,13 @@ async function cooldowns(message, playerId, command) {
             color: 10115509,
             fields: fields,
             author: {
-                name: `${message.author.username}'s ready`,
+                name: `${user.username}'s ready`,
                 url: null,
-                iconURL: `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
-                proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
+                iconURL: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=512`,
+                proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
             },
             footer: {
-                text: `You can also check all commands cooldown with \`tera cd\``,
+                text: `Long version \`tera cd\``,
                 iconURL: null,
                 proxyIconURL: null
             },

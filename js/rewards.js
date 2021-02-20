@@ -1,6 +1,6 @@
 import { cooldownMessage } from "./embeddedMessage.js";
 import isCommandsReady from "./helper/isCommandsReady.js";
-import setCooldowns from "./helper/setTime.js";
+import setCooldowns from "./helper/setCooldowns.js";
 import Discord from 'discord.js'
 import queryData from "./helper/query.js";
 import currencyFormat from "./helper/currency.js";

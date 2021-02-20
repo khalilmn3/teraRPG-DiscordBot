@@ -3,7 +3,7 @@ import isCommandsReady from "./helper/isCommandsReady.js";
 import queryData from "./helper/query.js";
 import randomizeChance from "./helper/randomize.js";
 import randomNumber from "./helper/randomNumberWithMinMax.js";
-import setCooldowns from "./helper/setTime.js";
+import setCooldowns from "./helper/setCooldowns.js";
 
 async function fishing(message,stat) {
     let cooldowns = await isCommandsReady(message.author.id, 'fish');
