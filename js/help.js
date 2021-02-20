@@ -9,12 +9,12 @@ function help(message, client) {
             color: 10115509,
             fields: [
                 {
-                    value: `profile, tools, workspace, backpack, cooldown`,
+                    value: `profile, tools, workspace, backpack, cooldown, ready`,
                     name: ":information_source:  __STATUS__",
                     inline: false
                 },
                 {
-                    value: `explore, heal`,
+                    value: `explore, fish, heal, dungeon [@player], junken [@player]`,
                     name: ":crossed_swords: __GRINDING__",
                     inline: false
                 },
@@ -29,12 +29,17 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `buy <item_name>, sell <item_name>, market, shop`,
-                    name: ":moneybag: __TRADING__",
+                    value: `buy <item_name>, sell <item_name>, market, shop, open [crate] [amount]`,
+                    name: ":moneybag: __ECONOMY__",
                     inline: false
                 },
                 {
-                    value: `vote, hourly, daily, weekly`,
+                    value: `cf [h/t] [amount], lottery`,
+                    name: ":moneybag: __GAMBLING__",
+                    inline: false
+                },
+                {
+                    value: `vote, daily, weekly`,
                     name: ":gift: __CLAIM REWARDS__",
                     inline: false
                 },
