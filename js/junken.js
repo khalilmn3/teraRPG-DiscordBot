@@ -105,7 +105,10 @@ async function junken(message) {
                                         inline: false,
                                     }]
                                 });
-                                message.channel.send(`> <@${winner.id}> Win`, resultEmbed)
+                                message.channel.send(`> <@${winner.id}> Win`, resultEmbed).then((sent) => {
+                                    player1.send(`Check result: https://discord.com/channels/${sent.guild.id}/${sent.channel.id}/${sent.id}`);
+                                    player2.send(`Check result: https://discord.com/channels/${sent.guild.id}/${sent.channel.id}/${sent.id}`);
+                                })
                                 addExpGold(message, winner, data, exp, 0, data)
                             }
                             deactiveCommand([message.author.id, player2.id])
