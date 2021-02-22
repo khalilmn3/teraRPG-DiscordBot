@@ -1,5 +1,5 @@
-const moment = require('moment');
-const redis = require('redis');
+import moment from 'moment';
+import redis from 'redis';
 
 const redisClient = redis.createClient();
 const WINDOW_SIZE_IN_HOURS = 24;
@@ -18,7 +18,7 @@ function customRedisRateLimiter(req, res, next){
     redisClient.get(req.ip, function(err, record) {
       if (err) throw err;
       const currentRequestTime = moment();
-      console.log(record);
+      // console.log(record);
       //  if no record is found , create a new record for user and store to redis
       if (record == null) {
         let newRecord = [];
@@ -38,7 +38,7 @@ function customRedisRateLimiter(req, res, next){
       let requestsWithinWindow = data.filter(entry => {
         return entry.requestTimeStamp > windowStartTimestamp;
       });
-      console.log('requestsWithinWindow', requestsWithinWindow);
+      // console.log('requestsWithinWindow', requestsWithinWindow);
       let totalWindowRequestsCount = requestsWithinWindow.reduce((accumulator, entry) => {
         return accumulator + entry.requestCount;
       }, 0);

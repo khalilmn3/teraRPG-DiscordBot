@@ -20,7 +20,7 @@ async function lottery(message, client, args, stat) {
                 let totalPrice = lotteryList.length > 0 ? lotteryList[0].totalTicketSold * 500 : 0;
                 let ticketHold = await queryData(`SELECT ticket FROM lottery WHERE player_id="${message.author.id}" LIMIT 1`);
                 ticketHold = ticketHold.length > 0 ? ticketHold[0].ticket : 0;
-                console.log(lotteryList);
+                // console.log(lotteryList);
                 message.channel.send(new Discord.MessageEmbed({
                     type: "rich",
                     description: null,

@@ -7,7 +7,7 @@ import isCommandsReady from "./helper/isCommandsReady.js";
 import { cooldownMessage } from "./embeddedMessage.js";
 import setCooldowns from "./helper/setCooldowns.js";
 
-async function junken(message) {
+async function junken(message,stat) {
     let player2 = message.mentions.users.first();
     let player1 = message.author;
     if (player2 && player2.id != message.author.id) {
@@ -21,10 +21,15 @@ async function junken(message) {
             message.channel.send(cooldownMessage(player2.id, player2.username, player2.avatar, 'Junken', cooldowns2.waitingTime));
             return;
         }
-        let isUserRegistered = await queryData(`SELECT id FROM player WHERE id="${player2.id}" && is_active="1" LIMIT 1`);
+
+        let isUserRegistered = await queryData(`SELECT id, level FROM player LEFT JOIN stat ON (player.id = stat.player_id)  WHERE id="${player2.id}" && is_active="1" LIMIT 1`);
+        
         if (isUserRegistered.length > 0) {
             if (isUserRegistered[0].is_active === 0) { message.reply(`you can't junken with banned user`); return }
-            
+            if (stat.level < 5 || isUserRegistered[0].level < 5) {
+                message.reply('Both user has to be level 5 above to do junken!');
+                return;
+            }
             let embed = new Discord.MessageEmbed({
                 type: "rich",
                 description: null,

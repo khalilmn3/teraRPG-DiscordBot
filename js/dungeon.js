@@ -10,7 +10,7 @@ import queryData from "./helper/query.js";
 import { activeCommand, deactiveCommand } from "./helper/setActiveCommand.js";
 import setCooldowns from "./helper/setCooldowns.js";
 
-async function dungeon(message) {
+async function dungeon(message, stat) {
     let player1 = message.author;
     let player2 = message.mentions.users.first();
     if (player2 && player2.id != message.author.id) {
@@ -22,6 +22,10 @@ async function dungeon(message) {
         }
         if (!cooldowns2.isReady) {
             message.channel.send(cooldownMessage(player2.id, player2.username, player2.avatar, 'Dungeon', cooldowns2.waitingTime));
+            return;
+        }
+        if (stat.zone_id >= 7) {
+            message.channel.send('Dungeon 7 is not available right now!');
             return;
         }
         let playerList = await queryData(`SELECT player.is_active, hp, mp, current_experience, level, basic_hp, basic_mp, basic_attack, basic_def, weapon.attack,weapon_enchant, zone_id, sub_zone,
@@ -72,7 +76,7 @@ async function dungeon(message) {
                                 setCooldowns(player1.id, 'dungeon');
                                 setCooldowns(player2.id, 'dungeon');
                             } catch (err) {
-                                console.log(err)
+                                // console.log(err)
                             }
                             battleBegun(message, playerList, bossStat, player1, player2)
                             
@@ -175,6 +179,12 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         }))
         addExpGold(message, player1, playerList[0], expReward, bossStat.min_coin, player1Stat);
         addExpGold(message, player2, playerList[1], expReward, bossStat.min_coin, player2Stat);
+        //move zone 
+        if (playerList[0].zone_id < 7) {
+            let newZone = playerList[0].sub_zone == 1 ? 2 : 1;
+            let newSubZone = playerList[0].sub_zone > 1 ? parseInt(playerList[0].zone_id) + 1 : playerList[0].zone_id;
+            queryData(`UPDATE stat SET zone_id='${newZone}', sub_zone='${newSubZone}' WHERE player_id IN(${player1.id, player2.id})`);
+        }
     } else if(player1Stat.hp <= 0 && player2Stat.hp <= 0) {
         message.channel.send(new Discord.MessageEmbed({
             type: "rich",

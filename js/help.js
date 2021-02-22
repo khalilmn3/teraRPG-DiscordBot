@@ -29,7 +29,7 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `buy <item_name>, sell <item_name>, market, shop, open [crate] [amount]`,
+                    value: `buy <item_name>, sell <item_name>, open [crate] [amount]`,
                     name: ":moneybag: __ECONOMY__",
                     inline: false
                 },

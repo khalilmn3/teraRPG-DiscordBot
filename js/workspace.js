@@ -27,7 +27,7 @@ async function workspace(message) {
         data = await result;
         let tools = "";
         let craftingStations = "";
-        console.log(data)
+        // console.log(data)
         if (data.length > 0) {
             for (const key of data) {
                 tools = `${key.pickaxeEmoji} **${key.pickaxeName}** [Tier: ${key.pickaxeTier}]\n${key.axeEmoji} **${key.axeName}** [Tier: ${key.axeTier}]`;

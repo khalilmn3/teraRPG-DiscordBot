@@ -81,7 +81,7 @@ async function hunt(message, client, id, username) {
     db.query(query, async (err, result) => {
         if (err) throw err;
         let stat = await result[0];
-        console.log(stat);
+        // console.log(stat);
         let def = stat.basic_def * stat.level + stat.def + (stat.def * stat.armor_enchant * 0.3);
         let maxHp = 5 * (stat.level + stat.basic_hp);
         let maxMp = 5 * (stat.level + stat.basic_mp);
@@ -94,9 +94,9 @@ async function hunt(message, client, id, username) {
         
         let lostHP = bHp - cHp;
         let totalXP = stat.current_experience + exp;
-        console.log("damage :"+damage);
-        console.log("def :"+def);
-        console.log("hp :" + cHp);
+        // console.log("damage :"+damage);
+        // console.log("def :"+def);
+        // console.log("hp :" + cHp);
         let levelUPmessage = '';
         // PLAYER DIED
         if (cHp <= 0) {

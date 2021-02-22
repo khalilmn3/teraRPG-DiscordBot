@@ -44,9 +44,9 @@ async function hunt(message, client, id, username, zone) {
         
         let lostHP = bHp - cHp;
         let totalXP = stat.current_experience + exp;
-        console.log("damage :" + damage);
-        console.log("def :" + def);
-        console.log("hp :" + cHp);
+        // console.log("damage :" + damage);
+        // console.log("def :" + def);
+        // console.log("hp :" + cHp);
         let levelUPmessage = '';
         // PLAYER DIED
         if (cHp <= 0) {

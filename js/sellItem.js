@@ -40,8 +40,8 @@ async function sellItem(message, itemName) {
             WHERE d.player_id = "${message.author.id}" AND d.quantity >= ${value == "ALL" ? 1 : value}) b 
             ON a.id = b.item_id 
         WHERE a.name = "${itemName}" LIMIT 1`);
-    console.log(itemExist)
-    console.log(value)
+    // console.log(itemExist)
+    // console.log(value)
     if (itemExist.length > 0) {
         if (itemExist[0].quantity >= value || (value === 'ALL' && itemExist[0].quantity > 0)) {
             if (value === 'ALL') { value = itemExist[0].quantity }

@@ -5,6 +5,10 @@ import Discord from 'discord.js';
 async function coinFlip(message, args) {
     if (args.length > 0) {
         let bet = args[1];
+        if (bet < 500000) {
+            message.reply(`You can't bet more than 500.000 gold`);
+            return;
+        }
         if (bet > 0 && (args[0].toLowerCase() === 'head' || args[0].toLowerCase() === 'tail')) {
             let currentGold = await queryData(`SELECT gold FROM stat WHERE player_id="${message.author.id}" LIMIT 1`);
             if (!currentGold.length > 0) return;

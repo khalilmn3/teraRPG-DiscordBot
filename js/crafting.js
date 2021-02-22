@@ -23,7 +23,7 @@ async function crafting(message, args1, args2, args3) {
     const avatar = message.author.avatar;
     if (args1 === 'work' && args2 === 'bench') {
         let existTools = await queryData(`SELECT item_id_work_bench FROM tools WHERE player_id="${id}" AND item_id_work_bench="170" LIMIT 1`);
-        console.log(existTools);
+        // console.log(existTools);
         if (existTools.length > 0) {
             message.reply(`you already had this item in your workspace`);
         } else {

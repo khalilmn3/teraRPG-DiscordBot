@@ -10,6 +10,7 @@ async function rewards(message,command, stat) {
         let cooldowns = await isCommandsReady(message.author.id, 'vote');
         if (cooldowns.isReady) {
             setCooldowns(message.author.id, 'vote');
+            message.channel.send('Vote is cooming soon!!!')
         } else {
             message.channel.send(cooldownMessage(message.author.id, message.author.username, message.author.avatar, 'Vote', cooldowns.waitingTime));
         }
