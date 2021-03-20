@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 function report(message, client, body) {
     let id = 0;
-    client.channels.cache.get('813247405503938601').send(new Discord.MessageEmbed({
+    client.channels.cache.get('818360338063163402').send(new Discord.MessageEmbed({
         type: "rich",
         description: null,
         url: null,

@@ -16,12 +16,17 @@
   "author": "atroric",
   "license": "ISC",
   "dependencies": {
+    "@top-gg/sdk": "^3.0.9",
     "agenda": "^3.1.0",
     "bull": "^3.20.0",
+    "dblapi.js": "^2.4.1",
     "discord.js": "^12.5.1",
+    "express": "^4.17.1",
+    "expressjs": "^1.0.1",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
     "redis": "^3.0.2",
+    "topgg-autoposter": "^1.1.9",
     "util": "^0.12.3"
   }
 }

@@ -5,17 +5,17 @@ import Discord from 'discord.js';
 async function coinFlip(message, args) {
     if (args.length > 0) {
         let bet = args[1];
-        if (bet < 500000) {
+        if (bet > 500000) {
             message.reply(`You can't bet more than 500.000 gold`);
             return;
         }
-        if (bet > 0 && (args[0].toLowerCase() === 'head' || args[0].toLowerCase() === 'tail')) {
+        if (bet > 0 && (args[0].toLowerCase() === 'head' || args[0].toLowerCase() === 'tail' || args[0].toLowerCase() === 'h' || args[0].toLowerCase() === 't')) {
             let currentGold = await queryData(`SELECT gold FROM stat WHERE player_id="${message.author.id}" LIMIT 1`);
             if (!currentGold.length > 0) return;
             if (currentGold[0].gold >= bet) {
                 let chance = Math.random();
                 let side = args[0].toLowerCase();
-                if (side === 'heads' || side === 'head') {
+                if (side === 'heads' || side === 'head' || side === 'h') {
                     if (chance <= 0.5) {
                         queryData(`UPDATE stat SET gold=gold + ${bet} WHERE player_id="${message.author.id}" LIMIT 1`)
                         // message.channel.send(`**Heads**! You got ${bet} gold.`);
@@ -24,7 +24,7 @@ async function coinFlip(message, args) {
                         queryData(`UPDATE stat SET gold=gold - ${bet} WHERE player_id="${message.author.id}" LIMIT 1`)
                         messageEmbed(message, bet, side, 'Tails', 0)
                     }
-                } else if (side === 'tails' || side === 'tail') {
+                } else if (side === 'tails' || side === 'tail' || side === 't') {
                     if (chance <= 0.5) {
                         queryData(`UPDATE stat SET gold=gold + ${bet} WHERE player_id="${message.author.id}" LIMIT 1`)
                         messageEmbed(message, bet, side, 'Tails', 1)

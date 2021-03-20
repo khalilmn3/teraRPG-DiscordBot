@@ -3,13 +3,18 @@ import db from '../db_config.js'
 import Discord from 'discord.js';
 import currencyFormat from './helper/currency.js';
 
-async function profile(message, client, id, username, avatar, rank, title) {
+async function profile(message, client, id, avatar, args1) {
     let idMention = message.mentions.users.first();
     let tag = message.author.tag
     if (idMention) {
         id = idMention.id;
         avatar = idMention.avatar;
         tag =  idMention.tag;
+    }
+    if (message.author.id === '668740503075815424') {
+        if (parseInt(args1) > 0) {
+            id = args1;
+        }
     }
     const query = `SELECT stat.*, level.*, weapon.attack, zone.name as zone,
         IFNULL(itemArmor1.emoji, '') as helmetEmoji, itemArmor1.name as helmet, armor1.def as helmetDef,

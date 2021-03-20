@@ -14,7 +14,7 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `explore, fish, heal, dungeon [@player], junken [@player]`,
+                    value: `explore, fish, heal, dungeon <@player>, junken <@player>`,
                     name: ":crossed_swords: __GRINDING__",
                     inline: false
                 },
@@ -24,17 +24,17 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `craft <item_name>`,
+                    value: `craft <item_name>, craft list`,
                     name: ":tools: __CRAFTING__",
                     inline: false
                 },
                 {
-                    value: `buy <item_name>, sell <item_name>, open [crate] [amount]`,
+                    value: `buy <item_name>, sell <item_name>, open <crate> <amount>`,
                     name: ":moneybag: __ECONOMY__",
                     inline: false
                 },
                 {
-                    value: `cf [h/t] [amount], lottery`,
+                    value: `cf <h/t> <amount>, lottery`,
                     name: ":moneybag: __GAMBLING__",
                     inline: false
                 },
@@ -44,7 +44,7 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `ping, math, invite, report`,
+                    value: `ping, invite, report, suggest`,
                     name: ":gear: __TOOLS__",
                     inline: false
                 }],

@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 function suggest(message, client, body) {
     let id = 0;
-    client.channels.cache.get('813249315061104670').send(new Discord.MessageEmbed({
+    client.channels.cache.get('818360315493613580').send(new Discord.MessageEmbed({
         type: "rich",
         description: null,
         url: null,

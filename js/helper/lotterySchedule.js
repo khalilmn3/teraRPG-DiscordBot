@@ -21,7 +21,7 @@ async function lotteryWinnerRunSchedule(client) {
     if (winner) {
         await queryData(`INSERT INTO lottery_draw SET player_id="${winner.player_id}", username="${winner.username}", total_prize=${prize}, last_draw_at=NOW()`)
         queryData(`TRUNCATE TABLE lottery`);
-        client.channels.cache.get('809445672872050729').send(new Discord.MessageEmbed({
+        client.channels.cache.get('818359912790229002').send(new Discord.MessageEmbed({
             type: "rich",
             description: null,
             url: null,
@@ -53,7 +53,7 @@ async function lotteryWinnerRunSchedule(client) {
             timestamp: new Date()
         }));
     } else {
-        client.channels.cache.get('809445672872050729').send(new Discord.MessageEmbed({
+        client.channels.cache.get('818359912790229002').send(new Discord.MessageEmbed({
             type: "rich",
             description: null,
             url: null,

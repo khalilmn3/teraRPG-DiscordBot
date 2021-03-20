@@ -9,8 +9,19 @@ async function rewards(message,command, stat) {
     if (command == 'vote') {
         let cooldowns = await isCommandsReady(message.author.id, 'vote');
         if (cooldowns.isReady) {
-            setCooldowns(message.author.id, 'vote');
-            message.channel.send('Vote is cooming soon!!!')
+            // setCooldowns(message.author.id, 'vote');
+            // message.channel.send(new Discord.MessageEmbed({
+            //     type: "rich",
+            //     description: null,
+            //     url: null,
+            //     color: 10115509,
+            //     fields: [{
+            //         name: `Vote`,
+            //         value: `Wanna get more rewards?,\nVote me on https://top.gg/bot/804295231838355466)`,
+            //         inline: false,
+            //     }]
+            // }));
+            message.channel.send('Vote cooming soon!!!');
         } else {
             message.channel.send(cooldownMessage(message.author.id, message.author.username, message.author.avatar, 'Vote', cooldowns.waitingTime));
         }

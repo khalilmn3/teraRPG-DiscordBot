@@ -2,7 +2,7 @@ import queryData from "./query.js";
 
 function setCooldowns(playerId, command) {
     let time = new Date();
-    let inTime = time.getTime();
+    let inTime = Math.floor(time.getTime() / 1000);
     let field = '';
     if (command === 'explore') {
         field = 'explore'
@@ -23,7 +23,6 @@ function setCooldowns(playerId, command) {
     } else if (command === 'dungeon') {
         field = 'dungeon'
     }
-    
     queryData(`INSERT cooldowns SET player_id="${playerId}", ${field}="${inTime}", timestamp=NOW() ON DUPLICATE KEY UPDATE ${field}="${inTime}"`);
 }
 

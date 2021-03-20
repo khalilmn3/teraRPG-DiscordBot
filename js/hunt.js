@@ -71,7 +71,7 @@ async function hunt(message, client, id, username, zone) {
             let cExp = totalXP - data[0].experience;
             maxHp = 5 * (nLevel + stat.basic_hp);
             maxMp = 5 * (nLevel + stat.basic_mp);
-            queryData(`UPDATE stat SET level="${nLevel}", current_experience=${cExp}, hp="${maxHp}", mp="${maxMp}" WHERE player_id="${id}"`);
+            await queryData(`UPDATE stat SET level="${nLevel}", current_experience=${cExp}, hp="${maxHp}", mp="${maxMp}" WHERE player_id="${id}"`);
             levelUPmessage = `> :tada: | **${username}** Level up +${data[0].id - stat.level}, HP restored`
         }
         let weapon = stat.weapon ? `${stat.wEmoji} ${stat.weapon}` : '👊bare hand'
