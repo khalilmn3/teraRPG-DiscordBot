@@ -66,14 +66,14 @@ const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
 
 // optional
-ap.on('posted', () => { // ran when succesfully posted
-    console.log('Posted stats to top.gg')
-  })
+// ap.on('posted', () => { // ran when succesfully posted
+//     console.log('Posted stats to top.gg')
+//   })
 const guildMember = new Discord.GuildMember();
 
 client.login(config.BOT_TOKEN);
 // Command Prefix
-const teraRPGPrefix = 'tera ';
+const teraRPGPrefix = config.PREFIX;
 client.on('ready', () => {
     console.log('Ready');
     client.user.setActivity({
@@ -125,6 +125,20 @@ client.on("message", async function (message) {
                 message.delete();
                 console.log(args);
                 message.channel.send(`Player <@${args[0]}> unbanned`);
+                return;
+            } else if (command === "level") {
+                queryData(`UPDATE stat SET level="${args[0]}" WHERE id="${args[0]}" LIMIT 1`);
+
+                message.delete();
+                console.log(args);
+                message.channel.send(`Player <@${args[0]}>'s level has been set`);
+                return;
+            }  else if (command === "level") {
+                queryData(`UPDATE stat SET level="${args[0]}" WHERE id="${args[0]}" LIMIT 1`);
+
+                message.delete();
+                console.log(args);
+                message.channel.send(`Player <@${args[0]}>'s level has been set`);
                 return;
             } else if (command === "math") {
                 try {

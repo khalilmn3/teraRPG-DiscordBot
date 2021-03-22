@@ -10,7 +10,7 @@ import queryData from "./helper/query.js";
 import { activeCommand, deactiveCommand } from "./helper/setActiveCommand.js";
 import setCooldowns from "./helper/setCooldowns.js";
 
-var greatHealUsed = 15;
+var greatHealUsed = 10;
 
 async function dungeon(message, stat) {
     let player1 = message.author;
@@ -266,8 +266,9 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                 let dmgToBoss = 0;
                 let commandMessageLog = ``;
                 let heal = 0;
-                let dgmToPlayer1 = damage(bossStat.attack, player1Stat.def);
-                let dgmToPlayer2 = damage(bossStat.attack, player2Stat.def);
+                let attackBossMultiplier = 0.7;
+                let dgmToPlayer1 = damage(bossStat.attack * attackBossMultiplier, player1Stat.def);
+                let dgmToPlayer2 = damage(bossStat.attack * attackBossMultiplier, player2Stat.def);
                 let dmgBossMessage = '';
                 if (message.content.toLowerCase() == 'slash' || message.content.toLowerCase() == 'stance') {
                     dmgToBoss = damage(parseInt(player1Stat.attack) + parseInt(player1Stat.buff), bossStat.def);

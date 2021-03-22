@@ -33,9 +33,13 @@ async function profile(message, client, id, avatar, args1) {
         LEFT JOIN item as itemWeapon ON (weapon.item_id = itemWeapon.id)
         LEFT JOIN zone ON (stat.zone_id = zone.id)
         WHERE level.id > stat.level AND stat.player_id = '${id}' LIMIT 1`;
-    let data;
+    let data = [];
     db.query(query, async function (err, result) {
         if (err) throw err;
+        if (result.length < 1) {
+            message.channel.send('Player is not found!')
+            return;
+        }
         data = await result[0];
         let maxExp = data.experience.toLocaleString('en-US', {maximumFractionDigits:2});;
         let level = data.level.toLocaleString('en-US');;
