@@ -14,12 +14,6 @@ import express from "express";
 import DBL from 'dblapi.js';
 import AutoPoster from 'topgg-autoposter';
 // https://discord.com/api/webhooks/822314548291698718/4pmafrE03jh1nB8Ee_66WTyPKWC3M_hD-nbL9SZIgYTMl_5adXmo_YB4aqYaxi1mDSVL
-// const dbl = new DBL(config.DBL_TOKEN, { webhookPort: 5000, webhookAuth: '11211' });
-// dbl.webhook.on('vote', (vote)=>{
-//     console.log(`${vote.user} has voted`);
-//     const webhook = new Discord.WebhookClient('822314548291698718', '4pmafrE03jh1nB8Ee_66WTyPKWC3M_hD-nbL9SZIgYTMl_5adXmo_YB4aqYaxi1mDSVL');
-//     webhook.send(`${vote.user} has voted`)
-// })
 
 // const app = express();
 // const webhook = new Topgg.Webhook("Bot123TeraRPG");
@@ -30,7 +24,7 @@ import AutoPoster from 'topgg-autoposter';
 //   console.log(req.vote.user); // 395526710101278721 < user who voted
 // });
 
-// app.listen(8089);
+// app.listen(5555);
 
 //=====================================
 // LIMITER
@@ -61,17 +55,26 @@ import { statusCommand } from './js/helper/setActiveCommand.js';
 import junken from './js/junken.js';
 import report from './js/report.js';
 import suggest from './js/suggest.js';
+import voteRewardsSend from './js/voteRewardsSend.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
 
 // optional
-// ap.on('posted', () => { // ran when succesfully posted
-//     console.log('Posted stats to top.gg')
-//   })
+ap.on('posted', () => { // ran when succesfully posted
+    console.log('Posted stats to top.gg')
+  })
 const guildMember = new Discord.GuildMember();
 
 client.login(config.BOT_TOKEN);
+
+const dbl = new DBL(config.DBL_TOKEN, { webhookPort: 5555, webhookAuth: '11211' });
+dbl.webhook.on('vote', (vote)=>{
+    console.log(`${vote.user} has voted`);
+    voteRewardsSend(client,vote.user)
+    const webhook = new Discord.WebhookClient('822314548291698718', '4pmafrE03jh1nB8Ee_66WTyPKWC3M_hD-nbL9SZIgYTMl_5adXmo_YB4aqYaxi1mDSVL');
+    webhook.send(`${vote.user} has voted`)
+})
 // Command Prefix
 const teraRPGPrefix = config.PREFIX;
 client.on('ready', () => {
@@ -106,6 +109,11 @@ client.on("message", async function (message) {
         if (authorID === '668740503075815424') {
             if (command === "repost") {
                 message.channel.send(body);
+                return;
+            } else if (command === "member") {
+                let member = await queryData(`SELECT count(*) as totalMember FROM player`);
+                // console.log(member[0].totalMember);
+                message.channel.send(`total member : ${member[0].totalMember}`);
                 return;
             } else if (command === "delete") {
                 queryData(`DELETE FROM player WHERE id="${args[0]}" LIMIT 1`);

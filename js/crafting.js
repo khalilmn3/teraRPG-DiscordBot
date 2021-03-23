@@ -68,7 +68,7 @@ async function crafting(message, args1, args2, args3) {
         } else {
             let existWorkbench = await queryData(`SELECT item_id_work_bench FROM tools WHERE player_id="${id}" AND item_id_work_bench="170" LIMIT 1`);
             if (existWorkbench.length > 0) {
-                let existMaterials = await queryData(`SELECT item_id FROM backpack WHERE player_id="${id}" AND item_id="179" AND quantity>="7" item_id="1" AND quantity>="15")`);
+                let existMaterials = await queryData(`SELECT item_id FROM backpack WHERE player_id="${id}" AND (item_id="179" AND quantity>="7" OR item_id="1" AND quantity>="15")`);
                 if (existMaterials.length > 1) {
                     queryData(`UPDATE tools SET item_id_furnace="171" WHERE player_id="${id}"`)
                     queryData(`UPDATE backpack SET quantity=quantity-7 WHERE player_id="${id}" AND item_id="179"`) //wood
