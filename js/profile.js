@@ -2,6 +2,7 @@
 import db from '../db_config.js'
 import Discord from 'discord.js';
 import currencyFormat from './helper/currency.js';
+import calculateArmor from './helper/calculateArmor.js';
 
 async function profile(message, client, id, avatar, args1) {
     let idMention = message.mentions.users.first();
@@ -20,7 +21,8 @@ async function profile(message, client, id, avatar, args1) {
         IFNULL(itemArmor1.emoji, '') as helmetEmoji, itemArmor1.name as helmet, armor1.def as helmetDef,
         IFNULL(itemArmor2.emoji, '') as chestEmoji, itemArmor2.name as chest, armor2.def as chestDef,
         IFNULL(itemArmor3.emoji, '') as pantsEmoji, itemArmor3.name as pants, armor3.def as pantsDef,
-        IFNULL(itemWeapon.emoji, '') as wEmoji, itemWeapon.name as weaponName
+        IFNULL(itemWeapon.emoji, '') as wEmoji, itemWeapon.name as weaponName,
+        IF(armor1.armor_set_id=armor2.armor_set_id AND armor2.armor_set_id=armor3.armor_set_id, armor_set.bonus_set, 0) as bonus_armor_set
         FROM level, stat 
         LEFT JOIN equipment ON (stat.player_id = equipment.player_id)
         LEFT JOIN armor as armor1 ON (equipment.helmet_id = armor1.id)
@@ -32,6 +34,7 @@ async function profile(message, client, id, avatar, args1) {
         LEFT JOIN item as itemArmor3 ON (armor3.item_id = itemArmor3.id)
         LEFT JOIN item as itemWeapon ON (weapon.item_id = itemWeapon.id)
         LEFT JOIN zone ON (stat.zone_id = zone.id)
+        LEFT JOIN armor_set ON (armor1.armor_set_id=armor_set.id)
         WHERE level.id > stat.level AND stat.player_id = '${id}' LIMIT 1`;
     let data = [];
     db.query(query, async function (err, result) {
@@ -47,7 +50,8 @@ async function profile(message, client, id, avatar, args1) {
         let cExp = data.current_experience.toLocaleString('en-US', {maximumFractionDigits:2});
         let hp = data.hp.toLocaleString('en-US', {maximumFractionDigits:2});
         let mp = data.mp.toLocaleString('en-US', {maximumFractionDigits:2});
-        let def = data.basic_def + data.level + data.helmetDef + data.chestDef + data.pantsDef;
+        let def = await calculateArmor(message.author.id);
+        def = data.bonus_armor_set > 0 ? def - data.bonus_armor_set : def;
         let attack = data.basic_attack + data.level + data.attack + (data.attack * (data.weapon_enchant * 0.3));
         let maxHp = 5 * (data.level + data.basic_hp);
         let maxMp = 5 * (data.level + data.basic_mp);
@@ -56,7 +60,8 @@ async function profile(message, client, id, avatar, args1) {
         let helmet = data.helmet ? `\n${data.helmetEmoji} [+${data.helmetDef}] **${data.helmet}**` : '\n:white_medium_small_square: [no helmet]';
         let chest = data.chest ? `\n${data.chestEmoji} [+${data.chestDef}] **${data.chest}**` : '\n:white_medium_small_square: [no chest]';
         let pants = data.pants ? `\n${data.pantsEmoji} [+${data.pantsDef}] **${data.pants}**` : '\n:white_medium_small_square: [no pants]';
-        let currentZone = `${data.zone_id}.${data.sub_zone} [${data.zone}]` 
+        let currentZone = `${data.zone_id}.${data.sub_zone} [${data.zone}]`
+        let bonusSetArmorText = data.bonus_armor_set > 0 ? `+ ${data.bonus_armor_set} [Set Bonus]` : '';
         let embedded = new Discord.MessageEmbed({
             type: "rich",
             title: null,
@@ -87,7 +92,7 @@ async function profile(message, client, id, avatar, args1) {
                     inline: true
                 },
                 {
-                    value: ` <:so_sword:801443762130780170> ** AT **: ${currencyFormat(attack)}\n<:so_shield:801443854254342154> ** DEF **: ${currencyFormat(def)}`,
+                    value: ` <:so_sword:801443762130780170> ** AT **: ${currencyFormat(attack)}\n<:so_shield:801443854254342154> ** DEF **: ${currencyFormat(def)} ${bonusSetArmorText}`,
                     name: "__STATS__",
                     inline: true
                 }],
