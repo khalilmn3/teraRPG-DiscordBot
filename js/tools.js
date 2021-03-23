@@ -30,6 +30,7 @@ async function tools(message) {
         let craftingStations = "";
         let pickaxeExpNextLevel = parseInt(data.pickaxe_level) * 300;
         let axeExpNextLevel = parseInt(data.axe_level) * 250;
+        // let fishingPoolNextLevel = parseInt(data.fishingLevel) * 250;
         // console.log(data)
 
         message.channel.send(new Discord.MessageEmbed({
@@ -52,7 +53,7 @@ async function tools(message) {
                         "inline": false
                     },
                     {
-                        "value":`**Tier** : ${data.fishingTier}\n**Level** : ${data.fishingLevel}\n**EXP** : ${data.fishingExp}/${data.axeTierExp} \n${generateIcon(data.fishingExp, data.axeTierExp)}`,
+                        "value":`**Tier** : ${data.fishingTier}\n**Level** : ${data.fishingLevel}\n**EXP** : ${200}/${200} \n${generateIcon(200,200)}`,
                         "name": `${data.fishingEmoji} **${data.fishingName}**`,
                         "inline": false
                     },

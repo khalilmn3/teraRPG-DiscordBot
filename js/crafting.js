@@ -119,7 +119,6 @@ async function crafting(message, args1, args2, args3) {
     } else if (args2 === 'helmet' || (args1 === 'wooden' && args2 === 'breastplate') || args2 === 'chainmail' || args2 === 'greaves') {
         craftArmor(message, id, username, args1, args2)
     } else if (args1 === 'list') {
-    }else if (args1 === 'list') {
         if (args2 === '2') {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
@@ -272,7 +271,7 @@ async function craftWeapon(message, playerId, username, args1, args2) {
         existStations = await queryData(`SELECT item_id_anvil FROM tools WHERE player_id="${playerId}" AND item_id_anvil=173 LIMIT 1`);
     }
     let level = await queryData(`SELECT level FROM stat WHERE player_id=${playerId} LIMIT 1`);
-    console.log('level:' + level);
+    // console.log('level:' + level);
     if (level.length > 0) {
         level = level[0].level;
     } else {

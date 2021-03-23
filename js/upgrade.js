@@ -5,10 +5,32 @@ import queryData from './helper/query.js';
 function upgrade(message, args1) {
     if (args1 === 'pickaxe') {
         upgradeTools(message, message.author.id, 1)
+    } else if (args1 === 'axe') {
+        message.channel.send('Axe tools cannot be upgrade right now \nWe will add it on the next update')
+        // upgradeTools(message, message.author.id, 2)
+    } else if (args1 === 'list') {
+        message.channel.send(new Discord.MessageEmbed({
+            type: "rich",
+            title: null,
+            description: 'Tools Upgrade',
+            url: null,
+            color: 10115509,
+            fields: [
+                {
+                    value: `<:Copper_Pickaxe:803907956424835124> ➜ <:Iron_Pickaxe:805727630564786186> : 25 <:Iron_Bar:803907956528906241> + 45 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                        `\n<:Iron_Pickaxe:805727630564786186> ➜ <:Silver_Pickaxe:805727630769782794> : 25 <:Silver_Bar:803907956663910410> + 45 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                        `\n<:Silver_Pickaxe:805727630769782794> ➜ <:Tungsten_Pickaxe:803907956571504681> : 25 <:Tungsten_Bar:803907956252344331> + 45 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                        `\n<:Tungsten_Pickaxe:803907956571504681> ➜ <:Gold_Pickaxe:803907956734165012> : 25 <:Gold_Bar:803907956424441856> + 45 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                        `\n<:Gold_Pickaxe:803907956734165012> ➜ <:Platinum_Pickaxe:803907956675575828> : 25 <:Platinum_Bar:803907956327317524> + 45 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>`,
+                    name: "Pickaxe",
+                    inline: false
+                },],
+            provider: null,
+            // timestamp: new Date(),
+        }))
+    } else {
+        message.reply('what are you trying to upgrade?\n try `tera upgrade pickaxe`.')
     }
-    // else if (args1 === 'axe') {
-    //     upgradeTools(message, message.author.id, 2)
-    // }
 }
 
 async function upgradeTools(message, playerId, id) {
@@ -65,7 +87,7 @@ async function upgradeTools(message, playerId, id) {
                 emoji = emoji[0];
                 message.channel.send(`${message.author.username}'s **${id == 1 ? 'Pickaxe' : 'Axe'}** has been upgraded into ${emoji.emoji} ${emoji.name}\nNow you can mine ${mineableOre.emoji} ${mineableOre.name}.`);
             } else {
-                message.reply(`:no_entry_sign: | you don't have enough materials to upgrade your **${toolsName}**,\ngo work and get the materials it need, you can also check upgrade material needs with \`tera upgrade\`!`);
+                message.reply(`:no_entry_sign: | you don't have enough materials to upgrade your **${toolsName}**,\ngo work and get the materials it need, you can also check upgrade material needs with \`tera upgrade list\`!`);
             }
         } else {
             message.reply(`:no_entry_sign: | you need <:Iron_Anvil:804145327435284500> **anvil** to upgrade **${toolsName}**!`)

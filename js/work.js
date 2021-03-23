@@ -86,7 +86,7 @@ async function work(message, workingCommand, zone_id) {
                             nextLevel = parseInt(levelAxe.axe_level) + 1;
                         }
                         queryData(`CALL insert_item_backpack_procedure("${message.author.id}", "${itemDrop.id}", ${gainingItem})`);
-                        queryData(`UPDATE tools SET axe_exp=${totalExp},  axe_level=${nextLevel} WHERE player_id="${message.author.id}" LIMIT 1`);
+                        queryData(`UPDATE tools SET axe_exp=${totalExp}, axe_level=${nextLevel} WHERE player_id="${message.author.id}" LIMIT 1`);
                         message.channel.send(`${data.axeEmoji} | **${message.author.username}** working with his **${data.axeName}**,\n${itemDrop.emoji} | got **${gainingItem} ${itemDrop.name}** and gaining **${expGot}xp**`)
                     } else {
                         totalExp = Math.round((parseInt(itemDrop.exp) / 2) + parseInt(levelAxe.axe_exp));
