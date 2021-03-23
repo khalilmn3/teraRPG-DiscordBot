@@ -116,7 +116,7 @@ async function crafting(message, args1, args2, args3) {
         craftBar(message, id, username, platinumBarId, platinumOreId, '<:Platinum_Bar:803907956327317524>', args1, args2, args3);
     } else if (args2 === 'sword') {
         craftWeapon(message, id, username, args1, args2)
-    } else if (args2 === 'helmet' || args2 === 'breastplate' || args2 === 'chainmail' || args2 === 'greaves') {
+    } else if (args2 === 'helmet' || (args1 === 'wooden' && args2 === 'breastplate') || args2 === 'chainmail' || args2 === 'greaves') {
         craftArmor(message, id, username, args1, args2)
     } else if (args1 === 'list') {
     }else if (args1 === 'list') {
@@ -355,143 +355,142 @@ async function craftArmor(message, playerId, username, args1, args2) {
         level = 0;
     }
     if (existStations.length > 0) {
-            if (args1 === 'wooden') {
-                if (args2 === 'helmet') {
-                    let materialList = [
-                        {id: 179, name: 'wood', quantity: 15}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 2, 1);
-                } else if (args2 === 'breastplate') {
-                    let materialList = [
-                        {id: 179, name: 'wood', quantity: 25}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 3, 2);
-                } else if (args2 === 'greaves') {
-                    let materialList = [
-                        {id: 179, name: 'wood', quantity: 20}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 4, 3);
-                } else {
-                    message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-                }
-            } else if (args1 === 'cooper') {
-                if (args2 === 'helmet') {
-                    let materialList = [
-                        {id: 22, name: 'cooper bar', quantity: 15}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 2, 4);
-                } else if (args2 === 'chainmail') {
-                    let materialList = [
-                        {id: 22, name: 'cooper bar', quantity: 25}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 3, 5);
-                } else if (args2 === 'greaves') {
-                    let materialList = [
-                        {id: 22, name: 'cooper bar', quantity: 20}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 4, 6);
-                } else {
-                    message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-                }
-            } else if (args1 === 'iron') {
-                if (args2 === 'helmet') {
-                    let materialList = [
-                        {id: 24, name: 'iron bar', quantity: 15}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 2, 7);
-                } else if (args2 === 'chainmail') {
-                    let materialList = [
-                        {id: 24, name: 'iron bar', quantity: 25}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 3, 8);
-                } else if (args2 === 'greaves') {
-                    let materialList = [
-                        {id: 24, name: 'iron bar', quantity: 20}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 4, 9);
-                } else {
-                    message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-                }
-            } else if (args1 === 'silver') {
-                if (args2 === 'helmet') {
-                    let materialList = [
-                        {id: 26, name: 'silver bar', quantity: 15}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 2, 10);
-                } else if (args2 === 'chainmail') {
-                    let materialList = [
-                        {id: 26, name: 'silver bar', quantity: 27}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 3, 11);
-                } else if (args2 === 'greaves') {
-                    let materialList = [
-                        {id: 26, name: 'silver bar', quantity: 21}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 4, 12);
-                } else {
-                    message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-                }
-            } else if (args1 === 'tungsten') {
-                if (args2 === 'helmet') {
-                    let materialList = [
-                        {id: 27, name: 'tungsten bar', quantity: 15}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 2, 13);
-                } else if (args2 === 'chainmail') {
-                    let materialList = [
-                        {id: 27, name: 'tungsten bar', quantity: 25}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 3, 14);
-                } else if (args2 === 'greaves') {
-                    let materialList = [
-                        {id: 27, name: 'tungsten bar', quantity: 20}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 4, 15);
-                } else {
-                    message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-                }
-            } else if (args1 === 'gold') {
-                if (args2 === 'helmet') {
-                    let materialList = [
-                        {id: 28, name: 'gold bar', quantity: 15}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 2, 16);
-                } else if (args2 === 'chainmail') {
-                    let materialList = [
-                        {id: 28, name: 'gold bar', quantity: 25}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 3, 17);
-                } else if (args2 === 'greaves') {
-                    let materialList = [
-                        {id: 28, name: 'gold bar', quantity: 20}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 4, 18);
-                } else {
-                    message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-                }
-            } else if (args1 === 'platinum') {
-                if (args2 === 'helmet') {
-                    let materialList = [
-                        {id: 30, name: 'platinum bar', quantity: 30}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 2, 19);
-                } else if (args2 === 'chainmail') {
-                    let materialList = [
-                        {id: 30, name: 'platinum bar', quantity: 50}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 3, 20);
-                } else if (args2 === 'greaves') {
-                    let materialList = [
-                        {id: 30, name: 'platinum bar', quantity: 40}
-                    ]
-                    queryEquipment(message, playerId, level, armorCraft, materialList, 4, 21);
-                } else {
-                    message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-                }
+        if (args1 === 'wooden') {
+            if (args2 === 'helmet') {
+                let materialList = [
+                    {id: 179, name: 'wood', quantity: 15}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 1);
+            } else if (args2 === 'breastplate') {
+                let materialList = [
+                    {id: 179, name: 'wood', quantity: 25}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 2);
+            } else if (args2 === 'greaves') {
+                let materialList = [
+                    {id: 179, name: 'wood', quantity: 20}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 3);
             } else {
                 message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
             }
-        
+        } else if (args1 === 'copper') {
+            if (args2 === 'helmet') {
+                let materialList = [
+                    {id: 22, name: 'copper bar', quantity: 15}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 4);
+            } else if (args2 === 'chainmail') {
+                let materialList = [
+                    {id: 22, name: 'copper bar', quantity: 25}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 5);
+            } else if (args2 === 'greaves') {
+                let materialList = [
+                    {id: 22, name: 'copper bar', quantity: 20}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 6);
+            } else {
+                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
+            }
+        } else if (args1 === 'iron') {
+            if (args2 === 'helmet') {
+                let materialList = [
+                    {id: 24, name: 'iron bar', quantity: 15}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 7);
+            } else if (args2 === 'chainmail') {
+                let materialList = [
+                    {id: 24, name: 'iron bar', quantity: 25}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 8);
+            } else if (args2 === 'greaves') {
+                let materialList = [
+                    {id: 24, name: 'iron bar', quantity: 20}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 9);
+            } else {
+                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
+            }
+        } else if (args1 === 'silver') {
+            if (args2 === 'helmet') {
+                let materialList = [
+                    {id: 26, name: 'silver bar', quantity: 15}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 10);
+            } else if (args2 === 'chainmail') {
+                let materialList = [
+                    {id: 26, name: 'silver bar', quantity: 27}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 11);
+            } else if (args2 === 'greaves') {
+                let materialList = [
+                    {id: 26, name: 'silver bar', quantity: 21}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 12);
+            } else {
+                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
+            }
+        } else if (args1 === 'tungsten') {
+            if (args2 === 'helmet') {
+                let materialList = [
+                    {id: 27, name: 'tungsten bar', quantity: 15}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 13);
+            } else if (args2 === 'chainmail') {
+                let materialList = [
+                    {id: 27, name: 'tungsten bar', quantity: 25}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 14);
+            } else if (args2 === 'greaves') {
+                let materialList = [
+                    {id: 27, name: 'tungsten bar', quantity: 20}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 15);
+            } else {
+                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
+            }
+        } else if (args1 === 'gold') {
+            if (args2 === 'helmet') {
+                let materialList = [
+                    {id: 28, name: 'gold bar', quantity: 15}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 16);
+            } else if (args2 === 'chainmail') {
+                let materialList = [
+                    {id: 28, name: 'gold bar', quantity: 25}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 17);
+            } else if (args2 === 'greaves') {
+                let materialList = [
+                    {id: 28, name: 'gold bar', quantity: 20}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 18);
+            } else {
+                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
+            }
+        } else if (args1 === 'platinum') {
+            if (args2 === 'helmet') {
+                let materialList = [
+                    {id: 30, name: 'platinum bar', quantity: 30}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 19);
+            } else if (args2 === 'chainmail') {
+                let materialList = [
+                    {id: 30, name: 'platinum bar', quantity: 50}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 20);
+            } else if (args2 === 'greaves') {
+                let materialList = [
+                    {id: 30, name: 'platinum bar', quantity: 40}
+                ]
+                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 21);
+            } else {
+                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
+            }
+        } else {
+            message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
+        }
     } else {
         let stations = '';
         if (args1 === 'wooden' && args2 === 'sword') {
@@ -558,11 +557,13 @@ async function queryEquipment(message, playerId, level, armorCraft, materialList
         message.channel.send(`**${message.author.username}**, you already have this item`);
         return;
     }
-    let parameters1 = '';
-    materialList.forEach((value) => {
-        parameters1 += ` AND item_id=${value.id} AND quantity>=${value.quantity}`;
-    })
-    let existMaterials = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" ${parameters1} LIMIT 1`);
+    // let parameters1 = '';
+    // materialList.forEach((value) => {
+    //     parameters1 += ` AND item_id=${value.id} AND quantity>=${value.quantity}`;
+    // })
+    // let existMaterials = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" ${parameters1} LIMIT 1`);
+    let existMaterials = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" AND (item_id=${materialList[0].id} AND quantity>=${materialList[0].quantity}) LIMIT 1`);
+
     if (existMaterials.length > 0) { 
         materialList.forEach((value) => {
             queryData(`UPDATE backpack SET quantity=quantity - ${value.quantity} WHERE player_id="${playerId}" AND item_id=${value.id} LIMIT 1`);
