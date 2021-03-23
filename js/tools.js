@@ -28,6 +28,8 @@ async function tools(message) {
         data = await result[0];
         let tools = "";
         let craftingStations = "";
+        let pickaxeExpNextLevel = parseInt(data.pickaxe_level) * 300;
+        let axeExpNextLevel = parseInt(data.axe_level) * 250;
         // console.log(data)
 
         message.channel.send(new Discord.MessageEmbed({
@@ -40,12 +42,12 @@ async function tools(message) {
                 "fields":
                 [
                     {
-                        "value": `**Tier** : ${data.pickaxeTier} \n**Depth** : ${data.depth}m [${data.depthName}] \n**Level** : ${data.pickaxe_level}\n**EXP** : ${data.pickaxe_exp}/${data.pickaxeTierExp}\n${generateIcon(data.pickaxe_exp, data.pickaxeTierExp)}`,
+                        "value": `**Tier** : ${data.pickaxeTier} \n**Depth** : ${data.depth}m [${data.depthName}] \n**Level** : ${data.pickaxe_level}\n**EXP** : ${data.pickaxe_exp} / ${pickaxeExpNextLevel}\n${generateIcon(data.pickaxe_exp, pickaxeExpNextLevel)}`,
                         "name": `${data.pickaxeEmoji} **${data.pickaxeName}**`,
                         "inline": false
                     },
                     {
-                        "value":`**Tier** : ${data.axeTier}\n**Level** : ${data.axe_level}\n**EXP** : ${data.axe_exp}/${data.axeTierExp} \n${generateIcon(data.axe_exp, data.axeTierExp)}`,
+                        "value":`**Tier** : ${data.axeTier}\n**Level** : ${data.axe_level}\n**EXP** : ${data.axe_exp} / ${axeExpNextLevel} \n${generateIcon(data.axe_exp, axeExpNextLevel)}`,
                         "name": `${data.axeEmoji} **${data.axeName}**`,
                         "inline": false
                     },

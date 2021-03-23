@@ -116,9 +116,10 @@ async function crafting(message, args1, args2, args3) {
         craftBar(message, id, username, platinumBarId, platinumOreId, '<:Platinum_Bar:803907956327317524>', args1, args2, args3);
     } else if (args2 === 'sword') {
         craftWeapon(message, id, username, args1, args2)
-    } else if (args2 === 'helmet' || args2 === 'breastplate' || args2 === 'chainmail' || args2 === 'greaves' ) {
+    } else if (args2 === 'helmet' || args2 === 'breastplate' || args2 === 'chainmail' || args2 === 'greaves') {
         craftArmor(message, id, username, args1, args2)
     } else if (args1 === 'list') {
+    }else if (args1 === 'list') {
         if (args2 === '2') {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
@@ -238,7 +239,7 @@ async function craftBar(message,playerId,username, itemIdCrafted, itemIdMaterial
             let existMaterials = await queryData(`SELECT item_id, quantity FROM backpack WHERE player_id="${playerId}" AND item_id="${itemIdMaterial}" AND quantity>="${materialsReq}"`);
             if (existMaterials.length > 0) {
                 if (args3 === 'all') {
-                    qty = await existMaterials[0].quantity / 10;
+                    qty = Math.round(existMaterials[0].quantity / 10);
                     materialsReq = qty * 10;
                 }
                 let amount = await queryData(`CALL insert_item_backpack_procedure("${playerId}", "${itemIdCrafted}", "${qty}")`);
