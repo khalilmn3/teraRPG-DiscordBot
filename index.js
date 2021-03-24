@@ -60,6 +60,7 @@ import upgrade from './js/upgrade.js';
 import ranks from './js/leaderboards.js';
 import myCache from './js/cache/leaderboardChace.js';
 import market from './js/market.js';
+import buy from './js/buy.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -237,6 +238,8 @@ client.on("message", async function (message) {
                     ranks(message, args[0]);
                 } else if (command === 'market') {
                     market(message);
+                } else if (command === 'buy') {
+                    buy(message, args[0], args[1]);
                 }
             }
         } else if (command === 'start') {

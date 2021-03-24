@@ -10,8 +10,8 @@ function market(message) {
             name: `Market`,
             value: `<:piggy_bank:801444684194906142> \`Piggy Bank\` | \`get additional EXP based on deposit amount-\` 2 <:diamond:801441006247084042>
                     <:Bug_Net:824176322908913687> \`Bug Net\` | \`have 15% chance to catch bug when explore----\` 10 <:diamond:801441006247084042>
-                    <:Mining_Helmet:824176323194650624> \`Mining Helmet\` | \`reduce 5% working command--------------\` 75 <:diamond:801441006247084042>
-                    <:Ring:824176323219292220> \`Ring\` | \`Marrie me!!!-----------------------------------\` 150 <:diamond:801441006247084042>`,
+                    <:Mining_Helmet:824176323194650624> \`Mining Helmet\` | \`eliminate rock when mining--------------\` 35 <:diamond:801441006247084042>
+                    <:Ring:824176323219292220> \`Ring\` | \`Marrie me!!!-----------------------------------\` 175 <:diamond:801441006247084042>`,
             inline: false,
         }],
         author: {
