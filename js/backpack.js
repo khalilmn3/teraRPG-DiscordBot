@@ -7,6 +7,8 @@ async function backpack(message, args1) {
     let consumables = "";
     let nextConsumables = "";
     let nextItems = "";
+    let bait = '';
+    let nextBait = '';
     let avatar = message.author.avatar;
     let id = message.author.id;
     let username = message.author.username;
@@ -54,6 +56,11 @@ async function backpack(message, args1) {
                     consumables += `${nextConsumables}${key.emoji} **${key.name}**: ${key.quantity}`;
                     nextConsumables = "\n"
                 }
+            } else if (key.type_id === 17) {
+                if (key.quantity > 0) {
+                    bait += `${nextBait}${key.emoji} **${key.name}**: ${key.quantity}`;
+                    nextBait = "\n"
+                }
             }
         }
     } else {
@@ -75,6 +82,10 @@ async function backpack(message, args1) {
         }, {
             "value": consumables ? consumables : 'Empty',
             "name": "__CONSUMABLES__",
+            "inline": true
+        }, {
+            "value": bait ? bait : 'Empty',
+            "name": "__BAIT__",
             "inline": true
         }],
         "thumbnail": null,

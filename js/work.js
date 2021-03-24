@@ -24,7 +24,7 @@ async function work(message, workingCommand, zone_id) {
         data = data[0];
 
         if (data) {
-            // setCooldowns(message.author.id, 'work')
+            setCooldowns(message.author.id, 'work')
             if (workingCommand === 'mine') {
                 // get item drop list
                 let itemDropList = await queryData(`SELECT item.* FROM discoverable_ore LEFT JOIN item ON (discoverable_ore.item_id=item.id) 
@@ -44,7 +44,6 @@ async function work(message, workingCommand, zone_id) {
                             }
                         }
                     }
-                    console.log(itemDropList);
                 }
                 let itemDrop = randomizeChance(itemDropList, discoveredZone);
                 levelPickaxe = levelPickaxe.length > 0 ?  levelPickaxe[0] : [];

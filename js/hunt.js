@@ -13,7 +13,7 @@ import addExpGold from './helper/addExp.js';
 async function hunt(message, client, id, username, zone) {
     let cooldowns = await isCommandsReady(id, 'explore');
     if (cooldowns.isReady) {
-        // setCooldowns(id, 'explore');
+        setCooldowns(id, 'explore');
         let stat = await queryData(`SELECT stat.*, level.*, IFNULL(itemWeapon.emoji, '') as wEmoji, itemWeapon.name as weapon, weapon.attack, 
         armor1.def as helmetDef,armor2.def as chestDef,armor3.def as pantsDef, utility.bug_net
         FROM level, stat
