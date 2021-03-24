@@ -234,7 +234,7 @@ client.on("message", async function (message) {
             }
         } else if (command === 'start') {
             // INSERT USER
-            let log = await queryData(`CALL start_procedure("${authorID}","${authorUsername}")`)
+            let log = await queryData(`CALL start_procedure("${authorID}","${message.author.tag}")`)
             log = log.length > 0 ? log[0][0].log : 0;
             message.reply(`Welcome to teraRPG, type \`${teraRPGPrefix}exp\` to begin your hunting\nYou can also see other commands with \`${teraRPGPrefix}help\``)
             if (log <= 0) return;
