@@ -25,6 +25,7 @@
     "expressjs": "^1.0.1",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
+    "node-cache": "^5.1.2",
     "redis": "^3.0.2",
     "topgg-autoposter": "^1.1.9",
     "util": "^0.12.3"

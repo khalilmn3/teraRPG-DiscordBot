@@ -98,12 +98,12 @@ async function work(message, workingCommand, zone_id) {
                         message.channel.send(`${data.axeEmoji} | **${message.author.username}** working with his **${data.axeName}**,\n${itemDrop.emoji} | strike **${itemDrop.name}** but he didn't have stamina left to take it, \ncause by low tier tool, lucky you still gaining **${Math.round(itemDrop.exp / 2)}xp**`)
                     }
                 } else {
-                    totalExp = Math.round(notFoundItemXP + parseInt(levelAxe.pickaxe_exp));
+                    totalExp = Math.round(notFoundItemXP + parseInt(levelAxe.axe_exp));
                     if (totalExp > expNextLevel) {
                         totalExp = Math.round(totalExp - expNextLevel);
                         nextLevel = parseInt(levelAxe.axe_level) + 1;
                     }
-                    queryData(`UPDATE tools SET axe_exp=${totalExp} axe_level=${nextLevel} WHERE player_id="${message.author.id}"`);
+                    queryData(`UPDATE tools SET axe_exp=${totalExp}, axe_level=${nextLevel} WHERE player_id="${message.author.id}" LIMIT 1`);
                     message.channel.send(`${data.axeEmoji} | **${message.author.username}** is working with his **${data.axeName}** \nbut he was too exhausted, at least he gaining **${notFoundItemXP}xp**`)
                 }
             }
