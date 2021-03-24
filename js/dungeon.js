@@ -98,6 +98,8 @@ async function dungeon(message, stat) {
             }).catch(function () {
                 //Something
             });
+    } else {
+        message.channel.send(`You have to team up with other player to do dungeon\nex.\`tera dungeon @sim\``);
     }
 }
 
@@ -107,7 +109,7 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         id: player1,
         level: playerList[0].level,
         attack: attack(playerList[0].basic_attack, playerList[0].attack, playerList[0].weapon_enchant, playerList[0].level),
-        def : defense(player1),
+        def : await defense(player1.id),
         hp : playerList[0].hp,
         mp: playerList[0].mp,
         sub_zone: playerList[0].sub_zone,
@@ -117,7 +119,7 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         id: player2,
         level: playerList[1].level,
         attack: attack(playerList[1].basic_attack, playerList[1].attack, playerList[1].weapon_enchant, playerList[1].level),
-        def : defense(player2),
+        def : await defense(player2.id),
         hp : playerList[1].hp,
         mp : playerList[1].mp,
         sub_zone: playerList[1].sub_zone,
@@ -270,6 +272,8 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                 let dgmToPlayer1 = damage(bossStat.attack * attackBossMultiplier, player1Stat.def);
                 let dgmToPlayer2 = damage(bossStat.attack * attackBossMultiplier, player2Stat.def);
                 let dmgBossMessage = '';
+                console.log(dgmToPlayer1);
+                console.log(dgmToPlayer2);
                 if (message.content.toLowerCase() == 'slash' || message.content.toLowerCase() == 'stance') {
                     dmgToBoss = damage(parseInt(player1Stat.attack) + parseInt(player1Stat.buff), bossStat.def);
                     dmgToBoss = message.content.toLowerCase() == 'stance' ? dmgToBoss - (dmgToBoss * 50 / 100) : dmgToBoss * 350 / 100; // reduce damage to boss

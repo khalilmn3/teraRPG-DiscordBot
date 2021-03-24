@@ -57,7 +57,6 @@ import report from './js/report.js';
 import suggest from './js/suggest.js';
 import voteRewardsSend from './js/voteRewardsSend.js';
 import upgrade from './js/upgrade.js';
-import calculateArmor from './js/helper/calculateArmor.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -231,8 +230,6 @@ client.on("message", async function (message) {
                     suggest(message, client, body);
                 } else if (command === 'upgrade') {
                     upgrade(message, args[0]);
-                } else if (command === 'armor') {
-                    calculateArmor(authorID);
                 }
             }
         } else if (command === 'start') {

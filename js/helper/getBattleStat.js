@@ -1,4 +1,4 @@
-import calculateArmor from "./calculateArmor";
+import calculateArmor from "./calculateArmor.js";
 
 function attack(basicAttack, attack,  weaponEnchant, level) {
     basicAttack = parseInt(basicAttack) > 0 ? parseInt(basicAttack) : 0;
@@ -9,8 +9,8 @@ function attack(basicAttack, attack,  weaponEnchant, level) {
     return att
 }
 
-function defense(playerId) {
-    let def = calculateArmor(playerId);
+async function defense(playerId) {
+    let def = await calculateArmor(playerId);
     return def;
 }
 

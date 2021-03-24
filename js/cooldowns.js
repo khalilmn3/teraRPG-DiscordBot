@@ -14,11 +14,10 @@ async function cooldowns(message, command) {
         // let hourly = (currentTime - cooldowns.hourly) > 3600 ? 0 : 3600 - (currentTime - cooldowns.hourly);
         let junken = (currentTime - cooldowns.junken) > 3600 ? 0 : 3600 - (currentTime - cooldowns.junken);
         let fish = (currentTime - cooldowns.fish) > 5400 ? 0 : 5400 - (currentTime - cooldowns.fish);
-        let dungeon = (currentTime - cooldowns.dungeon) > 43200 ? 0 : 5400 - (currentTime - cooldowns.dungeon);
+        let dungeon = (currentTime - cooldowns.dungeon) > 43200 ? 0 : 43200 - (currentTime - cooldowns.dungeon);
         let daily = (currentTime - cooldowns.daily) > 86400 ? 0 : 86400 - (currentTime - cooldowns.daily);
         let weekly = (currentTime - cooldowns.weekly) > 604800 ? 0 : 604800 - (currentTime - cooldowns.weekly);
     let vote = (currentTime - cooldowns.vote) > 43200 ? 0 : 43200 - (currentTime - cooldowns.vote);
-    
     if (command === 'cd' || command === 'cooldowns') {
         message.channel.send(new Discord.MessageEmbed({
             type: "rich",

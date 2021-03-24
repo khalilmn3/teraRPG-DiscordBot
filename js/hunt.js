@@ -7,6 +7,7 @@ import setCooldowns from './helper/setCooldowns.js';
 import isCommandsReady from './helper/isCommandsReady.js';
 import { cooldownMessage } from './embeddedMessage.js';
 import randomNumber from './helper/randomNumberWithMinMax.js';
+import calculateArmor from './helper/calculateArmor.js';
 
 async function hunt(message, client, id, username, zone) {
     let cooldowns = await isCommandsReady(id, 'explore');
@@ -31,7 +32,7 @@ async function hunt(message, client, id, username, zone) {
         let monster = '';
         monster = await randomizeChance(monsterData);
     
-        let def = stat.basic_def + stat.level + stat.helmetDef + stat.chestDef + stat.pantsDef;
+        let def = calculateArmor(message.author.id);
         let maxHp = 5 * (stat.level + stat.basic_hp);
         let maxMp = 5 * (stat.level + stat.basic_mp);
         let bHp = stat.hp;
