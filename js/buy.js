@@ -20,7 +20,6 @@ async function queryCheckExistItem(message, playerId, toBuyId){
     let queryField = '';
     let itemName = '';
     let reqDiamond = 0;
-    console.log(item);
     if (toBuyId == 1) {
         isExist = item.piggy_bank > 0;
         queryField = 'piggy_bank';
