@@ -72,7 +72,7 @@ async function hunt(message, client, id, username, zone) {
             if (random <= 25) {
                 let baitData = await queryData(`SELECT id, emoji, name, chance FROM item WHERE type_id="17" AND dropable=TRUE`);
                 let bait = await randomizeChance(baitData);
-                console.log(bait);
+                // console.log(bait);
                 if (bait != 0) {
                     queryData(`CALL insert_item_backpack_procedure("${message.author.id}", "${bait.id}", 1)`);
                     bugCatch = `${message.author.username} catched ${bait.emoji} ${bait.name} while exploring`;
