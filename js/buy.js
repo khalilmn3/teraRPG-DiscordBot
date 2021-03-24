@@ -56,7 +56,7 @@ async function queryCheckExistItem(message, playerId, toBuyId){
     } else {
         queryData('INSERT utility SET player_id="'+playerId+'",'+queryField+'=TRUE ON DUPLICATE KEY UPDATE '+queryField+'=1');
         queryData(`UPDATE stat SET diamond=diamond-${reqDiamond} WHERE player_id="${playerId}" LIMIT 1`);
-        message.reply(`you have successfully buy ${itemName}`)
+        message.reply(`you have successfully bought ${itemName}`)
     }
 }
 
@@ -65,25 +65,27 @@ async function queryAddItem(message, playerId,toBuyId, amount){
     let gold = await queryData(`SELECT gold FROM stat WHERE player_id="${playerId}" LIMIT 1`);
     gold = gold.length > 0 ? gold[0].gold : 0;
     amount = isNaN(amount) || amount == '0' ? 1 : parseInt(amount);
-    let itemId = '';
-    let itemName = '';
-    let price = 0
-    if (toBuyId == 1) {
-        price = 35;
-        itemId = 266 // healing potion
-        itemName = 'healing potion';
-    } else if (toBuyId == 2) {
-        price = 75;
-        itemId = 271 // apprentice bait
-        itemName = 'apprentice bait';
-    }
-    price = price * amount;
-    if (gold >= price) {
-        queryData(`CALL insert_item_backpack_procedure("${playerId}", "${itemId}", ${amount})`);
-        queryData(`UPDATE stat SET gold=gold-${price} WHERE player_id="${playerId}" LIMIT 1`);
-        message.channel.send(`**${message.author.username}** successfully bought **x${amount} ${itemName}** for <:gold_coin:801440909006209025>${price}`);
-    } else {
-        message.reply('you don\'t have enough **gold** to buy this item');
+    if (amount > 0) {
+        let itemId = '';
+        let itemName = '';
+        let price = 0
+        if (toBuyId == 1) {
+            price = 35;
+            itemId = 266 // healing potion
+            itemName = 'healing potion';
+        } else if (toBuyId == 2) {
+            price = 75;
+            itemId = 271 // apprentice bait
+            itemName = 'apprentice bait';
+        }
+        price = price * amount;
+        if (gold >= price) {
+            queryData(`CALL insert_item_backpack_procedure("${playerId}", "${itemId}", ${amount})`);
+            queryData(`UPDATE stat SET gold=gold-${price} WHERE player_id="${playerId}" LIMIT 1`);
+            message.channel.send(`**${message.author.username}** successfully bought **x${amount} ${itemName}** for <:gold_coin:801440909006209025>${price}`);
+        } else {
+            message.reply('you don\'t have enough **gold** to buy this item');
+        }
     }
 }
 

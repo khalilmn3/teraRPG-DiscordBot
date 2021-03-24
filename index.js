@@ -63,6 +63,7 @@ import market from './js/market.js';
 import buy from './js/buy.js';
 import deposit from './js/deposit.js';
 import shop from './js/shop.js';
+import withdraw from './js/withdraw.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -244,6 +245,8 @@ client.on("message", async function (message) {
                     buy(message, args[0], args[1], args[2]);
                 } else if (command === 'deposit') {
                     deposit(message, args[0]);
+                } else if (command === 'withdraw' || command === 'wd') {
+                    withdraw(message, args[0]);
                 } else if (command === 'shop') {
                     shop(message);
                 }
