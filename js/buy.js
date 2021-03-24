@@ -6,9 +6,11 @@ function buy(message, args1, args2) {
         queryCheckExistItem(message, message.author.id, 2)
     } else if (args1 === 'mining' && args2 === 'helmet') {
         queryCheckExistItem(message, message.author.id, 3)
-    } else if (args1 === 'ring') {
-        queryCheckExistItem(message, message.author.id, 4)
-    } else {
+    }
+    // else if (args1 === 'ring') {
+    //     queryCheckExistItem(message, message.author.id, 4)
+    // }
+    else {
         message.reply.send('What are you trying to buy, \nCheck the item name with \`tera market\`!');
     }
 }

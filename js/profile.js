@@ -90,6 +90,11 @@ async function profile(message, client, id, avatar, args1) {
                     inline: true
                 },
                 {
+                    value: `${data.MiningHelmet > 0 ? `<:Mining_Helmet:824176323194650624> **Mining Helmet**` : '◽ [empty]'}${data.BugNet ? `\n<:Bug_Net:824176322908913687> ** Bug Net **` : '\n◽ [empty]'}${data.Ring > 0 ? `\n<:Ring:824176323219292220> **Ring**` : ''}`,
+                    name: "__UTILITY__",
+                    inline: false
+                },
+                {
                     value: (data.weaponName ? `${data.wEmoji} [+${data.attack}] **${data.weaponName}**` : '◽ [no weapon]') + helmet + chest + pants,
                     name: "__EQUIPMENT__",
                     inline: true
@@ -98,11 +103,6 @@ async function profile(message, client, id, avatar, args1) {
                     value: ` <:so_sword:801443762130780170> ** AT **: ${currencyFormat(attack)}\n<:so_shield:801443854254342154> ** DEF **: ${currencyFormat(def)} ${bonusSetArmorText}`,
                     name: "__STATS__",
                     inline: true
-                },
-                {
-                    value: `${data.MiningHelmet > 0 ? `<:Mining_Helmet:824176323194650624> **Mining Helmet**` : '◽ [empty]'}${data.BugNet ? `\n<:Bug_Net:824176322908913687> ** Bug Net **` : '\n◽ [empty]'}${data.Ring > 0 ? `\n<:Ring:824176323219292220> **Ring**` : ''}`,
-                    name: "__UTILITY__",
-                    inline: false
                 }],
             thumbnail: {
                 url: `https://cdn.discordapp.com/avatars/${id}/${avatar}.png?size=512`,

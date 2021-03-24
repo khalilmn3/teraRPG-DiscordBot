@@ -8,13 +8,14 @@ import isCommandsReady from './helper/isCommandsReady.js';
 import { cooldownMessage } from './embeddedMessage.js';
 import randomNumber from './helper/randomNumberWithMinMax.js';
 import calculateArmor from './helper/calculateArmor.js';
+import addExpGold from './helper/addExp.js';
 
 async function hunt(message, client, id, username, zone) {
     let cooldowns = await isCommandsReady(id, 'explore');
     if (cooldowns.isReady) {
-        setCooldowns(id, 'explore');
+        // setCooldowns(id, 'explore');
         let stat = await queryData(`SELECT stat.*, level.*, IFNULL(itemWeapon.emoji, '') as wEmoji, itemWeapon.name as weapon, weapon.attack, 
-        armor1.def as helmetDef,armor2.def as chestDef,armor3.def as pantsDef
+        armor1.def as helmetDef,armor2.def as chestDef,armor3.def as pantsDef, utility.bug_net
         FROM level, stat
         LEFT JOIN equipment ON (stat.player_id = equipment.player_id)
         LEFT JOIN armor as armor1 ON (equipment.helmet_id = armor1.id)
@@ -25,6 +26,7 @@ async function hunt(message, client, id, username, zone) {
         LEFT JOIN item as itemArmor2 ON (armor2.item_id = itemArmor2.id)
         LEFT JOIN item as itemArmor3 ON (armor3.item_id = itemArmor3.id)
         LEFT JOIN item as itemWeapon ON (weapon.item_id = itemWeapon.id)
+        LEFT JOIN utility ON (stat.player_id=utility.player_id)
         WHERE level.id > stat.level AND stat.player_id="${id}" LIMIT 1`);
         stat = stat[0];
         let monsterData = await queryData(`SELECT emoji, name, min_damage, max_damage, min_exp, max_exp, min_coin, max_coin, chance FROM enemy WHERE is_boss="0" AND zone_id=${stat.zone_id}`)
@@ -44,11 +46,6 @@ async function hunt(message, client, id, username, zone) {
         let cHp = bHp - ((damage - def) > 0 ? (damage - def) : 0);
         
         let lostHP = bHp - cHp;
-        let totalXP = stat.current_experience + exp;
-        // console.log("damage :" + damage);
-        // console.log("def :" + def);
-        // console.log("hp :" + cHp);
-        let levelUPmessage = '';
         // PLAYER DIED
         if (cHp <= 0) {
             cHp = 0;
@@ -65,23 +62,28 @@ async function hunt(message, client, id, username, zone) {
             }
             return;
         }
-        if (totalXP >= stat.experience) {
-            // LEVEL UP
-            let data = await queryData(`SELECT id, experience FROM level WHERE experience<=${totalXP} ORDER BY id DESC LIMIT 1`)
-            let nLevel = data[0].id;
-            let cExp = totalXP - data[0].experience;
-            maxHp = 5 * (nLevel + stat.basic_hp);
-            maxMp = 5 * (nLevel + stat.basic_mp);
-            await queryData(`UPDATE stat SET level="${nLevel}", current_experience=${cExp}, hp="${maxHp}", mp="${maxMp}" WHERE player_id="${id}"`);
-            levelUPmessage = `> :tada: | **${username}** Level up +${data[0].id - stat.level}, HP restored`
-        }
         let weapon = stat.weapon ? `${stat.wEmoji} ${stat.weapon}` : '👊bare hand'
         let hpLost = lostHP > 0 ? `\nbut also lost ${lostHP} HP, remaining HP is ${cHp} / ${maxHp}` : "";
-    
-        message.channel.send(`**${username}** encountered a ${monster.emoji} **${monster.name}** and \nsuccessfully beaten it down with **${weapon}** ${hpLost} \nGained **${coin}** 𝑔𝑜𝓁𝒹 and **${exp}** 𝑒𝓍𝓅`, levelUPmessage)
-        // Update data
-        queryData(`UPDATE stat SET hp="${cHp}", gold=gold+${coin}, current_experience=current_experience + ${exp} WHERE player_id="${id}"`);
         
+        // BUG CATCH
+        let bugCatch = '';
+        if (stat.bug_net) {
+            let random = Math.floor(Math.random() * 100);
+            if (random <= 25) {
+                let baitData = await queryData(`SELECT id, emoji, name, chance FROM item WHERE type_id="17" AND dropable=TRUE`);
+                let bait = await randomizeChance(baitData);
+                console.log(bait);
+                if (bait != 0) {
+                    queryData(`CALL insert_item_backpack_procedure("${message.author.id}", "${bait.id}", 1)`);
+                    bugCatch = `${message.author.username} catched ${bait.emoji} ${bait.name} while exploring`;
+                }
+            }
+        }
+        message.channel.send(`**${username}** encountered a ${monster.emoji} **${monster.name}** and \nsuccessfully beaten it down with **${weapon}** ${hpLost} \nGained **${coin}** 𝑔𝑜𝓁𝒹 and **${exp}** 𝑒𝓍𝓅`)
+        if (bugCatch) {
+            message.channel.send(bugCatch);
+        }
+        addExpGold(message, message.author, stat, exp, coin, stat);
     } else {
         message.channel.send(cooldownMessage(id, username, message.author.avatar, 'Explore', cooldowns.waitingTime));
     }
