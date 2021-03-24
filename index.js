@@ -59,6 +59,7 @@ import voteRewardsSend from './js/voteRewardsSend.js';
 import upgrade from './js/upgrade.js';
 import ranks from './js/leaderboards.js';
 import myCache from './js/cache/leaderboardChace.js';
+import market from './js/market.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -234,6 +235,8 @@ client.on("message", async function (message) {
                     upgrade(message, args[0]);
                 } else if (command === 'ranks') {
                     ranks(message, args[0]);
+                } else if (command === 'market') {
+                    market(message);
                 }
             }
         } else if (command === 'start') {
