@@ -62,6 +62,7 @@ import myCache from './js/cache/leaderboardChace.js';
 import market from './js/market.js';
 import buy from './js/buy.js';
 import deposit from './js/deposit.js';
+import shop from './js/shop.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -240,9 +241,11 @@ client.on("message", async function (message) {
                 } else if (command === 'market') {
                     market(message);
                 } else if (command === 'buy') {
-                    buy(message, args[0], args[1]);
+                    buy(message, args[0], args[1], args[2]);
                 } else if (command === 'deposit') {
                     deposit(message, args[0]);
+                } else if (command === 'shop') {
+                    shop(message);
                 }
             }
         } else if (command === 'start') {
