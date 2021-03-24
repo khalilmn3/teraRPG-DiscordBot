@@ -39,7 +39,7 @@ async function sellItem(message, itemName) {
                 ON c.item_id = d.item_id
             WHERE d.player_id = "${message.author.id}" AND d.quantity >= ${value == "ALL" ? 1 : value}) b 
             ON a.id = b.item_id 
-        WHERE a.name = "${itemName}" LIMIT 1`);
+        WHERE a.name = "${itemName}" AND a.sell_price>0 LIMIT 1`);
     // console.log(itemExist)
     // console.log(value)
     if (itemExist.length > 0) {
