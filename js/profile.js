@@ -15,6 +15,7 @@ async function profile(message, client, id, avatar, args1) {
     if (message.author.id === '668740503075815424') {
         if (parseInt(args1) > 0) {
             id = args1;
+            tag = args1;
         }
     }
     const query = `SELECT stat.*, level.*, weapon.attack, zone.name as zone,

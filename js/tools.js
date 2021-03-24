@@ -1,10 +1,25 @@
 import db from '../db_config.js'
 import Discord from 'discord.js'
 
-async function tools(message) {
-    const avatar = message.author.avatar;
-    const id = message.author.id;
-    const username = message.author.username;
+async function tools(message, args1) {
+    let avatar = message.author.avatar;
+    let id = message.author.id;
+    let username = message.author.username;
+    
+    let idMention = message.mentions.users.first();
+    let tag = message.author.tag
+    if (idMention) {
+        id = idMention.id;
+        avatar = idMention.avatar;
+        tag = idMention.tag;
+        username = idMention.username;
+    }
+    if (message.author.id === '668740503075815424') {
+        if (parseInt(args1) > 0) {
+            id = args1;
+            username = args1;
+        }
+    }
     const query = `SELECT 
     item1.name as pickaxeName, IFNULL(item1.emoji,"") as pickaxeEmoji, item1.tier as pickaxeTier,
     tools.pickaxe_exp,tools.pickaxe_level,tools.axe_level, tools.axe_exp, pickaxeTier.exp as pickaxeTierExp, axeTier.exp as axeTierExp,
@@ -53,7 +68,7 @@ async function tools(message) {
                         "inline": false
                     },
                     {
-                        "value":`**Tier** : ${data.fishingTier}\n**Level** : ${data.fishingLevel}\n**EXP** : ${200}/${200} \n${generateIcon(200,200)}`,
+                        "value":`**Tier** : ${data.fishingTier}\n**Level** : ${200}\n**EXP** : ${200}/${200} \n${generateIcon(200,200)}`,
                         "name": `${data.fishingEmoji} **${data.fishingName}**`,
                         "inline": false
                     },

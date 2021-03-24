@@ -195,11 +195,11 @@ client.on("message", async function (message) {
                 } else if (command === 'mine' || command === 'chop') {
                     work(message, command, isUserRegistred[0].zone_id);
                 } else if (command === 'backpack' || command === 'bp') {
-                    backpack(message);
+                    backpack(message, args[0]);
                 } else if (command === 'workspace' || command === 'ws') {
                     workspace(message);
                 } else if (command === 'tool' || command === 'tools') {
-                    tools(message);
+                    tools(message, args[0]);
                 } else if (command === 'craft') {
                     crafting(message, args[0], args[1], args[2]);
                 } else if (command === 'teleport' || command === 'tel') {

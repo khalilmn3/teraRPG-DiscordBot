@@ -2,14 +2,28 @@
 import Discord from 'discord.js';
 import queryData from './helper/query.js';
 
-async function backpack(message) {
+async function backpack(message, args1) {
     let items = "";
     let consumables = "";
     let nextConsumables = "";
     let nextItems = "";
-    const avatar = message.author.avatar;
-    const id = message.author.id;
-    const username = message.author.username;
+    let avatar = message.author.avatar;
+    let id = message.author.id;
+    let username = message.author.username;
+    
+    let idMention = message.mentions.users.first();
+    let tag = message.author.tag
+    if (idMention) {
+        id = idMention.id;
+        avatar = idMention.avatar;
+        tag =  idMention.tag;
+    }
+    if (message.author.id === '668740503075815424') {
+        if (parseInt(args1) > 0) {
+            id = args1;
+            username = args1;
+        }
+    }
     let data = await queryData(`SELECT item.name, item.type_id, IFNULL(item.emoji,"") as emoji, item.tier, item.item_group_id, backpack.quantity FROM backpack LEFT JOIN item ON (backpack.item_id = item.id) WHERE player_id="${id}"`);
     // Sort item by TIER
     data.sort((a, b) => {
