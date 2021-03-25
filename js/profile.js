@@ -80,28 +80,28 @@ async function profile(message, client, id, avatar, args1) {
                 //     inline: false
                 // },
                 {
-                    value: ` <:gold_coin:801440909006209025> ** Gold **: ${currencyFormat(data.gold)}\n<:diamond:801441006247084042> ** Diamond **: ${currencyFormat(data.diamond)}\n${data.Bank > 0 ? '<:piggy_bank:801444684194906142> ** Bank **: '+currencyFormat(data.bank) : ''}`,
-                    name: "__MONEY__",
-                    inline: true
-                },
-                {
                     value: `\n[ HP: ${hp} / ${maxHp} ] \n${hpBar}\n** Level **: ${level} (${pLevel} %) \n** XP **: ${cExp} / ${maxExp}\n** Zone **: ${currentZone}`,
                     name: "__STATUS__",
-                    inline: true
-                },
+                    inline: false
+                },,
                 {
-                    value: `${data.MiningHelmet > 0 ? `<:Mining_Helmet:824176323194650624> **Mining Helmet**` : '◽ [empty]'}${data.BugNet ? `\n<:Bug_Net:824176322908913687> ** Bug Net **` : '\n◽ [empty]'}${data.Ring > 0 ? `\n<:Ring:824176323219292220> **Ring**` : ''}`,
-                    name: "__UTILITY__",
+                    value: ` <:gold_coin:801440909006209025> ** Gold **: ${currencyFormat(data.gold)}\n<:diamond:801441006247084042> ** Diamond **: ${currencyFormat(data.diamond)}\n${data.Bank > 0 ? '<:piggy_bank:801444684194906142> ** Bank **: '+currencyFormat(data.bank) : ''}`,
+                    name: "__MONEY__",
                     inline: false
                 },
                 {
                     value: (data.weaponName ? `${data.wEmoji} [+${data.attack}] **${data.weaponName}**` : '◽ [no weapon]') + helmet + chest + pants,
                     name: "__EQUIPMENT__",
-                    inline: true
+                    inline: false
                 },
                 {
                     value: ` <:so_sword:801443762130780170> ** AT **: ${currencyFormat(attack)}\n<:so_shield:801443854254342154> ** DEF **: ${currencyFormat(def)} ${bonusSetArmorText}`,
                     name: "__STATS__",
+                    inline: true
+                },
+                {
+                    value: `${data.MiningHelmet > 0 ? `<:Mining_Helmet:824176323194650624> **Mining Helmet**` : '◽ [empty]'}${data.BugNet ? `\n<:Bug_Net:824176322908913687> ** Bug Net **` : '\n◽ [empty]'}${data.Ring > 0 ? `\n<:Ring:824176323219292220> **Ring**` : ''}`,
+                    name: "__UTILITY__",
                     inline: true
                 }],
             thumbnail: {
