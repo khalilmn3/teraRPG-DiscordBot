@@ -9,7 +9,6 @@ import { cooldownMessage } from './embeddedMessage.js';
 import randomNumber from './helper/randomNumberWithMinMax.js';
 import calculateArmor from './helper/calculateArmor.js';
 import addExpGold from './helper/addExp.js';
-import roundFloat from './helper/roundFloat.js';
 import calculateBonusExpBank from './helper/calculateBonusExpBank.js';
 
 async function hunt(message, client, id, username, zone) {
