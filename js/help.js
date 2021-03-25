@@ -29,13 +29,13 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `buy <item_name>, sell <item_name>, open <crate> <amount>`,
+                    value: `market, shop, deposit, withdraw, bank, buy <item_name>, sell <item_name>, open <crate> <amount>`,
                     name: ":moneybag: __ECONOMY__",
                     inline: false
                 },
                 {
                     value: `cf <h/t> <amount>, lottery`,
-                    name: ":moneybag: __GAMBLING__",
+                    name: ":moneybag: __MINI GAMES__",
                     inline: false
                 },
                 {
