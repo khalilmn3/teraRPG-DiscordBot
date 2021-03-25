@@ -5,7 +5,7 @@ import randomizeChance from "./helper/randomize.js";
 import randomNumber from "./helper/randomNumberWithMinMax.js";
 import setCooldowns from "./helper/setCooldowns.js";
 
-async function fishing(message,stat) {
+async function fishing(message, stat) {
     let cooldowns = await isCommandsReady(message.author.id, 'fish');
     if (cooldowns.isReady) {
         let fishingPole = await queryData(`SELECT Bait.bait_id, IFNULL(Bait.quantity,0) as bait, SUM(IFNULL(Bait.bait_power,0) + IFNULL(cfg_fishing_pole.bait_power,0)) as bait_power, fishing_pole.level, item.name, item.emoji, item.tier FROM fishing_pole
@@ -18,7 +18,7 @@ async function fishing(message,stat) {
                                 WHERE item.type_id=17 AND backpack.quantity > 0 AND player_id=${message.author.id}
                                 ORDER BY bait.bait_power DESC
                                 LIMIT 1) AS Bait
-                            ON (fishing_pole.player_id=bait.player_id)
+                            ON (fishing_pole.player_id=Bait.player_id)
                         WHERE fishing_pole.player_id="${message.author.id}" LIMIT 1`);
         if (fishingPole.length > 0) {
             fishingPole = fishingPole[0];

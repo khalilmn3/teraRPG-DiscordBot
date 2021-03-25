@@ -1,6 +1,6 @@
 import queryData from "./query.js";
 
-async function addExpGold(message, player, stat, expAdd, goldAdd, playerStat) {
+async function addExpGold(message, player, stat, expAdd, goldAdd, currentPlayerStat) {
     let nLevel = stat.level + 1;
     let expNeedToNextLevel = (50 * (nLevel - 1) ** 3 - 150 * (nLevel - 1) ** 2 + 400 * (nLevel - 1)) / 3;
     let totalExp = parseInt(expAdd) + parseInt(stat.current_experience);
@@ -16,7 +16,7 @@ async function addExpGold(message, player, stat, expAdd, goldAdd, playerStat) {
         
         message.channel.send(levelUPmessage);
     } else {
-        queryData(`UPDATE stat SET current_experience=${totalExp}, hp='${playerStat.hp}', mp='${playerStat.mp}', gold=gold + ${goldAdd} WHERE player_id="${player.id}" LIMIT 1`);
+        queryData(`UPDATE stat SET current_experience=${totalExp}, hp='${currentPlayerStat.hp}', gold=gold + ${goldAdd} WHERE player_id="${player.id}" LIMIT 1`);
     }
 }
 

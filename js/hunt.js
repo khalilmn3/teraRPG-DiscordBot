@@ -10,6 +10,7 @@ import randomNumber from './helper/randomNumberWithMinMax.js';
 import calculateArmor from './helper/calculateArmor.js';
 import addExpGold from './helper/addExp.js';
 import calculateBonusExpBank from './helper/calculateBonusExpBank.js';
+import { addBonusExp } from './helper/configuration.js';
 
 async function hunt(message, client, id, username, zone) {
     let cooldowns = await isCommandsReady(id, 'explore');
@@ -35,7 +36,7 @@ async function hunt(message, client, id, username, zone) {
         let monster = '';
         monster = await randomizeChance(monsterData);
     
-        let def = calculateArmor(message.author.id);
+        let def = await calculateArmor(message.author.id);
         let maxHp = 5 * (stat.level + stat.basic_hp);
         let maxMp = 5 * (stat.level + stat.basic_mp);
         let bHp = stat.hp;
@@ -45,6 +46,7 @@ async function hunt(message, client, id, username, zone) {
         // Add bonus exp 
         let bonusExp = calculateBonusExpBank(exp);
         exp = Math.round(exp + bonusExp);
+        exp = await addBonusExp(message, exp);
         let coin = subArea >= 2 ? randomNumber(monster.min_coin, monster.max_coin) : monster.min_coin;
 
         let cHp = bHp - ((damage - def) > 0 ? (damage - def) : 0);
@@ -87,7 +89,10 @@ async function hunt(message, client, id, username, zone) {
         if (bugCatch) {
             message.channel.send(bugCatch);
         }
-        addExpGold(message, message.author, stat, exp, coin, stat);
+        let cStat = {
+            hp: cHp 
+        }
+        addExpGold(message, message.author, stat, exp, coin, cStat);
     } else {
         message.channel.send(cooldownMessage(id, username, message.author.avatar, 'Explore', cooldowns.waitingTime));
     }

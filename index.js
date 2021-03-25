@@ -65,6 +65,7 @@ import deposit from './js/deposit.js';
 import shop from './js/shop.js';
 import withdraw from './js/withdraw.js';
 import bank from './js/bank.js';
+import bonus from './js/bonus.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -147,18 +148,13 @@ client.on("message", async function (message) {
                 message.channel.send(`Player <@${args[0]}> unbanned`);
                 return;
             } else if (command === "level") {
-                queryData(`UPDATE stat SET level="${args[0]}" WHERE id="${args[0]}" LIMIT 1`);
+                if (!isNaN(args[0])) {
+                    queryData(`UPDATE stat SET level="${args[0]}" WHERE player_id="${args[1]}" LIMIT 1`);
 
-                message.delete();
-                console.log(args);
-                message.channel.send(`Player <@${args[0]}>'s level has been set`);
-                return;
-            }  else if (command === "level") {
-                queryData(`UPDATE stat SET level="${args[0]}" WHERE id="${args[0]}" LIMIT 1`);
-
-                message.delete();
-                console.log(args);
-                message.channel.send(`Player <@${args[0]}>'s level has been set`);
+                    message.delete();
+                    console.log(args);
+                    message.channel.send(`Player <@${args[1]}>'s level has been set`);
+                }
                 return;
             } else if (command === "math") {
                 try {
@@ -176,7 +172,6 @@ client.on("message", async function (message) {
                 message.reply("Wait at least 1 second before getting typing this again.");
                 return;
             }
-
             if (isUserRegistred.length > 0) {
                 let stat = isUserRegistred[0];
                 if (isUserRegistred[0].is_active) { // Check Banned User
@@ -186,7 +181,7 @@ client.on("message", async function (message) {
                         message.reply(`you have an active command, end it before processing another!`)
                         return;
                     }
-                    if (prepareMaintenance) {
+                    if (prepareMaintenance && authorID !== '668740503075815424') {
                         message.channel.send('🛠️ | Bot is preparing for maintenance...!');
                         return;
                     }
@@ -258,8 +253,8 @@ client.on("message", async function (message) {
                         withdraw(message, args[0]);
                     } else if (command === 'bank') {
                         bank(message);
-                    } else if (command === 'shop') {
-                        shop(message);
+                    } else if (command === 'booster') {
+                        bonus(message);
                     }
                 }
             } else if (command === 'start') {

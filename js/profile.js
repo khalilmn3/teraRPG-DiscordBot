@@ -53,7 +53,7 @@ async function profile(message, client, id, avatar, args1) {
         let cExp = data.current_experience.toLocaleString('en-US', { maximumFractionDigits: 2 });
         let hp = data.hp.toLocaleString('en-US', { maximumFractionDigits: 2 });
         let mp = data.mp.toLocaleString('en-US', { maximumFractionDigits: 2 });
-        let def = await calculateArmor(message.author.id);
+        let def = await calculateArmor(id);
         def = data.bonus_armor_set > 0 ? def - data.bonus_armor_set : def;
         let attack = data.basic_attack + data.level + data.attack + (data.attack * (data.weapon_enchant * 0.3));
         let maxHp = 5 * (data.level + data.basic_hp);

@@ -68,7 +68,7 @@ async function tools(message, args1) {
                         "inline": false
                     },
                     {
-                        "value":`**Tier** : ${data.fishingTier}\n**Level** : ${200}\n**EXP** : ${200}/${200} \n${generateIcon(200,200)}`,
+                        "value":`**Tier** : ${data.fishingTier}\n**Level** : ${1}\n**EXP** : ${200}/${200} \n${generateIcon(200,200)}`,
                         "name": `${data.fishingEmoji} **${data.fishingName}**`,
                         "inline": false
                     },
