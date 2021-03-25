@@ -381,12 +381,12 @@ async function craftArmor(message, playerId, username, args1, args2) {
                 queryEquipment(message, playerId, level, armorCraft, materialList, 2, 4);
             } else if (args2 === 'chainmail') {
                 let materialList = [
-                    {id: 22, name: 'copper bar', quantity: 25}
+                    {id: 22, name: 'copper bar', quantity: 20}
                 ]
                 queryEquipment(message, playerId, level, armorCraft, materialList, 3, 5);
             } else if (args2 === 'greaves') {
                 let materialList = [
-                    {id: 22, name: 'copper bar', quantity: 20}
+                    {id: 22, name: 'copper bar', quantity: 18}
                 ]
                 queryEquipment(message, playerId, level, armorCraft, materialList, 4, 6);
             } else {
