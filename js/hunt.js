@@ -44,7 +44,7 @@ async function hunt(message, client, id, username, zone) {
         let exp = subArea >= 2 ? randomNumber(monster.min_exp, monster.max_exp) : monster.min_exp;
         // Add bonus exp 
         let bonusExp = calculateBonusExpBank(exp);
-        exp = exp + bonusExp;
+        exp = Math.round(exp + bonusExp);
         let coin = subArea >= 2 ? randomNumber(monster.min_coin, monster.max_coin) : monster.min_coin;
 
         let cHp = bHp - ((damage - def) > 0 ? (damage - def) : 0);

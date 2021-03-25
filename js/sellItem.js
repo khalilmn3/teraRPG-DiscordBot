@@ -39,44 +39,48 @@ async function sellItem(message, itemName) {
                 ON c.item_id = d.item_id
             WHERE d.player_id = "${message.author.id}" AND d.quantity >= ${value == "ALL" ? 1 : value}) b 
             ON a.id = b.item_id 
-        WHERE a.name = "${itemName}" AND a.sell_price>0 LIMIT 1`);
+        WHERE a.name = "${itemName}" LIMIT 1`);
     // console.log(itemExist)
     // console.log(value)
     if (itemExist.length > 0) {
-        if (itemExist[0].quantity >= value || (value === 'ALL' && itemExist[0].quantity > 0)) {
-            if (value === 'ALL') { value = itemExist[0].quantity }
-            let totalPrice = value * itemExist[0].sell_price
-            let filter = m => m.author.id === message.author.id
-            activeCommand(message.author.id);
-            await message.reply(`Are you sure to sell x${value} **${itemName}** for **${totalPrice}** gold? \`YES\` / \`NO\``).then(() => {
-                message.channel.awaitMessages(filter, {
-                    max: 1,
-                    time: 30000,
-                    errors: ['time']
-                })
-                    .then(message => {
-                        message = message.first();
-                        if (message.content.toUpperCase() == 'YES' || message.content.toUpperCase() == 'Y') {
-                            queryData(`UPDATE backpack SET quantity = quantity - ${value} WHERE player_id="${message.author.id}" AND item_id="${itemExist[0].item_id}" LIMIT 1`);
-                            queryData(`UPDATE stat SET gold= gold + ${totalPrice} WHERE player_id="${message.author.id}" LIMIT 1`);
-                            message.channel.send(`**${message.author.username}** sold x${value} **${itemName}** for **${totalPrice}** gold`)
-                        } else if (message.content.toUpperCase() == 'NO' || message.content.toUpperCase() == 'N') {
-                            message.channel.send(`Terminated`);
-                        } else {
-                            message.channel.send(`Terminated: Invalid Response`);
-                        }
-                        deactiveCommand(message.author.id)
+        if (itemExist[0].sell_price > 0) {
+            if (itemExist[0].quantity >= value || (value === 'ALL' && itemExist[0].quantity > 0)) {
+                if (value === 'ALL') { value = itemExist[0].quantity }
+                let totalPrice = value * itemExist[0].sell_price
+                let filter = m => m.author.id === message.author.id
+                activeCommand(message.author.id);
+                await message.reply(`Are you sure to sell x${value} **${itemName}** for **${totalPrice}** gold? \`YES\` / \`NO\``).then(() => {
+                    message.channel.awaitMessages(filter, {
+                        max: 1,
+                        time: 30000,
+                        errors: ['time']
                     })
-                    .catch(collected => {
-                        deactiveCommand(message.author.id)
-                        message.channel.send('Timeout, transaction cancelled');
-                    });
-            })
+                        .then(message => {
+                            message = message.first();
+                            if (message.content.toUpperCase() == 'YES' || message.content.toUpperCase() == 'Y') {
+                                queryData(`UPDATE backpack SET quantity = quantity - ${value} WHERE player_id="${message.author.id}" AND item_id="${itemExist[0].item_id}" LIMIT 1`);
+                                queryData(`UPDATE stat SET gold= gold + ${totalPrice} WHERE player_id="${message.author.id}" LIMIT 1`);
+                                message.channel.send(`**${message.author.username}** sold x${value} **${itemName}** for **${totalPrice}** gold`)
+                            } else if (message.content.toUpperCase() == 'NO' || message.content.toUpperCase() == 'N') {
+                                message.channel.send(`Terminated`);
+                            } else {
+                                message.channel.send(`Terminated: Invalid Response`);
+                            }
+                            deactiveCommand(message.author.id)
+                        })
+                        .catch(collected => {
+                            deactiveCommand(message.author.id)
+                            message.channel.send('Timeout, transaction cancelled');
+                        });
+                })
+            } else {
+                message.reply(`You dont have that much **${itemName}** in your backpack`);
+            }
         } else {
-            message.reply(`You dont have that much **${itemName}** in your backpack`);
+            message.reply(`you can't sell this item`)
         }
     } else {
-        message.reply(`what are you trying to sell, cek the item's name in your backpack before trying to sell something?`);
+        message.reply(`what are you trying to sell?`);
     }
 }
 
