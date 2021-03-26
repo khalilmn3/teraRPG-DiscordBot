@@ -2,9 +2,16 @@
 import queryData from "./helper/query.js";
 import Discord from 'discord.js';
 
-async function cooldowns(message, command) {
+async function cooldowns(message, command, args1) {
     let mentions = message.mentions.users.first();
     let user = mentions ? mentions : message.author;
+
+    if (message.author.id === '668740503075815424') {
+        if (parseInt(args1) > 0) {
+            user.id = args1;
+            user.username = args1;
+        }
+    }
     let cooldowns = await queryData(`SELECT * FROM cooldowns WHERE player_id="${user.id}" LIMIT 1`);
     let currentTime = Math.round(new Date().getTime() / 1000);
     cooldowns = cooldowns.length > 0 ? cooldowns[0] : 0;

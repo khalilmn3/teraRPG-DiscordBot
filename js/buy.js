@@ -15,7 +15,7 @@ function buy(message, args1, args2, args3) {
     } else if (args1 === 'apprentice' && args2 === 'bait') {
         queryAddItem(message,message.author.id,2,args3)
     } else {
-        message.reply.send('What are you trying to buy, \nCheck the item name with \`tera market\`!');
+        message.reply('What are you trying to buy, \nCheck the item name with \`tera market\`!');
     }
 }
 

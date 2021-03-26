@@ -18,13 +18,17 @@ async function profile(message, client, id, avatar, args1) {
             tag = args1;
         }
     }
-    const query = `SELECT stat.*, level.*, weapon.attack, zone.name as zone,
-        IFNULL(itemArmor1.emoji, '') as helmetEmoji, itemArmor1.name as helmet, armor1.def as helmetDef,
-        IFNULL(itemArmor2.emoji, '') as chestEmoji, itemArmor2.name as chest, armor2.def as chestDef,
-        IFNULL(itemArmor3.emoji, '') as pantsEmoji, itemArmor3.name as pants, armor3.def as pantsDef,
-        IFNULL(itemWeapon.emoji, '') as wEmoji, itemWeapon.name as weaponName,
+    const query = `SELECT stat.*, level.*, IFNULL(weapon.attack,0) as attack, zone.name as zone,
+        IFNULL(itemArmor1.emoji, '') as helmetEmoji, CONCAT(helmet_modifier.name," ",itemArmor1.name) as helmet, IFNULL(armor1.def,0) as helmetDef,
+        IFNULL(itemArmor2.emoji, '') as shirtEmoji, CONCAT(shirt_modifier.name," ",itemArmor2.name) as shirt, IFNULL(armor2.def,0) as shirtDef,
+        IFNULL(itemArmor3.emoji, '') as pantsEmoji, CONCAT(pants_modifier.name," ",itemArmor3.name) as pants, IFNULL(armor3.def,0) as pantsDef,
+        IFNULL(itemWeapon.emoji, '') as wEmoji, CONCAT(modifier_weapon.name," ",itemWeapon.name) as weaponName,
         IF(armor1.armor_set_id=armor2.armor_set_id AND armor2.armor_set_id=armor3.armor_set_id, armor_set.bonus_set, 0) as bonus_armor_set,
-        utility.piggy_bank as Bank, utility.bug_net as BugNet, utility.mining_helmet as MiningHelmet, utility.ring as Ring
+        utility.piggy_bank as Bank, utility.bug_net as BugNet, utility.mining_helmet as MiningHelmet, utility.ring as Ring,
+        IFNULL(modifier_weapon.stat_change,0) as weapon_modifier,
+        IFNULL(helmet_modifier.stat_change,0) as helmet_modifier,
+        IFNULL(shirt_modifier.stat_change,0) as shirt_modifier,
+        IFNULL(pants_modifier.stat_change,0) as pants_modifier
         FROM level, stat 
         LEFT JOIN equipment ON (stat.player_id = equipment.player_id)
         LEFT JOIN armor as armor1 ON (equipment.helmet_id = armor1.id)
@@ -35,6 +39,10 @@ async function profile(message, client, id, avatar, args1) {
         LEFT JOIN item as itemArmor2 ON (armor2.item_id = itemArmor2.id)
         LEFT JOIN item as itemArmor3 ON (armor3.item_id = itemArmor3.id)
         LEFT JOIN item as itemWeapon ON (weapon.item_id = itemWeapon.id)
+        LEFT JOIN modifier_weapon ON (equipment.weapon_modifier_id=modifier_weapon.id)
+        LEFT JOIN modifier_armor as helmet_modifier ON (equipment.helmet_modifier_id=helmet_modifier.id)
+        LEFT JOIN modifier_armor as shirt_modifier ON (equipment.shirt_modifier_id=shirt_modifier.id)
+        LEFT JOIN modifier_armor as pants_modifier ON (equipment.pants_modifier_id=pants_modifier.id)
         LEFT JOIN zone ON (stat.zone_id = zone.id)
         LEFT JOIN armor_set ON (armor1.armor_set_id=armor_set.id)
         LEFT JOIN utility ON (stat.player_id=utility.player_id)
@@ -53,16 +61,20 @@ async function profile(message, client, id, avatar, args1) {
         let cExp = data.current_experience.toLocaleString('en-US', { maximumFractionDigits: 2 });
         let hp = data.hp.toLocaleString('en-US', { maximumFractionDigits: 2 });
         let mp = data.mp.toLocaleString('en-US', { maximumFractionDigits: 2 });
-        let def = await calculateArmor(id);
-        def = data.bonus_armor_set > 0 ? def - data.bonus_armor_set : def;
+        let totalModifierArmor = parseInt(data.helmet_modifier) + parseInt(data.shirt_modifier) + parseInt(data.pants_modifier);
+        let def = parseInt(data.helmetDef) + parseInt(data.shirtDef) + parseInt(data.pantsDef) + parseInt(data.level) + parseInt(data.basic_def) + parseInt(totalModifierArmor);
+        console.log(data);
+        console.log(def);
+        console.log(totalModifierArmor);
+        // let def = await calculateArmor(id);
         let attack = data.basic_attack + data.level + data.attack + (data.attack * (data.weapon_enchant * 0.3));
         let maxHp = 5 * (data.level + data.basic_hp);
         let maxMp = 5 * (data.level + data.basic_mp);
         let hpBar = generateIcon(hp, maxHp, true);
         let mpBar = generateIcon(mp, maxMp, false);
-        let helmet = data.helmet ? `\n${data.helmetEmoji} [+${data.helmetDef}] **${data.helmet}**` : '\n◽ [no helmet]';
-        let chest = data.chest ? `\n${data.chestEmoji} [+${data.chestDef}] **${data.chest}**` : '\n◽ [no chest]';
-        let pants = data.pants ? `\n${data.pantsEmoji} [+${data.pantsDef}] **${data.pants}**` : '\n◽ [no pants]';
+        let helmet = data.helmet ? `\n${data.helmetEmoji} [+${data.helmetDef + data.helmet_modifier}] **${data.helmet}**` : '\n◽ [no helmet]';
+        let shirt = data.shirt ? `\n${data.shirtEmoji} [+${data.shirtDef + data.shirt_modifier}] **${data.shirt}**` : '\n◽ [no shirt]';
+        let pants = data.pants ? `\n${data.pantsEmoji} [+${data.pantsDef + data.pants_modifier}] **${data.pants}**` : '\n◽ [no pants]';
         let currentZone = `${data.zone_id}.${data.sub_zone} [${data.zone}]`
         let bonusSetArmorText = data.bonus_armor_set > 0 ? `+ ${data.bonus_armor_set} [Set Bonus]` : '';
         let embedded = new Discord.MessageEmbed({
@@ -90,7 +102,7 @@ async function profile(message, client, id, avatar, args1) {
                     inline: false
                 },
                 {
-                    value: (data.weaponName ? `${data.wEmoji} [+${data.attack}] **${data.weaponName}**` : '◽ [no weapon]') + helmet + chest + pants,
+                    value: (data.weaponName ? `${data.wEmoji} [+${data.attack}] **${data.weaponName}**` : '◽ [no weapon]') + helmet + shirt + pants,
                     name: "__EQUIPMENT__",
                     inline: false
                 },

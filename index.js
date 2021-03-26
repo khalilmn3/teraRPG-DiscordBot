@@ -66,6 +66,8 @@ import shop from './js/shop.js';
 import withdraw from './js/withdraw.js';
 import bank from './js/bank.js';
 import bonus from './js/bonus.js';
+import reforge from './js/reforge.js';
+import log from './js/helper/logs.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -123,6 +125,27 @@ client.on("message", async function (message) {
             if (command === "repost") {
                 message.channel.send(body);
                 return;
+            } else if (command === "prepare") {
+                if (args[0] === 'set') {
+                    message.delete;
+                    await queryData(`update configuration set value=1 where id=1;`);
+                    message.channel.send(`Server set prepare maintenance`);
+                } else if (args[0] === 'unset') {
+                    message.delete;
+                    await queryData(`update configuration set value=0 where id=1;`);
+                    message.channel.send(`Server unset prepare maintenance`);
+                }
+            }  else if (command === "maintenance") {
+                if (args[0] === 'set') {
+                    message.delete;
+                    await queryData(`update configuration set value=0 where id=1;`);
+                    await queryData(`update configuration set value=1 where id=6;`);
+                    message.channel.send(`Server set maintenance`);
+                } else if (args[0] === 'unset') {
+                    message.delete;
+                    await queryData(`update configuration set value=0 where id=6;`);
+                    message.channel.send(`Server unset maintenance`);
+                }
             } else if (command === "member") {
                 let member = await queryData(`SELECT count(*) as totalMember FROM player`);
                 // console.log(member[0].totalMember);
@@ -144,16 +167,18 @@ client.on("message", async function (message) {
                 queryData(`UPDATE player SET is_active="1" WHERE id="${args[0]}" LIMIT 1`);
 
                 message.delete();
-                console.log(args);
                 message.channel.send(`Player <@${args[0]}> unbanned`);
                 return;
             } else if (command === "level") {
                 if (!isNaN(args[0])) {
-                    queryData(`UPDATE stat SET level="${args[0]}" WHERE player_id="${args[1]}" LIMIT 1`);
+                    if (args[0].length < 5 && args[0] > 0) {
+                        queryData(`UPDATE stat SET level="${args[0]}" WHERE player_id="${args[1]}" LIMIT 1`);
 
-                    message.delete();
-                    console.log(args);
-                    message.channel.send(`Player <@${args[1]}>'s level has been set`);
+                        message.delete();
+                        message.channel.send(`Player <@${args[1]}>'s level has been set to ${args[0]}`);
+                    } else {
+                        message.channel.send('Failed!')
+                    }
                 }
                 return;
             } else if (command === "math") {
@@ -175,10 +200,15 @@ client.on("message", async function (message) {
             if (isUserRegistred.length > 0) {
                 let stat = isUserRegistred[0];
                 if (isUserRegistred[0].is_active) { // Check Banned User
-                    let configuration = await queryData(`SELECT value FROM configuration WHERE name="is_prepare_maintenance" LIMIT 1`);
+                    let configuration = await queryData(`SELECT value FROM configuration WHERE id IN (1,6) ORDER BY id LIMIT 2`);
                     let prepareMaintenance = configuration.length > 0 ? configuration[0].value : false;
+                    let maintenance = configuration.length > 0 ? configuration[1].value : false;
                     if (isUserRegistred[0].active_command === 1) {
                         message.reply(`you have an active command, end it before processing another!`)
+                        return;
+                    }
+                    if (maintenance && authorID !== '668740503075815424') {
+                        message.channel.send('🛠️ | Bot is under maintenance...!');
                         return;
                     }
                     if (prepareMaintenance && authorID !== '668740503075815424') {
@@ -186,75 +216,113 @@ client.on("message", async function (message) {
                         return;
                     }
                     if (command === "ping") {
+                        log(message, commandBody);
                         let timeTaken = Date.now() - message.createdTimestamp;
                         if (timeTaken < 0) {
                             timeTaken = -timeTaken;
                         }
                         message.channel.send(`Pong! ${timeTaken}ms.`);
                     } else if (command === 'help') {
+                        log(message, commandBody);
                         help(message, client);
                     } else if (command === 'start') {
+                        log(message, commandBody);
                         message.reply(`You already registered, type \`${teraRPGPrefix} help\` for more commands`)
                     } else if (command === 'p' | command === 'profile') {
+                        log(message, commandBody);
                         profile(message, client, authorID, message.author.avatar, args[0]);
                     } else if (command === 'explore' | command === 'exp') {
+                        log(message, commandBody);
                         hunt(message, 0, authorID, authorUsername);
                     } else if (command === 'heal') {
+                        log(message, commandBody);
                         healingPotion(message, 0, authorID, authorUsername);
                     } else if (command === 'mine' || command === 'chop') {
+                        log(message, commandBody);
                         work(message, command, isUserRegistred[0].zone_id);
                     } else if (command === 'backpack' || command === 'bp') {
+                        log(message, commandBody);
                         backpack(message, args[0]);
                     } else if (command === 'workspace' || command === 'ws') {
+                        log(message, commandBody);
                         workspace(message);
                     } else if (command === 'tool' || command === 'tools') {
+                        log(message, commandBody);
                         tools(message, args[0]);
                     } else if (command === 'craft') {
+                        log(message, commandBody);
                         crafting(message, args[0], args[1], args[2]);
                     } else if (command === 'teleport' || command === 'tel') {
+                        log(message, commandBody);
                         teleport(message, args);
                     } else if (command === 'sell') {
+                        log(message, commandBody);
                         let itemName = commandBody.slice(command.length + 1)
                         // console.log(itemName);
                         sellItem(message, itemName)
                     } else if (command === `cf`) {
+                        // log(message, commandBody);
                         coinFlip(message, args)
                     } else if (command === 'vote' || command === 'hourly' || command === 'daily' || command === 'weekly') {
+                        log(message, commandBody);
                         rewards(message, command, isUserRegistred[0]);
                     } else if (command === 'cd' || command === 'cooldowns' || command === 'rd' || command === 'ready') {
-                        cooldowns(message, command)
+                        log(message, commandBody);
+                        cooldowns(message, command, args[0]);
                     } else if (command === 'lottery') {
+                        log(message, commandBody);
                         lottery(message, client, args, stat)
                     } else if (command === 'fish') {
+                        log(message, commandBody);
                         fishing(message, stat);
                     } else if (command === 'open') {
+                        log(message, commandBody);
                         openCrate(message, args);
                     } else if (command === 'invite') {
+                        log(message, commandBody);
                         invite(message);
                     } else if (command === 'dungeon') {
+                        log(message, commandBody);
                         dungeon(message, stat);
                     } else if (command === 'junken') {
+                        log(message, commandBody);
                         junken(message, stat);
                     } else if (command === 'report') {
+                        log(message, commandBody);
                         report(message, client, body);
                     } else if (command === 'suggest') {
+                        log(message, commandBody);
                         suggest(message, client, body);
                     } else if (command === 'upgrade') {
+                        log(message, commandBody);
                         upgrade(message, args[0]);
                     } else if (command === 'ranks') {
+                        log(message, commandBody);
                         ranks(message, args[0]);
                     } else if (command === 'market') {
+                        log(message, commandBody);
                         market(message);
+                    }  else if (command === 'shop') {
+                        log(message, commandBody);
+                        shop(message);
                     } else if (command === 'buy') {
+                        log(message, commandBody);
                         buy(message, args[0], args[1], args[2]);
                     } else if (command === 'deposit') {
+                        log(message, commandBody);
                         deposit(message, args[0]);
                     } else if (command === 'withdraw' || command === 'wd') {
+                        log(message, commandBody);
                         withdraw(message, args[0]);
                     } else if (command === 'bank') {
+                        log(message, commandBody);
                         bank(message);
                     } else if (command === 'booster') {
+                        log(message, commandBody);
                         bonus(message);
+                    } else if (command === 'reforge') {
+                        log(message, commandBody);
+                        reforge(message,command, args[0]);
                     }
                 }
             } else if (command === 'start') {

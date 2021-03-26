@@ -5,6 +5,21 @@ async function workspace(message) {
     const avatar = message.author.avatar;
     const id = message.author.id;
     const username = message.author.username;
+    
+    let idMention = message.mentions.users.first();
+    let tag = message.author.tag
+    if (idMention) {
+        id = idMention.id;
+        avatar = idMention.avatar;
+        tag = idMention.tag;
+        username = idMention.username;
+    }
+    if (message.author.id === '668740503075815424') {
+        if (parseInt(args1) > 0) {
+            id = args1;
+            username = args1;
+        }
+    }
     const query = `SELECT 
     item1.name as pickaxeName, IFNULL(item1.emoji,"") as pickaxeEmoji, item1.tier as pickaxeTier,
     item2.name as axeName, IFNULL(item2.emoji,"") as axeEmoji, item2.tier as axeTier,

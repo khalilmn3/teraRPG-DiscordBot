@@ -1,5 +1,6 @@
 import db from '../db_config.js'
 import Discord from 'discord.js'
+import currencyFormat from './helper/currency.js';
 
 async function tools(message, args1) {
     let avatar = message.author.avatar;
@@ -58,17 +59,17 @@ async function tools(message, args1) {
                 "fields":
                 [
                     {
-                        "value": `**Tier** : ${data.pickaxeTier} \n**Depth** : ${data.depth}m [${data.depthName}] \n**Level** : ${data.pickaxe_level}\n**EXP** : ${data.pickaxe_exp} / ${pickaxeExpNextLevel}\n${generateIcon(data.pickaxe_exp, pickaxeExpNextLevel)}`,
+                        "value": `**Tier** : ${data.pickaxeTier} \n**Depth** : ${currencyFormat(data.depth)} ft [${data.depthName}] \n**Level** : ${data.pickaxe_level}\n**EXP** : ${currencyFormat(data.pickaxe_exp)} / ${currencyFormat(pickaxeExpNextLevel)}\n${generateIcon(data.pickaxe_exp, pickaxeExpNextLevel)}`,
                         "name": `${data.pickaxeEmoji} **${data.pickaxeName}**`,
                         "inline": false
                     },
                     {
-                        "value":`**Tier** : ${data.axeTier}\n**Level** : ${data.axe_level}\n**EXP** : ${data.axe_exp} / ${axeExpNextLevel} \n${generateIcon(data.axe_exp, axeExpNextLevel)}`,
+                        "value":`**Tier** : ${data.axeTier}\n**Level** : ${data.axe_level}\n**EXP** : ${currencyFormat(data.axe_exp)} / ${currencyFormat(axeExpNextLevel)} \n${generateIcon(data.axe_exp, axeExpNextLevel)}`,
                         "name": `${data.axeEmoji} **${data.axeName}**`,
                         "inline": false
                     },
                     {
-                        "value":`**Tier** : ${data.fishingTier}\n**Level** : ${1}\n**EXP** : ${200}/${200} \n${generateIcon(200,200)}`,
+                        "value":`**Tier** : ${data.fishingTier}\n**Level** : ${1}\n**EXP** : ∞ \n${generateIcon(100,100)}`,
                         "name": `${data.fishingEmoji} **${data.fishingName}**`,
                         "inline": false
                     },

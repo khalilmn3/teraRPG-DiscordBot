@@ -1,3 +1,4 @@
+import config from "../../config.js";
 import queryData from "./query.js";
 
 function setCooldowns(playerId, command) {
@@ -23,7 +24,9 @@ function setCooldowns(playerId, command) {
     } else if (command === 'dungeon') {
         field = 'dungeon'
     }
-    queryData(`INSERT cooldowns SET player_id="${playerId}", ${field}="${inTime}", timestamp=NOW() ON DUPLICATE KEY UPDATE ${field}="${inTime}"`);
+    if (!config.DEBUG) {
+        queryData(`INSERT cooldowns SET player_id="${playerId}", ${field}="${inTime}", timestamp=NOW() ON DUPLICATE KEY UPDATE ${field}="${inTime}"`);
+    }
 }
 
 export default setCooldowns;

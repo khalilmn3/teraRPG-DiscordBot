@@ -10,7 +10,8 @@ import randomNumber from './helper/randomNumberWithMinMax.js';
 import calculateArmor from './helper/calculateArmor.js';
 import addExpGold from './helper/addExp.js';
 import calculateBonusExpBank from './helper/calculateBonusExpBank.js';
-import { addBonusExp } from './helper/configuration.js';
+import { addBonusExp, addBonusGold } from './helper/configuration.js';
+import myCache from './cache/leaderboardChace.js';
 
 async function hunt(message, client, id, username, zone) {
     let cooldowns = await isCommandsReady(id, 'explore');
@@ -31,10 +32,16 @@ async function hunt(message, client, id, username, zone) {
         LEFT JOIN utility ON (stat.player_id=utility.player_id)
         WHERE level.id > stat.level AND stat.player_id="${id}" LIMIT 1`);
         stat = stat[0];
-        let monsterData = await queryData(`SELECT emoji, name, min_damage, max_damage, min_exp, max_exp, min_coin, max_coin, chance FROM enemy WHERE is_boss="0" AND zone_id=${stat.zone_id}`)
-    
-        let monster = '';
-        monster = await randomizeChance(monsterData);
+        
+        let monsterData = myCache.get('monsterData');
+        if (monsterData == undefined) {
+            monsterData = await queryData(`SELECT emoji, zone_id, name, min_damage, max_damage, min_exp, max_exp, min_coin, max_coin, chance FROM enemy WHERE is_boss="0" AND zone_id=${stat.zone_id}`)
+            myCache.set('monsterData', monsterData);
+        } else if (monsterData[0].zone_id != stat.zone_id) {
+            monsterData = await queryData(`SELECT emoji,zone_id, name, min_damage, max_damage, min_exp, max_exp, min_coin, max_coin, chance FROM enemy WHERE is_boss="0" AND zone_id=${stat.zone_id}`)
+            myCache.set('monsterData', monsterData);
+        }
+        let monster = await randomizeChance(monsterData);
     
         let def = await calculateArmor(message.author.id);
         let maxHp = 5 * (stat.level + stat.basic_hp);
@@ -48,6 +55,7 @@ async function hunt(message, client, id, username, zone) {
         exp = Math.round(exp + bonusExp);
         exp = await addBonusExp(message, exp);
         let coin = subArea >= 2 ? randomNumber(monster.min_coin, monster.max_coin) : monster.min_coin;
+        coin = await addBonusGold(message, coin);
 
         let cHp = bHp - ((damage - def) > 0 ? (damage - def) : 0);
         
@@ -59,7 +67,7 @@ async function hunt(message, client, id, username, zone) {
                 maxHp = 5 * ((stat.level - 1) + stat.basic_hp);
                 maxMp = 5 * ((stat.level - 1) + stat.basic_mp);
                 db.query(`UPDATE stat SET hp=${maxHp}, mp=${maxMp}, level=level - 1, current_experience=0 WHERE player_id="${id}"`);
-                message.channel.send(`${username} Lost in battle, he also lost his level by 1, \nBe carefull next time and make sure \nyou already prepared before going to wild.`);
+                message.channel.send(`${username} Lost in battle with ${monster.emoji} ** ${monster.name} **,\nalso lost level by 1, \nBe carefull next time and make sure \nyou already prepared before going to wild.`);
                 
             } else {
                 db.query(`UPDATE stat SET hp=1, current_experience=0 WHERE player_id="${id}"`);

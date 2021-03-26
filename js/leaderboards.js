@@ -16,10 +16,11 @@ async function ranks(message, args1) {
             topTitle = 'GOLD';
             titleStart = '<:gold_coin:801440909006209025>';
             titleEnd = 'gold';
+        
             
-            ranks = await queryData(`SELECT username, gold FROM player LEFT JOIN stat ON (player.id=stat.player_id) ORDER BY ${orderBy} DESC LIMIT 10`);
             data = myCache.get('rank_gold');
             if (data == undefined) {
+                ranks = await queryData(`SELECT username, SUM(gold+bank) as gold FROM player LEFT JOIN stat ON (player.id=stat.player_id) GROUP BY player_id ORDER BY ${orderBy} DESC LIMIT 10`);
                 myCache.set('rank_gold', ranks, 3600);
                 data = myCache.get('rank_gold');
             }
@@ -29,9 +30,10 @@ async function ranks(message, args1) {
             titleStart = 'Level';
             titleEnd = '';
             
-            ranks = await queryData(`SELECT username, level FROM player LEFT JOIN stat ON (player.id=stat.player_id) ORDER BY ${orderBy} DESC LIMIT 10`);
+            
             data = myCache.get('rank_level');
             if (data == undefined) {
+                ranks = await queryData(`SELECT username, level FROM player LEFT JOIN stat ON (player.id=stat.player_id) ORDER BY ${orderBy} DESC LIMIT 10`);
                 myCache.set('rank_level', ranks, 3600);
                 data = myCache.get('rank_level');
             }
@@ -41,9 +43,10 @@ async function ranks(message, args1) {
             titleStart = '<:Platinum_Pickaxe:803907956675575828>';
             titleEnd = 'ft';
             
-            ranks = await queryData(`SELECT username, depth FROM player LEFT JOIN stat ON (player.id=stat.player_id) ORDER BY ${orderBy} DESC LIMIT 10`);
+            
             data = myCache.get('rank_depth');
             if (data == undefined) {
+                ranks = await queryData(`SELECT username, depth FROM player LEFT JOIN stat ON (player.id=stat.player_id) ORDER BY ${orderBy} DESC LIMIT 10`);
                 myCache.set('rank_depth', ranks, 3600);
                 data = myCache.get('rank_depth');
             }
