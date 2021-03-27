@@ -19,10 +19,10 @@ async function profile(message, client, id, avatar, args1) {
         }
     }
     const query = `SELECT stat.*, level.*, IFNULL(weapon.attack,0) as attack, zone.name as zone,
-        IFNULL(itemArmor1.emoji, '') as helmetEmoji, CONCAT(helmet_modifier.name," ",itemArmor1.name) as helmet, IFNULL(armor1.def,0) as helmetDef,
-        IFNULL(itemArmor2.emoji, '') as shirtEmoji, CONCAT(shirt_modifier.name," ",itemArmor2.name) as shirt, IFNULL(armor2.def,0) as shirtDef,
-        IFNULL(itemArmor3.emoji, '') as pantsEmoji, CONCAT(pants_modifier.name," ",itemArmor3.name) as pants, IFNULL(armor3.def,0) as pantsDef,
-        IFNULL(itemWeapon.emoji, '') as wEmoji, CONCAT(modifier_weapon.name," ",itemWeapon.name) as weaponName,
+        IFNULL(itemArmor1.emoji, '') as helmetEmoji, CONCAT(IFNULL(helmet_modifier.name,"")," ",itemArmor1.name) as helmet, IFNULL(armor1.def,0) as helmetDef,
+        IFNULL(itemArmor2.emoji, '') as shirtEmoji, CONCAT(IFNULL(shirt_modifier.name,"")," ",itemArmor2.name) as shirt, IFNULL(armor2.def,0) as shirtDef,
+        IFNULL(itemArmor3.emoji, '') as pantsEmoji, CONCAT(IFNULL(pants_modifier.name,"")," ",itemArmor3.name) as pants, IFNULL(armor3.def,0) as pantsDef,
+        IFNULL(itemWeapon.emoji, '') as wEmoji, CONCAT(IFNULL(modifier_weapon.name,"")," ",itemWeapon.name) as weaponName,
         IF(armor1.armor_set_id=armor2.armor_set_id AND armor2.armor_set_id=armor3.armor_set_id, armor_set.bonus_set, 0) as bonus_armor_set,
         utility.piggy_bank as Bank, utility.bug_net as BugNet, utility.mining_helmet as MiningHelmet, utility.ring as Ring,
         IFNULL(modifier_weapon.stat_change,0) as weapon_modifier,
@@ -55,6 +55,7 @@ async function profile(message, client, id, avatar, args1) {
             return;
         }
         data = await result[0];
+        // console.log(data);
         let maxExp = data.experience.toLocaleString('en-US', { maximumFractionDigits: 2 });;
         let level = data.level.toLocaleString('en-US');;
         let pLevel = ((data.current_experience / data.experience) * 100).toFixed(2);
@@ -63,11 +64,9 @@ async function profile(message, client, id, avatar, args1) {
         let mp = data.mp.toLocaleString('en-US', { maximumFractionDigits: 2 });
         let totalModifierArmor = parseInt(data.helmet_modifier) + parseInt(data.shirt_modifier) + parseInt(data.pants_modifier);
         let def = parseInt(data.helmetDef) + parseInt(data.shirtDef) + parseInt(data.pantsDef) + parseInt(data.level) + parseInt(data.basic_def) + parseInt(totalModifierArmor);
-        console.log(data);
-        console.log(def);
-        console.log(totalModifierArmor);
         // let def = await calculateArmor(id);
-        let attack = data.basic_attack + data.level + data.attack + (data.attack * (data.weapon_enchant * 0.3));
+        let weaponModifier = data.attack * data.weapon_modifier;
+        let attack = data.basic_attack + data.level + data.attack + weaponModifier;
         let maxHp = 5 * (data.level + data.basic_hp);
         let maxMp = 5 * (data.level + data.basic_mp);
         let hpBar = generateIcon(hp, maxHp, true);
@@ -95,19 +94,19 @@ async function profile(message, client, id, avatar, args1) {
                     value: `\n[ HP: ${hp} / ${maxHp} ] \n${hpBar}\n** Level **: ${level} (${pLevel} %) \n** XP **: ${cExp} / ${maxExp}\n** Zone **: ${currentZone}`,
                     name: "__STATUS__",
                     inline: false
-                },,
+                },
                 {
                     value: ` <:gold_coin:801440909006209025> ** Gold **: ${currencyFormat(data.gold)}\n<:diamond:801441006247084042> ** Diamond **: ${currencyFormat(data.diamond)}\n${data.Bank > 0 ? '<:piggy_bank:801444684194906142> ** Bank **: '+currencyFormat(data.bank) : ''}`,
                     name: "__MONEY__",
                     inline: false
                 },
                 {
-                    value: (data.weaponName ? `${data.wEmoji} [+${data.attack}] **${data.weaponName}**` : '◽ [no weapon]') + helmet + shirt + pants,
+                    value: (data.weaponName ? `${data.wEmoji} [+${Math.round(data.attack + weaponModifier)}] **${data.weaponName}**` : '◽ [no weapon]') + helmet + shirt + pants,
                     name: "__EQUIPMENT__",
                     inline: false
                 },
                 {
-                    value: ` <:so_sword:801443762130780170> ** AT **: ${currencyFormat(attack)}\n<:so_shield:801443854254342154> ** DEF **: ${currencyFormat(def)} ${bonusSetArmorText}`,
+                    value: ` <:so_sword:801443762130780170> ** Attack **: ${currencyFormat(Math.round(attack))}\n<:so_shield:801443854254342154> ** Defence **: ${currencyFormat(def)} ${bonusSetArmorText}\n<:Platinum_Pickaxe:803907956675575828> ** Mining depth **: ${data.depth}`,
                     name: "__STATS__",
                     inline: true
                 },

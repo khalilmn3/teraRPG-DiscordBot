@@ -509,6 +509,14 @@ async function queryEquipment(message, playerId, level, armorCraft, materialList
     // 4 = PANTS
     // console.log(equipmentSlot);
     // console.log(level);
+    let modifierField = '';
+    if (equipmentTypeId === 4 || equipmentTypeId === 7 || equipmentTypeId === 10 || equipmentTypeId === 13 || equipmentTypeId === 16 || equipmentTypeId === 19) {
+        modifierField = ',helmet_modifier_id=0'
+    } else if (equipmentTypeId === 5 || equipmentTypeId === 8 || equipmentTypeId === 11 || equipmentTypeId === 14 || equipmentTypeId === 17 || equipmentTypeId === 20) {
+        modifierField = ',shirt_modifier_id=0'
+    } else if (equipmentTypeId === 6 || equipmentTypeId === 9 || equipmentTypeId === 12 || equipmentTypeId === 15 || equipmentTypeId === 18 || equipmentTypeId === 21) {
+        modifierField = ',pants_modifier_id=0'
+    }
     if (equipmentSlot > 1) { //ARMOR
         if ((equipmentTypeId == 4 || equipmentTypeId == 5 || equipmentTypeId == 6) && level < 5) {
             message.reply(`⛔ | your level is not eligable to craft this item!`);
@@ -530,6 +538,7 @@ async function queryEquipment(message, playerId, level, armorCraft, materialList
             return;
         }
     } else { // WEAPON
+        modifierField = ',weapon_modifier_id=0'
         if (equipmentTypeId == 2 && level < 5) {
             message.reply(`⛔ | your level is not eligable to craft this item!`)
             return;
@@ -567,7 +576,7 @@ async function queryEquipment(message, playerId, level, armorCraft, materialList
         materialList.forEach((value) => {
             queryData(`UPDATE backpack SET quantity=quantity - ${value.quantity} WHERE player_id="${playerId}" AND item_id=${value.id} LIMIT 1`);
         });
-        queryData(`INSERT INTO equipment SET ${equipmentType}=${equipmentTypeId}, player_id="${playerId}" ON DUPLICATE KEY UPDATE ${equipmentType}=${equipmentTypeId}`)
+        queryData(`INSERT INTO equipment SET ${equipmentType}=${equipmentTypeId} ${modifierField}, player_id="${playerId}" ON DUPLICATE KEY UPDATE ${equipmentType}=${equipmentTypeId} ${modifierField}`)
         message.channel.send(`**${message.author.username}** has successfuly crafted ${armorCraft.emoji} **${armorCraft.name}**`);
         return;
     } else {

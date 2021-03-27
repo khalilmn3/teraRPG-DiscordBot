@@ -85,6 +85,7 @@ dbl.webhook.on('vote', (vote)=>{
     voteRewardsSend(client,vote.user)
     const webhook = new Discord.WebhookClient('822314548291698718', '4pmafrE03jh1nB8Ee_66WTyPKWC3M_hD-nbL9SZIgYTMl_5adXmo_YB4aqYaxi1mDSVL');
     webhook.send(`${vote.user} has voted`)
+    console.log(vote);
 })
 // Command Prefix
 const teraRPGPrefix = config.PREFIX;
@@ -109,15 +110,16 @@ client.on("message", async function (message) {
     const data = {
         authorID: message.author.id
     };
+
     if (message.author.bot) {
         return;
-    };
+    }
     // ================================================================================================================================
     // CO COMMAND
     
     if (content.startsWith(teraRPGPrefix)) {
         const commandBody = message.content.slice(teraRPGPrefix.length).toLowerCase();
-        const args = commandBody.split(' ');
+        const args = commandBody.trim().split(/ +/);
         const command = args.shift().toLowerCase();
         const prefixCommand = teraRPGPrefix + command;
         const body = message.content.replace(prefixCommand, '');
@@ -245,7 +247,7 @@ client.on("message", async function (message) {
                         backpack(message, args[0]);
                     } else if (command === 'workspace' || command === 'ws') {
                         log(message, commandBody);
-                        workspace(message);
+                        workspace(message, args[0]);
                     } else if (command === 'tool' || command === 'tools') {
                         log(message, commandBody);
                         tools(message, args[0]);
