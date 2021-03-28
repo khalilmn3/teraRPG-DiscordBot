@@ -82,10 +82,10 @@ client.login(config.BOT_TOKEN);
 
 const dbl = new DBL(config.DBL_TOKEN, { webhookPort: 5555, webhookAuth: '11211' });
 dbl.webhook.on('vote', (vote)=>{
-    voteRewardsSend(client,vote.user)
+    voteRewardsSend(client,vote.user,vote.isWeekend)
     const webhook = new Discord.WebhookClient('822314548291698718', '4pmafrE03jh1nB8Ee_66WTyPKWC3M_hD-nbL9SZIgYTMl_5adXmo_YB4aqYaxi1mDSVL');
     webhook.send(`${vote.user} has voted`)
-    console.log(vote);
+    console.log(vote.);
 })
 // Command Prefix
 const teraRPGPrefix = config.PREFIX;

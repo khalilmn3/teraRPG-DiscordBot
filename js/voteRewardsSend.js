@@ -2,7 +2,7 @@ import Discord from 'discord.js';
 import currencyFormat from './helper/currency.js';
 import queryData from './helper/query.js';
 import setCooldowns from './helper/setCooldowns.js';
-async function voteRewardsSend(client, player_id) {
+async function voteRewardsSend(client, player_id, isWeekend) {
     await queryData(`INSERT INTO votes SET player_id="${player_id}", vote_count=1, last_updates=NOW() ON DUPLICATE KEY UPDATE vote_count= vote_count + 1, last_updates=NOW()`);
     let userExist = await queryData(`SELECT level FROM stat WHERE player_id="${player_id}" LIMIT 1`);
     if (userExist.length > 0) {
@@ -11,10 +11,14 @@ async function voteRewardsSend(client, player_id) {
         // 1500 * level GOLD / 
         // 1 iron crate / ID:223
         // 1 diamond /
-        let gold = 1500 * parseInt(userExist[0].level);
-        let diamond = 1;
-        let ironCrate = 1;
-        let potion = 10 * parseInt(userExist[0].level);
+        let multiplyWeekend = 1;
+        if (isWeekend) {
+            multiplyWeekend = 2;
+        }
+        let gold = (1500 * multiplyWeekend) * parseInt(userExist[0].level);
+        let diamond = 1 * multiplyWeekend;
+        let ironCrate = 1 * multiplyWeekend;
+        let potion = (10 * multiplyWeekend) * parseInt(userExist[0].level);
         queryData(`CALL insert_item_backpack_procedure("${player_id}", "266", ${potion})`);
         queryData(`CALL insert_item_backpack_procedure("${player_id}", "223", ${ironCrate})`);
         queryData(`UPDATE stat SET gold=gold + ${gold}, diamond=diamond + ${diamond} WHERE player_id="${player_id}" LIMIT 1`);
@@ -33,7 +37,7 @@ async function voteRewardsSend(client, player_id) {
                     inline: false,
                 },
                 {
-                    name: `Rewards`,
+                    name: isWeekend ? 'Weekend Rewards' : 'Rewards',
                     value: `- <:diamond:801441006247084042> ${diamond} diamond\n- <:Iron_Crate:810034071307943976> ${ironCrate} iron crate\n- <:Healing_Potion:810747622859735100> ${currencyFormat(potion)} potion\n- <:gold_coin:801440909006209025> ${currencyFormat(gold)} gold`,
                     inline: false,
                 }],
