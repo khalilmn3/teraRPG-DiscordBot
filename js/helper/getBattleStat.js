@@ -21,7 +21,7 @@ function getDefense(basicDef, level, helmetDef, shirtDef, pantsDef, bonusArmorSe
     shirtModifier = parseInt(shirtModifier) > 0 ? parseInt(shirtModifier) : 0;
     pantsModifier = parseFloat(pantsModifier) > 0 ? parseFloat(pantsModifier) : 0;
     let totalModifierArmor = helmetModifier + shirtModifier + pantsModifier;
-    let totalArmor = basicDef + level + helmetDef + shirtDef + pantsDef + totalModifierArmor;
+    let totalArmor = basicDef + level + helmetDef + shirtDef + pantsDef + bonusArmorSet + totalModifierArmor;
     return totalArmor;
 }
 

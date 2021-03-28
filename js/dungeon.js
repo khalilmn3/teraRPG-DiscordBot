@@ -31,6 +31,7 @@ async function dungeon(message, stat) {
             return;
         }
         let playerList = await queryData(`SELECT player.is_active, hp, mp, current_experience, level, basic_hp, basic_mp, basic_attack, basic_def, weapon.attack, zone_id, sub_zone,
+             IF(armor1.armor_set_id=armor2.armor_set_id AND armor2.armor_set_id=armor3.armor_set_id, armor_set.bonus_set, 0) as bonus_armor_set,
             IFNULL(armor1.def,0) as helmetDef,
             IFNULL(armor2.def,0) as chestDef,
             IFNULL(armor3.def,0) as pantsDef,
@@ -80,6 +81,7 @@ async function dungeon(message, stat) {
         let bossStat = await queryData(`SELECT * FROM enemy WHERE is_boss='1' AND zone_id='${playerList[0].zone_id}' LIMIT 1`);
         bossStat = bossStat.length > 0 ? bossStat[0] : [];
         bossStat.attack = playerList[0].sub_zone >= 2 ? bossStat.max_damage : bossStat.min_damage;
+        bossStat.hp = bossStat.hp * playerList[0].sub_zone;
         let bossEmbed = new Discord.MessageEmbed({
             type: "rich",
             description: null,
@@ -93,9 +95,9 @@ async function dungeon(message, stat) {
                 },
                 {
                     name: `${bossStat.emoji} ${bossStat.name} ${playerList[0].sub_zone == 2 ? `[Hard]` : `[Normal]`}`,
-                    value: `**Att**: ${currencyFormat(bossStat.hp)}
-                            **Def**: ${currencyFormat(bossStat.attack)}
-                            **HP** : ${currencyFormat(bossStat.def)}`,
+                    value: `**HP** : ${currencyFormat(bossStat.hp)}
+                            **Att**: ${currencyFormat(bossStat.attack)}
+                            **Def**: ${currencyFormat(bossStat.def)}`,
                     inline: false,
                 }
             ],
@@ -156,6 +158,8 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         sub_zone: playerList[0].sub_zone,
         buff: 0
     }
+    console.log(playerList[0])
+    console.log(player1Stat);
     let player2Stat = {
         id: player2,
         level: playerList[1].level,
@@ -173,6 +177,7 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         hp : getMaxHP(playerList[1].basic_hp, playerList[1].level),
         mp : getMaxMP(playerList[1].basic_mp, playerList[1].level)
     }
+    
     const maxBossStat = {
         hp: bossStat.hp,
         mp: bossStat.mp
@@ -284,21 +289,29 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
     let player1 = player1Stat.id;
     let player2 = player2Stat.id;
     let commandList = [];
+    let availableCommand = `\`\`\`Fighter Command 
+- Slash      | 350% Att
+- Stance     | Reflect 50% damage taken\`\`\``;
     if (player === 1) {
         turn = `> [Fighter] - <@${player1.id}> turn`;
         playerId = player1.id
         commandList = ['slash', 'stance']
+        
     } else if (player === 2) {
         turn = `> [Support] - <@${player2.id}> turn`;
         playerId = player2.id
-        commandList = ['heal', 'great heal', 'buff']
+        commandList = ['heal', 'great heal', 'buff'];
+        availableCommand = `\`\`\`Support Command
+- Heal       | HP +200% Att
+- Great Heal | HP +500% Att (use left:${greatHealUsed})
+- Buff       | Fighter Att +50%\`\`\``;
     }
     let commandMsg = new Discord.MessageEmbed({
         type: "rich",
         color: 10115509,
         fields: [{
             name: 'Commands list',
-            value: `\`\`\`Fighter Command \n- Slash | 350% Att \n- Stance | Reflect 50% damage taken \nSupport Command\n- Heal | HP +200% Att\n- Great Heal | HP +500% Att (use left:${greatHealUsed})\n- Buff | Fighter Att +50%\`\`\``,
+            value: availableCommand,
             inline: false,
         }],
     })
@@ -320,8 +333,6 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                 let dgmToPlayer1 = damage(bossStat.attack * attackBossMultiplier, player1Stat.def);
                 let dgmToPlayer2 = damage(bossStat.attack * attackBossMultiplier, player2Stat.def);
                 let dmgBossMessage = '';
-                console.log(dgmToPlayer1);
-                console.log(dgmToPlayer2);
                 if (message.content.toLowerCase() == 'slash' || message.content.toLowerCase() == 'stance') {
                     dmgToBoss = damage(parseInt(player1Stat.attack) + parseInt(player1Stat.buff), bossStat.def);
                     dmgToBoss = message.content.toLowerCase() == 'stance' ? dmgToBoss - (dmgToBoss * 50 / 100) : dmgToBoss * 350 / 100; // reduce damage to boss

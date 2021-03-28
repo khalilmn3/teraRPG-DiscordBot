@@ -1,5 +1,5 @@
 function damage(attack, targetDef) {
-    const defMultiplier = 0.5;
+    const defMultiplier = 1;
     if (isNaN(attack) || isNaN(targetDef)) {
         return 0;
     } else {

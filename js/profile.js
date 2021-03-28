@@ -63,7 +63,6 @@ async function profile(message, client, id, avatar, args1) {
         let hp = data.hp;
         let mp = data.mp;
         let def = getDefense(data.basic_def, data.level, data.helmetDef, data.shirtDef, data.pantsDef, data.bonus_armor_set, data.helmet_modifier, data.shirt_modifier, data.pants_modifier);
-        console.log(def);
         let weaponModifier = data.attack * data.weapon_modifier;
         let attack = getAttack(data.basic_attack, data.attack, data.level, data.weapon_modifier);
         let maxHp = getMaxHP(data.basic_hp,data.level);
@@ -105,7 +104,7 @@ async function profile(message, client, id, avatar, args1) {
                     inline: false
                 },
                 {
-                    value: ` <:so_sword:801443762130780170> ** Attack **: ${currencyFormat(Math.round(attack))}\n<:so_shield:801443854254342154> ** Defence **: ${def} ${bonusSetArmorText}\n<:Platinum_Pickaxe:803907956675575828> ** Mining depth **: ${currencyFormat(data.depth)}`,
+                    value: ` <:so_sword:801443762130780170> ** Attack **: ${currencyFormat(Math.round(attack))}\n<:so_shield:801443854254342154> ** Defence **: ${def - data.bonus_armor_set} ${bonusSetArmorText}\n<:Platinum_Pickaxe:803907956675575828> ** Mining depth **: ${currencyFormat(data.depth)}`,
                     name: "__STATS__",
                     inline: true
                 },
