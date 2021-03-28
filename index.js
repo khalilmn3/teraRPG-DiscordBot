@@ -68,6 +68,7 @@ import bank from './js/bank.js';
 import bonus from './js/bonus.js';
 import reforge from './js/reforge.js';
 import log from './js/helper/logs.js';
+import give from './js/adminCommands/giveItem.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -198,6 +199,8 @@ client.on("message", async function (message) {
                 } catch (error) {
                     return;
                 }
+            }  else if (command === "give") {
+                give(message, args);
             } 
         }
         if (command != '') {
