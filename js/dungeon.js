@@ -221,7 +221,8 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
     // Battle end
     deactiveCommand([player1.id, player2.id]);
     if (st === 1 && bossStat.hp === 0) {
-        let expReward = bossStat.min_exp * 100;
+        let expReward = playerList[0].zone_id > 1 ? bossStat.max_exp * 100 : bossStat.min_exp * 100;
+        let goldReward = playerList[0].zone_id > 1 ? bossStat.min_coin : bossStat.max_coin;
         message.channel.send(new Discord.MessageEmbed({
             type: "rich",
             color: 10115509,
@@ -231,7 +232,7 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
                 inline: false,
             },{
                 name: 'Rewards',
-                value: `- ${currencyFormat(bossStat.min_coin)} <:gold_coin:801440909006209025>\n- ${currencyFormat(expReward)} <:exp:808837682561548288> `,
+                value: `- ${currencyFormat(goldReward)} <:gold_coin:801440909006209025>\n- ${currencyFormat(expReward)} <:exp:808837682561548288> `,
                 inline: false,
             }],
             author: {
@@ -241,8 +242,8 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
                 proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
             },
         }))
-        addExpGold(message, player1, playerList[0], expReward, bossStat.min_coin, player1Stat);
-        addExpGold(message, player2, playerList[1], expReward, bossStat.min_coin, player2Stat);
+        addExpGold(message, player1, playerList[0], expReward, goldReward, player1Stat);
+        addExpGold(message, player2, playerList[1], expReward, goldReward, player2Stat);
         //move zone 
         if (playerList[0].zone_id < 7) {
             let newSubZone = playerList[0].sub_zone == 1 ? 2 : 1;
