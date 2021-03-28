@@ -9,30 +9,34 @@ async function rewards(message,command, stat) {
     if (command == 'vote') {
         let cooldowns = await isCommandsReady(message.author.id, 'vote');
         let status = '';
-        if (cooldowns.isReady) {
-            status = 'You haven\'t voted yet';
-        } else {
-            status = `You already vote and claimed your rewards, \nYou can vote again in ${cooldowns.waitingTime}`;
-        }
+        // if (cooldowns.isReady) {
+        //     status = 'You haven\'t voted yet';
+        // } else {
+            status = `You already voted, \nYou can vote again in ${cooldowns.waitingTime}`;
+        // }
             // setCooldowns(message.author.id, 'vote');
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
                 description: null,
                 url: null,
                 color: 10115509,
-                fields: [{
-                    name: `Vote`,
-                    value: `Wanna get more rewards?,\nVote me on https://top.gg/bot/804295231838355466`,
-                    inline: false,
-                },{
-                    name: `Rewards`,
-                    value: `<:diamond:801441006247084042> 1\n<:Iron_Crate:810034071307943976> 1\n<:Healing_Potion:810747622859735100> 10 * level\n<:gold_coin:801440909006209025> 1.500 * level`,
-                    inline: false,
-                },{
-                    name: `Status`,
-                    value: status,
-                    inline: false,
-                }]
+                fields: [
+                    {
+                        name: `Vote`,
+                        value: `Wanna get more rewards?,\nVote me on [here](https://top.gg/bot/804295231838355466)\nRewards doubled on weekend`,
+                        inline: false,
+                    },
+                    {
+                        name: `Rewards`,
+                        value: `• <:diamond:801441006247084042> \`1\`\n• <:Iron_Crate:810034071307943976> \`1\`\n• <:Healing_Potion:810747622859735100> \`10 x level\`\n• <:gold_coin:801440909006209025> \`1.500 x level\``,
+                        inline: true,
+                    },
+                    {
+                        name: `Status`,
+                        value: status,
+                        inline: true,
+                    }
+                ]
             }));
             // message.channel.send('Vote cooming soon!!!');
         // } else {
