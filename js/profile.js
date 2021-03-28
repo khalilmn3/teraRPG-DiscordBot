@@ -2,7 +2,7 @@
 import db from '../db_config.js'
 import Discord from 'discord.js';
 import currencyFormat from './helper/currency.js';
-import calculateArmor from './helper/calculateArmor.js';
+import { getAttack, getDefense, getMaxExp, getMaxHP, getMaxMP } from './helper/getBattleStat.js';
 
 async function profile(message, client, id, avatar, args1) {
     let idMention = message.mentions.users.first();
@@ -18,7 +18,7 @@ async function profile(message, client, id, avatar, args1) {
             tag = args1;
         }
     }
-    const query = `SELECT stat.*, level.*, IFNULL(weapon.attack,0) as attack, zone.name as zone,
+    const query = `SELECT stat.*, IFNULL(weapon.attack,0) as attack, zone.name as zone,
         IFNULL(itemArmor1.emoji, '') as helmetEmoji, CONCAT(IFNULL(helmet_modifier.name,"")," ",itemArmor1.name) as helmet, IFNULL(armor1.def,0) as helmetDef,
         IFNULL(itemArmor2.emoji, '') as shirtEmoji, CONCAT(IFNULL(shirt_modifier.name,"")," ",itemArmor2.name) as shirt, IFNULL(armor2.def,0) as shirtDef,
         IFNULL(itemArmor3.emoji, '') as pantsEmoji, CONCAT(IFNULL(pants_modifier.name,"")," ",itemArmor3.name) as pants, IFNULL(armor3.def,0) as pantsDef,
@@ -29,7 +29,7 @@ async function profile(message, client, id, avatar, args1) {
         IFNULL(helmet_modifier.stat_change,0) as helmet_modifier,
         IFNULL(shirt_modifier.stat_change,0) as shirt_modifier,
         IFNULL(pants_modifier.stat_change,0) as pants_modifier
-        FROM level, stat 
+        FROM stat 
         LEFT JOIN equipment ON (stat.player_id = equipment.player_id)
         LEFT JOIN armor as armor1 ON (equipment.helmet_id = armor1.id)
         LEFT JOIN armor as armor2 ON (equipment.shirt_id = armor2.id)
@@ -46,7 +46,7 @@ async function profile(message, client, id, avatar, args1) {
         LEFT JOIN zone ON (stat.zone_id = zone.id)
         LEFT JOIN armor_set ON (armor1.armor_set_id=armor_set.id)
         LEFT JOIN utility ON (stat.player_id=utility.player_id)
-        WHERE level.id > stat.level AND stat.player_id = '${id}' LIMIT 1`;
+        WHERE stat.player_id = '${id}' LIMIT 1`;
     let data = [];
     db.query(query, async function (err, result) {
         if (err) throw err;
@@ -56,19 +56,18 @@ async function profile(message, client, id, avatar, args1) {
         }
         data = await result[0];
         // console.log(data);
-        let maxExp = data.experience.toLocaleString('en-US', { maximumFractionDigits: 2 });;
-        let level = data.level.toLocaleString('en-US');;
-        let pLevel = ((data.current_experience / data.experience) * 100).toFixed(2);
-        let cExp = data.current_experience.toLocaleString('en-US', { maximumFractionDigits: 2 });
-        let hp = data.hp.toLocaleString('en-US', { maximumFractionDigits: 2 });
-        let mp = data.mp.toLocaleString('en-US', { maximumFractionDigits: 2 });
-        let totalModifierArmor = parseInt(data.helmet_modifier) + parseInt(data.shirt_modifier) + parseInt(data.pants_modifier);
-        let def = parseInt(data.helmetDef) + parseInt(data.shirtDef) + parseInt(data.pantsDef) + parseInt(data.level) + parseInt(data.basic_def) + parseInt(totalModifierArmor);
-        // let def = await calculateArmor(id);
+        let maxExp = getMaxExp(data.level);
+        let level = data.level;
+        let persentExp = ((data.current_experience / maxExp) * 100).toFixed(2); 
+        let cExp = data.current_experience;
+        let hp = data.hp;
+        let mp = data.mp;
+        let def = getDefense(data.basic_def, data.level, data.helmetDef, data.shirtDef, data.pantsDef, data.bonus_armor_set, data.helmet_modifier, data.shirt_modifier, data.pants_modifier);
+        console.log(def);
         let weaponModifier = data.attack * data.weapon_modifier;
-        let attack = data.basic_attack + data.level + data.attack + weaponModifier;
-        let maxHp = 5 * (data.level + data.basic_hp);
-        let maxMp = 5 * (data.level + data.basic_mp);
+        let attack = getAttack(data.basic_attack, data.attack, data.level, data.weapon_modifier);
+        let maxHp = getMaxHP(data.basic_hp,data.level);
+        let maxMp = getMaxMP(data.basic_mp,data.level);
         let hpBar = generateIcon(hp, maxHp, true);
         let mpBar = generateIcon(mp, maxMp, false);
         let helmet = data.helmet ? `\n${data.helmetEmoji} [+${data.helmetDef + data.helmet_modifier}] **${data.helmet}**` : '\n◽ [no helmet]';
@@ -91,7 +90,7 @@ async function profile(message, client, id, avatar, args1) {
                 //     inline: false
                 // },
                 {
-                    value: `\n[ HP: ${hp} / ${maxHp} ] \n${hpBar}\n** Level **: ${level} (${pLevel} %) \n** XP **: ${cExp} / ${maxExp}\n** Zone **: ${currentZone}`,
+                    value: `\n[ HP: ${currencyFormat(hp)} / ${currencyFormat(maxHp)} ] \n${hpBar}\n** Level **: ${level} (${persentExp} %) \n** XP **: ${currencyFormat(cExp)} / ${currencyFormat(maxExp)}\n** Zone **: ${currentZone}`,
                     name: "__STATUS__",
                     inline: false
                 },
@@ -106,7 +105,7 @@ async function profile(message, client, id, avatar, args1) {
                     inline: false
                 },
                 {
-                    value: ` <:so_sword:801443762130780170> ** Attack **: ${currencyFormat(Math.round(attack))}\n<:so_shield:801443854254342154> ** Defence **: ${currencyFormat(def)} ${bonusSetArmorText}\n<:Platinum_Pickaxe:803907956675575828> ** Mining depth **: ${data.depth}`,
+                    value: ` <:so_sword:801443762130780170> ** Attack **: ${currencyFormat(Math.round(attack))}\n<:so_shield:801443854254342154> ** Defence **: ${def} ${bonusSetArmorText}\n<:Platinum_Pickaxe:803907956675575828> ** Mining depth **: ${currencyFormat(data.depth)}`,
                     name: "__STATS__",
                     inline: true
                 },

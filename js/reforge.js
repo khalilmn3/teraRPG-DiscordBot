@@ -3,7 +3,7 @@ import myCache from './cache/leaderboardChace.js';
 import currencyFormat from './helper/currency.js';
 import queryData from './helper/query.js';
 import randomizeModifier from './helper/randomizeModifier.js';
-async function reforge(message,command, args1) {
+async function reforge(message, args1, args2) {
     if (args1 === 'weapon') {
         processReforge(message, 1,1);
     } else if (args1 === 'helmet') {
@@ -12,6 +12,10 @@ async function reforge(message,command, args1) {
         processReforge(message, 3,1);
     } else if (args1 === 'pants') {
         processReforge(message, 4,1);
+    } else if (args1 === 'info' && args2 === '2') {
+        message.channel.send(listEmbedArmor());
+    } else if (args1 === 'info' && args2 === '1') {
+        message.channel.send(listEmbedWeapon());
     } else {
         message.channel.send(`I don't get it, make sure you type the correct equipment to reforge\ne.g. \`tera reforge weapon/helmet\``)
     }
@@ -109,5 +113,67 @@ async function processReforge(message, equipmentSlot,  modifierMode) {
             }
         }
     }
+}
+
+function listEmbedWeapon() {
+    return new Discord.MessageEmbed({
+        type: "rich",
+        title: 'Reforge Weapon',
+        description: null,
+        url: null,
+        color: 10115509,
+        fields: [
+            {
+                name:`__\`Modifier            Stat                Cost\`__`,
+                value: `\`Broken------------[ -25% ]-----------[    100 ]\`
+                        \`Shoddy------------[ -10% ]-----------[    300 ]\`
+                        \`Weak--------------[  -5% ]-----------[    350 ]\`
+                        \`Damaged-----------[   1% ]-----------[    400 ]\`
+                        \`Keen--------------[   5% ]-----------[    500 ]\`
+                        \`Ruthless----------[  10% ]-----------[    700 ]\`
+                        \`Zealous-----------[  25% ]-----------[  1.000 ]\`
+                        \`Hurtful-----------[  45% ]-----------[  1.500 ]\`
+                        \`Strong------------[  70% ]-----------[  3.000 ]\`
+                        \`Forceful----------[ 100% ]-----------[  7.000 ]\`
+                        \`Unpleasant--------[ 135% ]-----------[ 15.000 ]\`
+                        \`Demonic-----------[ 175% ]-----------[ 35.000 ]\`
+                        \`Superior----------[ 220% ]-----------[ 50.000 ]\`
+                        \`Godly-------------[ 250% ]-----------[ 75.000 ]\``,
+                inline: true
+            },
+            {
+                value: `use \`tera reforge weapon\`\narmor reforge info use \`reforge info 2\``,
+                name: 'Info'
+            }
+        ],
+        provider: null,
+        // timestamp: new Date(),
+    })
+}
+function listEmbedArmor() {
+    return new Discord.MessageEmbed({
+        type: "rich",
+        title: 'Reforge Armor',
+        description: null,
+        url: null,
+        color: 10115509,
+        fields: [ 
+            {
+                name:`__\`Modifier           Stat               Cost\`__`,
+                value: `\`Hard--------------[ +1 ]-----------[  1.000 ]\`
+                        \`Guarding----------[ +2 ]-----------[  3.000 ]\`
+                        \`Armored-----------[ +4 ]-----------[ 15.000 ]\`
+                        \`Warding-----------[ +8 ]-----------[ 35.000 ]\`
+                        \`Defender----------[+16 ]-----------[ 70.000 ]\``,
+                inline: false,
+            }, 
+            {
+                value: `use \`tera reforge helmet/shirt/pants\`\nfor weapon reforge info use \`reforge info 1\``,
+                name: 'Info'
+            }
+        ],
+        provider: null,
+        // timestamp: new Date(),
+    })
 }
 export default reforge;

@@ -7,23 +7,23 @@ import setCooldowns from './helper/setCooldowns.js';
 import isCommandsReady from './helper/isCommandsReady.js';
 import { cooldownMessage } from './embeddedMessage.js';
 import randomNumber from './helper/randomNumberWithMinMax.js';
-import calculateArmor from './helper/calculateArmor.js';
 import addExpGold from './helper/addExp.js';
 import calculateBonusExpBank from './helper/calculateBonusExpBank.js';
 import { addBonusExp, addBonusGold } from './helper/configuration.js';
 import myCache from './cache/leaderboardChace.js';
+import { getAttack, getDefense, getMaxHP, getMaxMP } from './helper/getBattleStat.js';
 
 async function hunt(message, client, id, username, zone) {
     let cooldowns = await isCommandsReady(id, 'explore');
     if (cooldowns.isReady) {
         setCooldowns(id, 'explore');
-        let stat = await queryData(`SELECT stat.*, level.*, zone.name as biome, IFNULL(itemWeapon.emoji, '') as wEmoji, CONCAT(IFNULL(modifier_weapon.name,"")," ",itemWeapon.name) as weaponName,
+        let stat = await queryData(`SELECT stat.*, zone.name as biome, IFNULL(itemWeapon.emoji, '') as wEmoji, CONCAT(IFNULL(modifier_weapon.name,"")," ",itemWeapon.name) as weaponName,
         weapon.attack,armor1.def as helmetDef,armor2.def as chestDef,armor3.def as pantsDef, utility.bug_net,
         IFNULL(modifier_weapon.stat_change,0) as weapon_modifier,
         IFNULL(helmet_modifier.stat_change,0) as helmet_modifier,
         IFNULL(shirt_modifier.stat_change,0) as shirt_modifier,
         IFNULL(pants_modifier.stat_change,0) as pants_modifier
-        FROM level, stat
+        FROM stat
         LEFT JOIN equipment ON (stat.player_id = equipment.player_id)
         LEFT JOIN armor as armor1 ON (equipment.helmet_id = armor1.id)
         LEFT JOIN armor as armor2 ON (equipment.shirt_id = armor2.id)
@@ -40,7 +40,7 @@ async function hunt(message, client, id, username, zone) {
         LEFT JOIN armor_set ON (armor1.armor_set_id=armor_set.id)
         LEFT JOIN utility ON (stat.player_id=utility.player_id)
         LEFT JOIN zone ON (stat.zone_id=zone.id)
-        WHERE level.id > stat.level AND stat.player_id="${id}" LIMIT 1`);
+        WHERE stat.player_id="${id}" LIMIT 1`);
         stat = stat[0];
         
         let monsterData = myCache.get('monsterData');
@@ -53,15 +53,14 @@ async function hunt(message, client, id, username, zone) {
         }
         let monster = await randomizeChance(monsterData);
     
-        let def = await calculateArmor(message.author.id);
-        let maxHp = 5 * (stat.level + stat.basic_hp);
-        let maxMp = 5 * (stat.level + stat.basic_mp);
+        let attack = getAttack(stat.basic_attack, stat.attack, stat.level, stat.weapon_modifier);
+        let def = getDefense(stat.basic_def, stat.level, stat.helmetDef, stat.shirtDef, stat.pantsDef, stat.bonus_armor_set, stat.helmet_modifier, stat.shirt_modifier, stat.pants_modifier);
+        let maxHp = getMaxHP(stat.basic_hp, stat.level);
+        let maxMp = getMaxMP(stat.basic_mp, stat.level);
         let bHp = stat.hp;
         let subArea = stat.sub_zone;
         let damage = subArea >= 2 ? randomNumber(monster.min_damage, monster.max_damage) : monster.min_damage;
         monster.attack = damage;
-        let weaponModifier = stat.attack * stat.weapon_modifier;
-        let attack = stat.basic_attack + stat.level + stat.attack + weaponModifier;
         let exp = subArea >= 2 ? randomNumber(monster.min_exp, monster.max_exp) : monster.min_exp;
         // Add bonus exp 
         let bonusExp = calculateBonusExpBank(exp);
@@ -76,7 +75,7 @@ async function hunt(message, client, id, username, zone) {
         let turn = 1;
         let logMsg = '';
         logMsg = `**${username}** encountered a ${monster.emoji} **${monster.name}**,\n preparing for battle...`;        
-        message.channel.send(messageSend(message, logMsg, stat, monster, mCHp, turn)).then((msg) => {
+        await message.channel.send(messageSend(message, logMsg, stat, monster, mCHp, turn)).then((msg) => {
             do {
                 if (turn > 10) {
                     dmgToPlayer = dmgToPlayer + turn;
@@ -94,8 +93,8 @@ async function hunt(message, client, id, username, zone) {
             if (cHp <= 0) {
                 cHp = 0;
                 if (stat.level > 1) {
-                    maxHp = 5 * ((stat.level - 1) + stat.basic_hp);
-                    maxMp = 5 * ((stat.level - 1) + stat.basic_mp);
+                    maxHp = getMaxHP(stat.basic_hp, stat.level - 1);
+                    maxMp = getMaxMP(stat.basic_mp, stat.level - 1);
                     db.query(`UPDATE stat SET hp=${maxHp}, mp=${maxMp}, level=level - 1, current_experience=0 WHERE player_id="${id}"`);
                     logMsg = `${username} Lost in battle with ${monster.emoji} ** ${monster.name} **,\nalso lost level by 1, \nBe carefull next time and make sure \nyou already prepared before going to wild.`;
                     // messageSend(message, logMsg, stat, monster, mCHp, turn); 
@@ -122,6 +121,7 @@ async function hunt(message, client, id, username, zone) {
             setTimeout(() => {
                 logMsg = `**${username}** swing **${weapon}** \n${monster.emoji} **${monster.name}** knocked down ${hpLost} HP \nGained **${coin}** 𝑔𝑜𝓁𝒹 and **${exp}** 𝑒𝓍𝓅`;
                 msg.embeds[0].fields[1].value = logMsg;
+                msg.embeds[0].footer.text = `turn: ${turn}`;
                 const newLogs = new Discord.MessageEmbed(msg.embeds[0]);
                 msg.edit(msg.embeds[0])
                         
@@ -141,7 +141,12 @@ async function hunt(message, client, id, username, zone) {
         if (stat.bug_net) {
             let random = Math.floor(Math.random() * 100);
             if (random <= 15) {
-                let baitData = await queryData(`SELECT id, emoji, name, chance FROM item WHERE type_id="17" AND dropable=TRUE`);
+                let baitData = myCache.get('baitData');
+                if (baitData == undefined) {
+                    let data = await queryData(`SELECT id, emoji, name, chance FROM item WHERE type_id="17" AND dropable=TRUE`);
+                    myCache.set('baitData', data);
+                    baitData = data;
+                }
                 let bait = await randomizeChance(baitData);
                 // console.log(bait);
                 if (bait != 0) {

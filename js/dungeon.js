@@ -4,7 +4,7 @@ import addExpGold from "./helper/addExp.js";
 import currencyFormat from "./helper/currency.js";
 import damage from "./helper/damage.js";
 import generateIcon from "./helper/emojiGenerate.js";
-import {attack, defense, manaPoint, hitPoint} from "./helper/getBattleStat.js";
+import { getAttack, getDefense, getMaxHP, getMaxMP} from "./helper/getBattleStat.js";
 import isCommandsReady from "./helper/isCommandsReady.js";
 import queryData from "./helper/query.js";
 import { activeCommand, deactiveCommand } from "./helper/setActiveCommand.js";
@@ -30,17 +30,31 @@ async function dungeon(message, stat) {
             message.channel.send('Dungeon 7 is not available right now!');
             return;
         }
-        let playerList = await queryData(`SELECT player.is_active, hp, mp, current_experience, level, basic_hp, basic_mp, basic_attack, basic_def, weapon.attack,weapon_enchant, zone_id, sub_zone,
+        let playerList = await queryData(`SELECT player.is_active, hp, mp, current_experience, level, basic_hp, basic_mp, basic_attack, basic_def, weapon.attack, zone_id, sub_zone,
             IFNULL(armor1.def,0) as helmetDef,
             IFNULL(armor2.def,0) as chestDef,
-            IFNULL(armor3.def,0) as pantsDef
+            IFNULL(armor3.def,0) as pantsDef,
+            IFNULL(modifier_weapon.stat_change,0) as weapon_modifier,
+            IFNULL(helmet_modifier.stat_change,0) as helmet_modifier,
+            IFNULL(shirt_modifier.stat_change,0) as shirt_modifier,
+            IFNULL(pants_modifier.stat_change,0) as pants_modifier
             FROM stat 
             LEFT JOIN equipment ON (stat.player_id = equipment.player_id)
             LEFT JOIN armor as armor1 ON (equipment.helmet_id = armor1.id)
             LEFT JOIN armor as armor2 ON (equipment.shirt_id = armor2.id)
             LEFT JOIN armor as armor3 ON (equipment.pants_id = armor3.id)
             LEFT JOIN weapon ON (equipment.weapon_id = weapon.id)
-            LEFT JOIN zone ON (stat.zone_id = zone.id)
+            LEFT JOIN item as itemArmor1 ON (armor1.item_id = itemArmor1.id)
+            LEFT JOIN item as itemArmor2 ON (armor2.item_id = itemArmor2.id)
+            LEFT JOIN item as itemArmor3 ON (armor3.item_id = itemArmor3.id)
+            LEFT JOIN item as itemWeapon ON (weapon.item_id = itemWeapon.id)
+            LEFT JOIN modifier_weapon ON (equipment.weapon_modifier_id=modifier_weapon.id)
+            LEFT JOIN modifier_armor as helmet_modifier ON (equipment.helmet_modifier_id=helmet_modifier.id)
+            LEFT JOIN modifier_armor as shirt_modifier ON (equipment.shirt_modifier_id=shirt_modifier.id)
+            LEFT JOIN modifier_armor as pants_modifier ON (equipment.pants_modifier_id=pants_modifier.id) 
+            LEFT JOIN armor_set ON (armor1.armor_set_id=armor_set.id)
+            LEFT JOIN utility ON (stat.player_id=utility.player_id)
+            LEFT JOIN zone ON (stat.zone_id=zone.id)
             LEFT JOIN player ON (stat.player_id = player.id)
             WHERE stat.player_id IN ('${player2.id}', '${player1.id}') ORDER BY FIELD(stat.player_id,'${player1.id}', '${player2.id}') LIMIT 2`);
         
@@ -66,7 +80,34 @@ async function dungeon(message, stat) {
         let bossStat = await queryData(`SELECT * FROM enemy WHERE is_boss='1' AND zone_id='${playerList[0].zone_id}' LIMIT 1`);
         bossStat = bossStat.length > 0 ? bossStat[0] : [];
         bossStat.attack = playerList[0].sub_zone >= 2 ? bossStat.max_damage : bossStat.min_damage;
-        message.channel.send(`Are you sure want to fight zone boss ${bossStat.emoji} **${bossStat.name}**? \nAll player has to react ✅ to accept!`)
+        let bossEmbed = new Discord.MessageEmbed({
+            type: "rich",
+            description: null,
+            url: null,
+            color: 10115509,
+            fields: [
+                {
+                    name: `Confirm`,
+                    value: `All player has to react ✅ to accept!\n=================================`,
+                    inline: false
+                },
+                {
+                    name: `${bossStat.emoji} ${bossStat.name} ${playerList[0].sub_zone == 2 ? `[Hard]` : `[Normal]`}`,
+                    value: `**Att**: ${currencyFormat(bossStat.hp)}
+                            **Def**: ${currencyFormat(bossStat.attack)}
+                            **HP** : ${currencyFormat(bossStat.def)}`,
+                    inline: false,
+                }
+            ],
+            image: {
+                url: `${bossStat.image_url}`,
+                proxyURL: `https://images-ext-2.discordapp.net/external/x-zut8t2u6esGWxWBBOyZYXq59BmTg9lEZHwM21iOfQ/%3Fv%3D26/${bossStat.image_url}`,
+                height: 0,
+                width: 0
+            },
+            // files: ['https://cdn.discordapp.com/attachments/811586577612275732/811586719198871572/King_Slime_1.png']
+        });
+        message.channel.send(bossEmbed)
             .then(function (message2) {
                 message2.react('✅').then(() => message2.react('❎'));
                 const filter = (reaction, user) => { return ['✅', '❎'].includes(reaction.emoji.name) && [player1.id, player2.id].includes(user.id) }
@@ -108,8 +149,8 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
     let player1Stat = {
         id: player1,
         level: playerList[0].level,
-        attack: attack(playerList[0].basic_attack, playerList[0].attack, playerList[0].weapon_enchant, playerList[0].level),
-        def : await defense(player1.id),
+        attack: getAttack(playerList[0].basic_attack, playerList[0].attack, playerList[0].level, playerList[0].weapon_enchant),
+        def : getDefense(playerList[0].basic_def, playerList[0].level, playerList[0].helmetDef, playerList[0].shirtDef, playerList[0].pantsDef, playerList[0].bonus_armor_set, playerList[0].helmet_modifier, playerList[0].shirt_modifier, playerList[0].pants_modifier),
         hp : playerList[0].hp,
         mp: playerList[0].mp,
         sub_zone: playerList[0].sub_zone,
@@ -118,19 +159,19 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
     let player2Stat = {
         id: player2,
         level: playerList[1].level,
-        attack: attack(playerList[1].basic_attack, playerList[1].attack, playerList[1].weapon_enchant, playerList[1].level),
-        def : await defense(player2.id),
+        attack: getAttack(playerList[1].basic_attack, playerList[1].attack, playerList[1].weapon_enchant, playerList[1].level),
+        def : getDefense(playerList[1].basic_def, playerList[1].level, playerList[1].helmetDef, playerList[1].shirtDef, playerList[1].pantsDef, playerList[1].bonus_armor_set, playerList[1].helmet_modifier, playerList[1].shirt_modifier, playerList[1].pants_modifier),
         hp : playerList[1].hp,
         mp : playerList[1].mp,
         sub_zone: playerList[1].sub_zone,
     }
     const maxPlayer1Stat = {
-        hp : hitPoint(playerList[0].basic_hp, playerList[0].level),
-        mp : manaPoint(playerList[0].basic_mp, playerList[0].level)
+        hp : getMaxHP(playerList[0].basic_hp, playerList[0].level),
+        mp : getMaxMP(playerList[0].basic_mp, playerList[0].level)
     }
     const maxPlayer2Stat = {
-        hp : hitPoint(playerList[1].basic_hp, playerList[1].level),
-        mp : manaPoint(playerList[1].basic_mp, playerList[1].level)
+        hp : getMaxHP(playerList[1].basic_hp, playerList[1].level),
+        mp : getMaxMP(playerList[1].basic_mp, playerList[1].level)
     }
     const maxBossStat = {
         hp: bossStat.hp,
@@ -144,7 +185,14 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         color: 10115509,
         fields: [{
             name: `${bossStat.emoji} ${bossStat.name} ${player1Stat.sub_zone == 2 ? `[Hard]` : `[Normal]`}`,
-            value: `${generateIcon(bossStat.hp,maxBossStat.hp, true)} ${bossStat.hp}/${maxBossStat.hp} 💗\n--------------------------------------------------------\n**${player1Stat.id.username}** [lvl.${player1Stat.level}]\n${generateIcon(player1Stat.hp,maxPlayer1Stat.hp, true)}  HP ${player1Stat.hp}/${maxPlayer1Stat.hp} 💗 \n${generateIcon(player1Stat.mp,maxPlayer1Stat.mp, false)} MP ${player1Stat.mp}/${maxPlayer1Stat.mp} \n**${player2Stat.id.username}** [lvl.${player2Stat.level}]\n${generateIcon(player2Stat.hp,maxPlayer2Stat.hp, true)}  HP ${player2Stat.hp}/${maxPlayer2Stat.hp} 💗\n${generateIcon(player2Stat.mp,maxPlayer2Stat.mp, false)} MP ${player2Stat.mp}/${maxPlayer2Stat.mp}`,
+            value: `${generateIcon(bossStat.hp, maxBossStat.hp, true)} ${bossStat.hp}/${maxBossStat.hp} 💗
+            --------------------------------------------------------
+            **${player1Stat.id.username}** [lvl.${player1Stat.level}]
+            ${generateIcon(player1Stat.hp, maxPlayer1Stat.hp, true)}  HP ${player1Stat.hp}/${maxPlayer1Stat.hp} 💗 
+            ${generateIcon(player1Stat.mp, maxPlayer1Stat.mp, false)} MP ${player1Stat.mp}/${maxPlayer1Stat.mp} 
+            **${player2Stat.id.username}** [lvl.${player2Stat.level}]
+            ${generateIcon(player2Stat.hp, maxPlayer2Stat.hp, true)}  HP ${player2Stat.hp}/${maxPlayer2Stat.hp} 💗
+            ${generateIcon(player2Stat.mp, maxPlayer2Stat.mp, false)} MP ${player2Stat.mp}/${maxPlayer2Stat.mp}`,
             inline: false,
         }],
         // files: ['https://cdn.discordapp.com/attachments/811586577612275732/811586719198871572/King_Slime_1.png']

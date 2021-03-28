@@ -172,14 +172,23 @@ client.on("message", async function (message) {
                 message.channel.send(`Player <@${args[0]}> unbanned`);
                 return;
             } else if (command === "level") {
-                if (!isNaN(args[0])) {
-                    if (args[0].length < 5 && args[0] > 0) {
-                        queryData(`UPDATE stat SET level="${args[0]}" WHERE player_id="${args[1]}" LIMIT 1`);
+                if (args.length > 0) {
+                    if (!isNaN(args[0])) {
+                        if (args.length > 1) {
+                            if (args[0].length < 5 && args[0] > 0) {
+                                queryData(`UPDATE stat SET level="${args[0]}" WHERE player_id="${args[1]}" LIMIT 1`);
 
-                        message.delete();
-                        message.channel.send(`Player <@${args[1]}>'s level has been set to ${args[0]}`);
-                    } else {
-                        message.channel.send('Failed!')
+                                message.delete();
+                                message.channel.send(`Player <@${args[1]}>'s level has been set to ${args[0]}`);
+                            } else {
+                                message.channel.send('Failed!')
+                            }
+                        } else {
+                            queryData(`UPDATE stat SET level="${args[0]}" WHERE player_id="${message.author.id}" LIMIT 1`);
+        
+                            message.delete();
+                            message.channel.send(`Level has been set to ${args[0]}`);
+                        }
                     }
                 }
                 return;
@@ -324,7 +333,7 @@ client.on("message", async function (message) {
                         bonus(message);
                     } else if (command === 'reforge') {
                         log(message, commandBody);
-                        reforge(message,command, args[0]);
+                        reforge(message, args[0], args[1]);
                     }
                 }
             } else if (command === 'start') {
