@@ -14,7 +14,7 @@ async function healingPotion(message, client, id, username) {
             if (stat.hp < maxHp) {
                 queryData(`UPDATE stat SET hp=${maxHp} WHERE player_id="${id}" LIMIT 1`);
                 queryData(`UPDATE backpack SET quantity=quantity - 1 WHERE player_id="${id}" AND item_id="266" LIMIT 1`);
-                message.channel.send(`:adhesive_bandage: | **${username}** HP has been restored.`)
+                message.channel.send(`<:Healing_Potion:810747622859735100> | **${username}** using **healing potion**... \nHP has been restored.`)
             } else {
                 message.channel.send(`**${username}** current HP is maxed out.`)
             }
