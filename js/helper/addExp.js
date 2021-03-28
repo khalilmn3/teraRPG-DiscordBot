@@ -1,4 +1,4 @@
-import { getMaxExp, getMaxHP } from "./getBattleStat.js";
+import { getMaxExp, getMaxHP, getMaxMP } from "./getBattleStat.js";
 import queryData from "./query.js";
 
 async function addExpGold(message, player, stat, expAdd, goldAdd, currentPlayerStat) {

@@ -24,12 +24,12 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `craft <item_name>, craft list, upgrade <pickaxe>, upgrade list`,
+                    value: `craft <item_name>, craft list, upgrade <pickaxe>, upgrade list\nreforge info <1/2>`,
                     name: ":tools: __CRAFTING__",
                     inline: false
                 },
                 {
-                    value: `market, shop, deposit, withdraw, bank, buy <item_name>, sell <item_name>, open <crate> <amount>`,
+                    value: `market, shop, deposit, withdraw, bank, buy <item_name>,\n sell <item_name>, open <crate> <amount>`,
                     name: ":moneybag: __ECONOMY__",
                     inline: false
                 },

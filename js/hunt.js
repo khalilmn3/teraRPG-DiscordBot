@@ -68,6 +68,7 @@ async function hunt(message, client, id, username, zone) {
         exp = await addBonusExp(message, exp);
         let coin = subArea >= 2 ? randomNumber(monster.min_coin, monster.max_coin) : monster.min_coin;
         coin = await addBonusGold(message, coin);
+        monster.hp = subArea >= 2 ? monster.hp * 2 : monster.hp;
         let mCHp = monster.hp;
         let dmgToMonster = (attack - monster.def) > 0 ? attack - monster.def : 1;
         let dmgToPlayer = damage - def > 0 ? damage - def : 1;
@@ -195,12 +196,12 @@ function messageSend(message, msgSend, stat, monsterInfo, monsterCurrentHp, turn
             iconURL : `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
             proxyIconURL : `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
         },
-        image: {
-            url: `${monsterInfo.image_url}`,
-            proxyURL: `https://images-ext-2.discordapp.net/external/x-zut8t2u6esGWxWBBOyZYXq59BmTg9lEZHwM21iOfQ/%3Fv%3D26/${monsterInfo.image_url}`,
-            height: 0,
-            width: 0
-        },
+        // image: {
+        //     url: `${monsterInfo.image_url}`,
+        //     proxyURL: `https://images-ext-2.discordapp.net/external/x-zut8t2u6esGWxWBBOyZYXq59BmTg9lEZHwM21iOfQ/%3Fv%3D26/${monsterInfo.image_url}`,
+        //     height: 0,
+        //     width: 0
+        // },
         footer: {
             text: `turn : ${turn}`,
             iconURL: undefined,
