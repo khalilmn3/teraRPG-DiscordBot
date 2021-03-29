@@ -49,7 +49,7 @@ async function processReforge(message, equipmentSlot,  modifierMode) {
     }
 
     if (equipmentSlot > 0) {
-        let item = await queryData(`SELECT stat.level, item.emoji, item.name, gold, cost FROM stat
+        let item = await queryData(`SELECT stat.level, item.id, item.emoji, item.name, gold, IFNULL(cost,500) as cost FROM stat
                                 LEFT JOIN equipment ON (stat.player_id=equipment.player_id)
                                 ${queryCondition}
                                 LEFT JOIN ${joinField} ON (equipment.${field}=${joinField}.id)
@@ -58,6 +58,9 @@ async function processReforge(message, equipmentSlot,  modifierMode) {
         if (item !== 0) {
             if (item.level >= 5) {
                 if (item.name) {
+                    if (item.id == '278' || item.id == '279' || item.id == '280' || item.id == '281') {
+                        return message.channel.send(`\\⛔ | **${message.author.username}**, you can't reforge **starter** equipment!`)
+                    }
                     if (item.gold > item.cost) {
                         let forgeList = '';
                         if (equipmentSlot == 1) {
@@ -65,7 +68,7 @@ async function processReforge(message, equipmentSlot,  modifierMode) {
                             if (forgeList == undefined) {
                                 forgeList = await queryData(`SELECT id,name,chance1,chance2,chance3,cost FROM modifier_weapon`);
                                 myCache.set('forgeWeaponList', forgeList);
-                                console.log('weponUndef')
+                                // console.log('weponUndef')
                             }
                             forgeList = myCache.get('forgeWeaponList');
                         } else {
@@ -73,14 +76,14 @@ async function processReforge(message, equipmentSlot,  modifierMode) {
                             if (forgeList == undefined) {
                                 forgeList = await queryData(`SELECT id,name,chance1,chance2,chance3,cost FROM modifier_armor`);
                                 myCache.set('forgeArmorList', forgeList);
-                                console.log('armornUndef')
+                                forgeList = myCache.get('forgeArmorList');
                             }
-                            forgeList = myCache.get('forgeArmorList');
                         }
                         let modifier = await randomizeModifier(forgeList, modifierMode);
                         let nextCost = currencyFormat(modifierMode * modifier.cost);
 
                         // Update Enchant
+                        queryData(`UPDATE stat SET gold=gold-${item.cost} WHERE player_id=${message.author.id} LIMIT 1`);
                         queryData(`UPDATE equipment SET ${field}="${modifier.id}" WHERE player_id="${message.author.id}" LIMIT 1`);
             
                         message.channel.send(new Discord.MessageEmbed({

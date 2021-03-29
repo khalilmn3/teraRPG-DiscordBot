@@ -4,7 +4,7 @@ import Discord from 'discord.js';
 import randomNumber from "./helper/randomNumberWithMinMax.js";
 import currencyFormat from "./helper/currency.js";
 
-async function openCrate(message, args) {
+async function openCrate(client, message, args) {
     if (args.length > 0) {
         let type = args[0].toLowerCase();
         let qty = args.length > 1 && parseInt(args[2]) > 0 ? args[2] : 1;
@@ -114,6 +114,40 @@ async function openCrate(message, args) {
                 }
             } else {
                 message.reply(`You dont have that item on your backpack`)
+            }
+        } else if (args[0] === 'starter' && args[1] === 'pack' || args[0] === 'sp') {
+            let cekStarterPack = await queryData(`SELECT quantity FROM backpack WHERE player_id="${message.author.id}" AND item_id="282" AND quantity>0 LIMIT 1`);
+            if (cekStarterPack.length > 0) {
+                let itemMessage = new Discord.MessageEmbed({
+                    type: "rich",
+                    description: null,
+                    url: null,
+                    color: 10115879,
+                    fields: [{
+                        name: '🎁 Starter pack opened!',
+                        value: `
+                        \`x1\`  <:hand_knife:826083566881472552> \`hand knife\`       
+                        \`x1\`  <:Angler_Hat:826083566906638426> \`cool hat\`
+                        \`x1\`  <:Angler_Vest:826083566940979200> \`black shirt\`
+                        \`x1\`  <:Angler_Pants:826083566525349919> \`black pants\`
+                        \`x10\` <:Healing_Potion:810747622859735100> \`healing potion\`
+                        `,
+                        inline: false,
+                    }],
+                    files: [],
+                    footer: {
+                        text: `Find more rewards on \`tera daily/weekly/vote\``,
+                        iconURL: null,
+                        proxyIconURL: null
+                    },
+                });
+                queryData(`UPDATE backpack SET quantity=0 WHERE player_id="${message.author.id}" AND item_id="282" LIMIT 1`);
+                queryData(`CALL insert_item_backpack_procedure(${message.author.id}, 266, 10)`);
+                queryData(`INSERT equipment SET weapon_id="16", helmet_id="22", shirt_id="23", pants_id="24", player_id="${message.author.id}"
+                ON DUPLICATE KEY UPDATE weapon_id="16", helmet_id="22", shirt_id="23", pants_id="24"`);
+                message.channel.send(itemMessage);
+            } else {
+                message.channel.send('You have opened your 🎁**starter pack**!');
             }
         }
     }

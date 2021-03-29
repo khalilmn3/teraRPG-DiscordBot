@@ -75,6 +75,10 @@ async function hunt(message, client, id, username, zone) {
         let cHp = bHp;
         let turn = 1;
         let logMsg = '';
+        // console.log(dmgToPlayer)
+        // console.log(dmgToMonster)
+        // console.log('mhp: ' + mCHp + ' chp: ' + cHp + ' turn: ' + turn);
+        // console.log('attac: ' + attack + ' def: ' + def + ' dmg: ' + dmgToMonster);
         logMsg = `**${username}** encountered a ${monster.emoji} **${monster.name}**,\n preparing for battle...`;        
         await message.channel.send(messageSend(message, logMsg, stat, monster, mCHp, turn)).then((msg) => {
             do {
@@ -217,17 +221,17 @@ function messageSend(message, msgSend, stat, monsterInfo, monsterCurrentHp, turn
 }
 function batlling() {
     do {
-        console.log(dmgToMonster)
-        console.log(mCHp);
-        console.log(dmgToPlayer)
-        console.log(cHp);
+        // console.log(dmgToMonster)
+        // console.log(mCHp);
+        // console.log(dmgToPlayer)
+        // console.log(cHp);
         if (turn > 10) {
             dmgToPlayer = dmgToPlayer + turn;
         }
         mCHp = mCHp - dmgToMonster > 0 ? mCHp - dmgToMonster : 0;
         cHp = cHp - dmgToPlayer > 0 ? cHp - dmgToPlayer : 0;
         turn++
-        console.log('mhp: ' + mCHp + ' chp: ' + cHp + ' turn: ' + turn);
+        // console.log('mhp: ' + mCHp + ' chp: ' + cHp + ' turn: ' + turn);
     } while (mCHp > 0 && cHp > 0 && turn < 25);
 }
 export default hunt;

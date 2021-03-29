@@ -58,7 +58,7 @@ async function dungeon(message, stat) {
             LEFT JOIN zone ON (stat.zone_id=zone.id)
             LEFT JOIN player ON (stat.player_id = player.id)
             WHERE stat.player_id IN ('${player2.id}', '${player1.id}') ORDER BY FIELD(stat.player_id,'${player1.id}', '${player2.id}') LIMIT 2`);
-        
+        greatHealUsed = playerList[0].sub_zone >= 2 ? 5 : greatHealUsed;
         if (playerList.length <= 1) {
             message.reply(`a user in your team is not registered yet, \nTeam up with user who already registered in **teraRPG**`)
             return
@@ -158,8 +158,8 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         sub_zone: playerList[0].sub_zone,
         buff: 0
     }
-    console.log(playerList[0])
-    console.log(player1Stat);
+    // console.log(playerList[0])
+    // console.log(player1Stat);
     let player2Stat = {
         id: player2,
         level: playerList[1].level,

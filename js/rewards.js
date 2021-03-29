@@ -9,11 +9,11 @@ async function rewards(message,command, stat) {
     if (command == 'vote') {
         let cooldowns = await isCommandsReady(message.author.id, 'vote');
         let status = '';
-        // if (cooldowns.isReady) {
-        //     status = 'You haven\'t voted yet';
-        // } else {
+        if (cooldowns.isReady) {
+            status = 'You haven\'t voted yet';
+        } else {
             status = `You already voted, \nYou can vote again in ${cooldowns.waitingTime}`;
-        // }
+        }
             // setCooldowns(message.author.id, 'vote');
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",

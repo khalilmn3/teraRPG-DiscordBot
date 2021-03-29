@@ -69,6 +69,8 @@ import bonus from './js/bonus.js';
 import reforge from './js/reforge.js';
 import log from './js/helper/logs.js';
 import give from './js/adminCommands/giveItem.js';
+import armory from './js/commands/armory.js';
+import unOrEquip from './js/commands/un_equip.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -130,21 +132,29 @@ client.on("message", async function (message) {
             } else if (command === "prepare") {
                 if (args[0] === 'set') {
                     message.delete;
+                    client.channels.cache.get("818359215562424330").setName(`\\🟡-Status`)
+                    client.channels.cache.get("818359215562424330").send(`\\🟡 Bot is Preparing for Maintenance`)
                     await queryData(`update configuration set value=1 where id=1;`);
                     message.channel.send(`Server set prepare maintenance`);
                 } else if (args[0] === 'unset') {
                     message.delete;
+                    client.channels.cache.get("818359215562424330").setName(`\\🟢-Status`)
+                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online`)
                     await queryData(`update configuration set value=0 where id=1;`);
                     message.channel.send(`Server unset prepare maintenance`);
                 }
             }  else if (command === "maintenance") {
                 if (args[0] === 'set') {
                     message.delete;
+                    client.channels.cache.get("818359215562424330").setName(`\\🔴-Status`)
+                    client.channels.cache.get("818359215562424330").send(`\\🔴 Bot Offline\n-Under Maintenance `)
                     await queryData(`update configuration set value=0 where id=1;`);
                     await queryData(`update configuration set value=1 where id=6;`);
                     message.channel.send(`Server set maintenance`);
                 } else if (args[0] === 'unset') {
                     message.delete;
+                    client.channels.cache.get("818359215562424330").setName(`\\🟢-Status`)
+                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online`)
                     await queryData(`update configuration set value=0 where id=6;`);
                     message.channel.send(`Server unset maintenance`);
                 }
@@ -290,7 +300,7 @@ client.on("message", async function (message) {
                         fishing(message, stat);
                     } else if (command === 'open') {
                         log(message, commandBody);
-                        openCrate(message, args);
+                        openCrate(client, message, args);
                     } else if (command === 'invite') {
                         log(message, commandBody);
                         invite(message);
@@ -337,12 +347,44 @@ client.on("message", async function (message) {
                         log(message, commandBody);
                         reforge(message, args[0], args[1]);
                     }
+                    // else if (command === 'armory') {
+                    //     log(message, commandBody);
+                    //     armory(message, args[0]);
+                    // }
+                    // else if (command === 'equip' || command === 'unequip') {
+                    //     log(message, commandBody);
+                    //     unOrEquip(message, command, args[0], args[1]);
+                    // }
                 }
             } else if (command === 'start') {
                 // INSERT USER
                 let log = await queryData(`CALL start_procedure("${authorID}","${message.author.tag}")`)
                 log = log.length > 0 ? log[0][0].log : 0;
-                message.reply(`Welcome to teraRPG, type \`${teraRPGPrefix}exp\` to begin your hunting\nYou can also see other commands with \`${teraRPGPrefix}help\``)
+                let m = `Welcome to teraRPG, type \`${teraRPGPrefix}exp\` to begin your journey\nYou can also see other commands with \`${teraRPGPrefix}help\`. Oh almost forgot, \nhere is a present for you, hope it can help you through the cruelty of the world`
+                let embed = new Discord.MessageEmbed({
+                    type: "rich",
+                    title: null,
+                    description: null,
+                    url: null,
+                    color: 10115509,
+                    fields: [
+                        {
+                            name: `Register reward`,
+                            value: `\`x1\` \\🎁\`starter pack\``,
+                            inline: false
+                        },
+                        {
+                            name: `Info`,
+                            value: `use \`tera open starter pack\` to open it`,
+                            inline: false
+                        },
+                    ],
+                    footer: {
+                        text: '\`tera invite\` to get help on support server'
+                    },
+                })
+                message.reply(m,embed)
+                
                 if (log <= 0) return;
                 client.channels.cache.get('818360247647076382').send(
                     new Discord.MessageEmbed({
