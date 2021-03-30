@@ -93,7 +93,7 @@ async function profile(message, client, id, avatar, args1) {
                     inline: false
                 },
                 {
-                    value: ` <:gold_coin:801440909006209025> ** Gold **: ${currencyFormat(data.gold)}\n<:diamond:801441006247084042> ** Diamond **: ${currencyFormat(data.diamond)}\n${data.Bank > 0 ? '<:piggy_bank:801444684194906142> ** Bank **: '+currencyFormat(data.bank) : ''}`,
+                    value: `<:gold_coin:801440909006209025> ** Gold **: ${currencyFormat(data.gold)}\n<:diamond:801441006247084042> ** Diamond **: ${currencyFormat(data.diamond)}\n${data.Bank > 0 ? '<:piggy_bank:801444684194906142> ** Bank **: '+currencyFormat(data.bank) : ''}`,
                     name: "__MONEY__",
                     inline: false
                 },

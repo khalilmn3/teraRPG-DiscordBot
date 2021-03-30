@@ -99,7 +99,12 @@ async function armory(message) {
                 "inline": true
             },
         ],
-        "thumbnail": null,
+        thumbnail: {
+            url: 'https://cdn.discordapp.com/attachments/811586577612275732/826315909403639828/armory.png',
+            proxyURL: 'https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https://cdn.discordapp.com/attachments/811586577612275732/826315909403639828/armory.png',
+            height: 0,
+            width: 0,
+        },
         "image": null,
         "video": null,
         "author": {

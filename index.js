@@ -280,9 +280,9 @@ client.on("message", async function (message) {
                         teleport(message, args);
                     } else if (command === 'sell') {
                         log(message, commandBody);
-                        let itemName = commandBody.slice(command.length + 1)
+                        // let itemName = commandBody.slice(command.length + 1)
                         // console.log(itemName);
-                        sellItem(message, itemName)
+                        sellItem(message, args)
                     } else if (command === `cf`) {
                         // log(message, commandBody);
                         coinFlip(message, args)

@@ -88,9 +88,12 @@ async function backpack(message, args1) {
             "name": "__BAIT__",
             "inline": true
         }],
-        "thumbnail": null,
-        "image": null,
-        "video": null,
+        thumbnail: {
+            url: 'https://cdn.discordapp.com/attachments/811586577612275732/826322196342767627/backpack.png',
+            proxyURL: 'https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https://cdn.discordapp.com/attachments/811586577612275732/826322196342767627/backpack.png',
+            height: 0,
+            width: 0,
+        },
         "author": {
             "name": `${username}'s backpack`,
             "url": null,
