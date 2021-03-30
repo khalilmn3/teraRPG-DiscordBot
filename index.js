@@ -347,14 +347,14 @@ client.on("message", async function (message) {
                         log(message, commandBody);
                         reforge(message, args[0], args[1]);
                     }
-                    // else if (command === 'armory') {
-                    //     log(message, commandBody);
-                    //     armory(message, args[0]);
-                    // }
-                    // else if (command === 'equip' || command === 'unequip') {
-                    //     log(message, commandBody);
-                    //     unOrEquip(message, command, args[0], args[1]);
-                    // }
+                    else if (command === 'armory') {
+                        log(message, commandBody);
+                        armory(message, args[0]);
+                    }
+                    else if (command === 'equip' || command === 'unequip') {
+                        log(message, commandBody);
+                        unOrEquip(message, command, args[0], args[1]);
+                    }
                 }
             } else if (command === 'start') {
                 // INSERT USER

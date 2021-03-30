@@ -143,7 +143,7 @@ async function openCrate(client, message, args) {
                 });
                 let equipment = await queryData(`SELECT * FROM equipment WHERE player_id="${message.author.id}" LIMIT 1`);
                 if (equipment.length > 0 && (equipment[0].helmet_id || equipment[0].weapon_id || equipment[0].shirt_id || equipment[0].pants_id)) {
-                    return message.channel.send(`\\⛔ | **${message.author.username}**, you can't open 🎁**starter pack** while equipped\nan armor/weapon, unequipped it than try again`)
+                    return message.channel.send(`\\⛔ | **${message.author.username}**, you can't open 🎁**starter pack** while wearing\nan armor/weapon, unequipped it than try again`)
                 }
                 let weaponID = 'weapon_id="16"';
                 let helmetID = 'helmet_id="22"';
