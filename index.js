@@ -71,6 +71,7 @@ import log from './js/helper/logs.js';
 import give from './js/adminCommands/giveItem.js';
 import armory from './js/commands/armory.js';
 import unOrEquip from './js/commands/un_equip.js';
+import booster from './js/adminCommands/booster.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -212,7 +213,9 @@ client.on("message", async function (message) {
                 }
             }  else if (command === "give") {
                 give(message, args);
-            } 
+            } else if (command === 'booster') {
+                booster(message, args);
+            }
         }
         if (command != '') {
             // FIND USER REGISTRATION
