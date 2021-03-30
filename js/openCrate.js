@@ -141,10 +141,19 @@ async function openCrate(client, message, args) {
                         proxyIconURL: null
                     },
                 });
+                let equipment = await queryData(`SELECT * FROM equipment WHERE player_id="${message.author.id}" LIMIT 1`);
+                if (equipment.length > 0 && (equipment[0].helmet_id || equipment[0].weapon_id || equipment[0].shirt_id || equipment[0].pants_id)) {
+                    return message.channel.send(`\\⛔ | **${message.author.username}**, you can't open 🎁**starter pack** while equipped\nan armor/weapon, unequipped it than try again`)
+                }
+                let weaponID = 'weapon_id="16"';
+                let helmetID = 'helmet_id="22"';
+                let shirtID = 'shirt_id="23"';
+                let pantsID = 'pants_id="24"';
+                queryData(`INSERT equipment SET ${weaponID}, ${helmetID}, ${shirtID}, ${pantsID}, player_id="${message.author.id}"
+                    ON DUPLICATE KEY UPDATE ${weaponID}, ${helmetID}, ${shirtID}, ${pantsID}`);
                 queryData(`UPDATE backpack SET quantity=0 WHERE player_id="${message.author.id}" AND item_id="282" LIMIT 1`);
                 queryData(`CALL insert_item_backpack_procedure(${message.author.id}, 266, 10)`);
-                queryData(`INSERT equipment SET weapon_id="16", helmet_id="22", shirt_id="23", pants_id="24", player_id="${message.author.id}"
-                ON DUPLICATE KEY UPDATE weapon_id="16", helmet_id="22", shirt_id="23", pants_id="24"`);
+
                 message.channel.send(itemMessage);
             } else {
                 message.channel.send('You have opened your 🎁**starter pack**!');
