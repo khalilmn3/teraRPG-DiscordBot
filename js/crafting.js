@@ -115,8 +115,16 @@ async function crafting(message, args1, args2, args3) {
     } else if (args1 === 'platinum' && args2 === 'bar') {
         craftBar(message, id, username, platinumBarId, platinumOreId, '<:Platinum_Bar:803907956327317524>', args1, args2, args3);
     } else if (args2 === 'sword') {
+        let existEq = await cekEquipment(args2, message.author.id);
+        if (existEq) {
+            return message.channel.send(`\\⛔ | **${message.author.username}**, there is no slot on your equipment \nfree up the slot than try again, you can \`sell/unequip\` it`)
+        }
         craftWeapon(message, id, username, args1, args2)
     } else if (args2 === 'helmet' || (args1 === 'wooden' && args2 === 'breastplate') || args2 === 'chainmail' || args2 === 'greaves') {
+        let existEq = await cekEquipment(args2, message.author.id);
+        if (existEq) {
+            return message.channel.send(`\\⛔ | **${message.author.username}**, there is no slot on your equipment \nfree up the slot than try again, you can \`sell/unequip\` it`)
+        }
         craftArmor(message, id, username, args1, args2)
     } else if (args1 === 'list') {
         if (args2 === '2') {
@@ -583,6 +591,22 @@ async function queryEquipment(message, playerId, level, armorCraft, materialList
         message.reply(`:no_entry_sign: | you don't have enough materials to craft ${armorCraft.emoji} **${armorCraft.name}**,\ngo work and get the materials it need, you can also check crafter material receipts with \`tera craft list\`!`)
         return;
     } 
+}
+
+async function cekEquipment(type, playerId) {
+    let eqSlot = 0;
+    if (type === 'sword') {
+        eqSlot = 'weapon_id';
+    } else if (type === 'helmet') {
+        eqSlot = 'helmet_id';
+    } else if (type === 'breastplate' || type === 'chainmail') {
+        eqSlot = 'shirt_id';
+    } else if (type === 'greaves') {
+        eqSlot = 'pants_id';
+    }
+    let equipment = await queryData(`SELECT * FROM equipment WHERE player_id="${playerId}" AND ${eqSlot}>0 LIMIT 1`);
+    
+    return equipment.length > 0 ;
 }
 
 
