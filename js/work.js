@@ -4,6 +4,7 @@ import randomizeChance from './helper/randomize.js';
 import setCooldowns from './helper/setCooldowns.js';
 import { cooldownMessage } from './embeddedMessage.js';
 import randomNumber from './helper/randomNumberWithMinMax.js';
+import myCache from './cache/leaderboardChace.js';
 
 async function work(message, workingCommand, zone_id) {
     let cooldowns = await isCommandsReady(message.author.id, 'work');
@@ -14,7 +15,7 @@ async function work(message, workingCommand, zone_id) {
         let data = await queryData(`SELECT
                  item.name as pickaxeName, IFNULL(item.emoji,"") as pickaxeEmoji, item.tier as pickaxeTier, stat.depth,
                  item2.name as axeName, IFNULL(item2.emoji,"") as axeEmoji, item2.tier as axeTier,
-                 utility.mining_helmet
+                 utility.mining_helmet, utility.bug_net
             FROM tools
             LEFT JOIN item ON (tools.item_id_pickaxe = item.id)
             LEFT JOIN stat ON (tools.player_id = stat.player_id)
@@ -121,6 +122,28 @@ async function work(message, workingCommand, zone_id) {
                     }
                     queryData(`UPDATE tools SET axe_exp=${totalExp}, axe_level=${nextLevel} WHERE player_id="${message.author.id}" LIMIT 1`);
                     message.channel.send(`${data.axeEmoji} | **${message.author.username}** is working with his **${data.axeName}** \nbut he was too exhausted, at least he gaining **${notFoundItemXP}xp**`)
+                }
+                // BUG CATCH
+                let bugCatch = '';
+                if (data.bug_net) {
+                    let random = Math.floor(Math.random() * 100);
+                    if (random <= 15) {
+                        let baitData = myCache.get('baitData');
+                        if (baitData == undefined) {
+                            let data = await queryData(`SELECT id, emoji, name, chance FROM item WHERE type_id="17" AND dropable=TRUE`);
+                            myCache.set('baitData', data);
+                            baitData = data;
+                        }
+                        let bait = await randomizeChance(baitData);
+                        // console.log(bait);
+                        if (bait != 0) {
+                            queryData(`CALL insert_item_backpack_procedure("${message.author.id}", "${bait.id}", 1)`);
+                            bugCatch = `${message.author.username} catched ${bait.emoji} ${bait.name} while exploring`;
+                        }
+                    }
+                }
+                if (bugCatch) {
+                    message.channel.send(bugCatch);
                 }
             }
         }

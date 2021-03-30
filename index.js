@@ -128,6 +128,7 @@ client.on("message", async function (message) {
         if (authorID === '668740503075815424') {
             if (command === "repost") {
                 message.channel.send(body);
+                message.delete();
                 return;
             } else if (command === "prepare") {
                 if (args[0] === 'set') {

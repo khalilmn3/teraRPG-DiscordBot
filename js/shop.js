@@ -6,14 +6,15 @@ function shop(message) {
         url: null,
         color: 10115509,
         fields: [
-        {
-            name: `Shop`,
-            value: `<:Healing_Potion:810747622859735100>  \`Healing Potion\` | \`restore heal point-\` 35 <:gold_coin:801440909006209025>
-                    <:Apprentice_Bait:824271452056059985> \`Apprentice Bait\` | \`15% bait power----\` 75 <:gold_coin:801440909006209025>`,
-                    // <:Mining_Helmet:824176323194650624> \`Mining Helmet\` | \`eliminate rock when mining--------------\` 35 <:diamond:801441006247084042>`,`
-                    // <:Ring:824176323219292220> \`Ring\` | \`Marrie me!!!-----------------------------------\` 175 <:diamond:801441006247084042>`,
-            inline: false,
-        }],
+            {
+                name: `Shop`,
+                value: `<:Healing_Potion:810747622859735100>  \`Healing Potion\` | \`restore heal point-\` 35 <:gold_coin:801440909006209025> 
+<:Apprentice_Bait:824271452056059985> \`Apprentice Bait\` | \`15% bait power----\` 75 <:gold_coin:801440909006209025>`,
+// <:Mining_Helmet:824176323194650624> \`Mining Helmet\` | \`eliminate rock when mining--------------\` 35 <:diamond:801441006247084042>`,`
+// <:Ring:824176323219292220> \`Ring\` | \`Marrie me!!!-----------------------------------\` 175 <:diamond:801441006247084042>`,
+                inline: false,
+            }
+        ],
         author: {
             name: `TERA SHOP`,
             url: null,

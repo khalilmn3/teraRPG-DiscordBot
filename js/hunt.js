@@ -88,7 +88,7 @@ async function hunt(message, client, id, username, zone) {
                 mCHp = mCHp - dmgToMonster > 0 ? mCHp - dmgToMonster : 0;
                 cHp = cHp - dmgToPlayer > 0 ? cHp - dmgToPlayer : 0;
                 turn++
-                console.log('mhp: ' + mCHp + ' chp: ' + cHp + ' turn: ' + turn);
+                // console.log('mhp: ' + mCHp + ' chp: ' + cHp + ' turn: ' + turn);
             } while (mCHp > 0 && cHp > 0 && turn < 25);
             
             let lostHP = bHp - cHp;
@@ -141,28 +141,7 @@ async function hunt(message, client, id, username, zone) {
         // messageSend(message, logMsg, stat, monster, mCHp, turn);
         // message.channel.send(`**${username}** encountered a ${monster.emoji} **${monster.name}** and \nsuccessfully beaten it down with **${weapon}** ${hpLost} \nGained **${coin}** 𝑔𝑜𝓁𝒹 and **${exp}** 𝑒𝓍𝓅`)
         
-        // BUG CATCH
-        let bugCatch = '';
-        if (stat.bug_net) {
-            let random = Math.floor(Math.random() * 100);
-            if (random <= 15) {
-                let baitData = myCache.get('baitData');
-                if (baitData == undefined) {
-                    let data = await queryData(`SELECT id, emoji, name, chance FROM item WHERE type_id="17" AND dropable=TRUE`);
-                    myCache.set('baitData', data);
-                    baitData = data;
-                }
-                let bait = await randomizeChance(baitData);
-                // console.log(bait);
-                if (bait != 0) {
-                    queryData(`CALL insert_item_backpack_procedure("${message.author.id}", "${bait.id}", 1)`);
-                    bugCatch = `${message.author.username} catched ${bait.emoji} ${bait.name} while exploring`;
-                }
-            }
-        }
-        if (bugCatch) {
-            message.channel.send(bugCatch);
-        }
+        
     } else {
         message.channel.send(cooldownMessage(id, username, message.author.avatar, 'Explore', cooldowns.waitingTime));
     }
