@@ -9,12 +9,12 @@ function help(message, client) {
             color: 10115509,
             fields: [
                 {
-                    value: `profile, tools, workspace, backpack, cooldown, ready`,
+                    value: `profile, tools, workspace, backpack, cooldown, ready, armory, zone`,
                     name: ":information_source:  __STATUS__",
                     inline: false
                 },
                 {
-                    value: `explore, fish, heal, dungeon <@player>, junken <@player>`,
+                    value: `explore, fish, heal, dungeon <@player>`,
                     name: ":crossed_swords: __GRINDING__",
                     inline: false
                 },
@@ -34,7 +34,7 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `cf <h/t> <amount>, lottery`,
+                    value: `cf <h/t> <amount>, lottery, junken <@player>`,
                     name: ":moneybag: __MINI GAMES__",
                     inline: false
                 },

@@ -6,6 +6,8 @@ function buy(message, args1, args2, args3) {
         queryCheckExistItem(message, message.author.id, 2)
     } else if (args1 === 'mining' && args2 === 'helmet') {
         queryCheckExistItem(message, message.author.id, 3)
+    } else if (args1 === 'pylon') {
+        queryCheckExistItem(message, message.author.id, 5)
     }
     // else if (args1 === 'ring') {
     //     queryCheckExistItem(message, message.author.id, 4)
@@ -47,6 +49,11 @@ async function queryCheckExistItem(message, playerId, toBuyId){
         queryField = 'ring';
         itemName = '<:Ring:824176323219292220> Ring, \n use \`tera married <@user>\` to marry with other player.'
         reqDiamond = 175;
+    } else if (toBuyId == 5) {
+        isExist = item.pylon > 0;
+        queryField = 'pylon';
+        itemName = '<:Forest_Pylon:826645637788598294> Pylon, \n use \`zone <zone> <sub_zone>\`.'
+        reqDiamond = 1;
     }
 // 
     if (isExist) {

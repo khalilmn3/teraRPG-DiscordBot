@@ -248,7 +248,7 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         if (playerList[0].zone_id < 7) {
             let newSubZone = playerList[0].sub_zone == 1 ? 2 : 1;
             let newZone = playerList[0].sub_zone > 1 ? parseInt(playerList[0].zone_id) + 1 : playerList[0].zone_id;
-            queryData(`UPDATE stat SET zone_id='${newZone}', sub_zone='${newSubZone}' WHERE player_id IN(${player1.id}, ${player2.id})`);
+            queryData(`UPDATE stat SET zone_id='${newZone}', sub_zone='${newSubZone}', max_zone="${newZone}|${newSubZone}" WHERE player_id IN(${player1.id}, ${player2.id})`);
         } 
     } else if(player1Stat.hp <= 0 && player2Stat.hp <= 0) {
         message.channel.send(new Discord.MessageEmbed({

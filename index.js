@@ -105,15 +105,7 @@ client.on('ready', () => {
     lotterySchedule(client);
 })
 client.on("message", async function (message) {
-    
-    const authorID = message.author.id;
-    let authorUsername = message.author.username;
     let content = message.content.toLowerCase();
-
-    const data = {
-        authorID: message.author.id
-    };
-
     if (message.author.bot) {
         return;
     }
@@ -126,7 +118,7 @@ client.on("message", async function (message) {
         const command = args.shift().toLowerCase();
         const prefixCommand = teraRPGPrefix + command;
         const body = message.content.replace(prefixCommand, '');
-        if (authorID === '668740503075815424') {
+        if (message.author.id === '668740503075815424') {
             if (command === "repost") {
                 message.channel.send(body);
                 message.delete();
@@ -219,7 +211,7 @@ client.on("message", async function (message) {
         }
         if (command != '') {
             // FIND USER REGISTRATION
-            let isUserRegistred = await queryData(`SELECT id, active_command,  zone_id, is_active, stat.gold, stat.level, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${authorID} LIMIT 1`)
+            let isUserRegistred = await queryData(`SELECT id, active_command,  zone_id, max_zone, sub_zone, is_active, stat.gold, stat.level, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${message.author.id} LIMIT 1`)
             if (waitingTime.has(message.author.id)) {
                 message.reply("Wait at least 1 second before getting typing this again.");
                 return;
@@ -234,11 +226,11 @@ client.on("message", async function (message) {
                         message.reply(`you have an active command, end it before processing another!`)
                         return;
                     }
-                    if (maintenance && authorID !== '668740503075815424') {
+                    if (maintenance && message.author.id !== '668740503075815424') {
                         message.channel.send('🛠️ | Bot is under maintenance...!');
                         return;
                     }
-                    if (prepareMaintenance && authorID !== '668740503075815424') {
+                    if (prepareMaintenance && message.author.id !== '668740503075815424') {
                         message.channel.send('🛠️ | Bot is preparing for maintenance...!');
                         return;
                     }
@@ -257,13 +249,13 @@ client.on("message", async function (message) {
                         message.reply(`You already registered, type \`${teraRPGPrefix} help\` for more commands`)
                     } else if (command === 'p' | command === 'profile') {
                         log(message, commandBody);
-                        profile(message, client, authorID, message.author.avatar, args[0]);
+                        profile(message, client, message.author.id, message.author.avatar, args[0]);
                     } else if (command === 'explore' | command === 'exp') {
                         log(message, commandBody);
-                        hunt(message, 0, authorID, authorUsername);
+                        hunt(message, 0, message.author.id, message.author.username);
                     } else if (command === 'heal') {
                         log(message, commandBody);
-                        healingPotion(message, 0, authorID, authorUsername);
+                        healingPotion(message, 0, message.author.id, message.author.username);
                     } else if (command === 'mine' || command === 'chop') {
                         log(message, commandBody);
                         work(message, command, isUserRegistred[0].zone_id);
@@ -279,9 +271,9 @@ client.on("message", async function (message) {
                     } else if (command === 'craft') {
                         log(message, commandBody);
                         crafting(message, args[0], args[1], args[2]);
-                    } else if (command === 'teleport' || command === 'tel') {
+                    } else if (command === 'zone' || command === 'z') {
                         log(message, commandBody);
-                        teleport(message, args);
+                        teleport(message, stat, args);
                     } else if (command === 'sell') {
                         log(message, commandBody);
                         // let itemName = commandBody.slice(command.length + 1)
@@ -362,7 +354,7 @@ client.on("message", async function (message) {
                 }
             } else if (command === 'start') {
                 // INSERT USER
-                let log = await queryData(`CALL start_procedure("${authorID}","${message.author.tag}")`)
+                let log = await queryData(`CALL start_procedure("${message.author.id}","${message.author.tag}")`)
                 log = log.length > 0 ? log[0][0].log : 0;
                 let m = `Welcome to teraRPG, type \`${teraRPGPrefix}exp\` to begin your journey\nYou can also see other commands with \`${teraRPGPrefix}help\`. Oh almost forgot, \nhere is a present for you, hope it can help you through the cruelty of the world`
                 let embed = new Discord.MessageEmbed({
@@ -432,18 +424,18 @@ client.on("message", async function (message) {
 
     // ======================================================================================/=
      // FUNCTION
-        async function agendaRun(authorID, command, textMessage, time) {
-            agenda.define(`${command} ${authorID}`, async job => {
-                await message.channel.send(`<@${authorID}>, ${textMessage}`);
+        async function agendaRun(message, command, textMessage, time) {
+            agenda.define(`${command} ${message.author.id}`, async job => {
+                await message.channel.send(`<@${message.author.id}>, ${textMessage}`);
             });
         
             await agenda.start();
-            await agenda.cancel({ name: `${command} ${authorID}` });
-            await agenda.schedule(time, `${command} ${authorID}`);
+            await agenda.cancel({ name: `${command} ${message.author.id}` });
+            await agenda.schedule(time, `${command} ${message.author.id}`);
         }
     
         
-    async function cooldownsReminder(item, authorID) {
+    async function cooldownsReminder(item, message) {
         let a = null;
         let b = null;
         switch (item) {
@@ -514,20 +506,20 @@ client.on("message", async function (message) {
                     sec = parseFloat(time.split(' ')[3]) * 1000;
                     totalSec = dtos + htos + mtos + sec;
                     
-                    addReminder(authorID,`rpg ${item}`, `Time for \`RPG ${item.toUpperCase()}\` !!!`, totalSec);
+                    addReminder(message.author.id,`rpg ${item}`, `Time for \`RPG ${item.toUpperCase()}\` !!!`, totalSec);
                 } else if (time.includes('h')) {
                     htos = parseFloat(time.split(' ')[0]) * 60 * 60 * 1000;
                     mtos = parseFloat(time.split(' ')[1]) * 60 * 1000;
                     sec = parseFloat(time.split(' ')[2]) * 1000;
                     totalSec = htos + mtos + sec;   
 
-                    addReminder(authorID,`rpg ${item}`, `Time for \`RPG ${item.toUpperCase()}\` !!!`, totalSec);
+                    addReminder(message.author.id,`rpg ${item}`, `Time for \`RPG ${item.toUpperCase()}\` !!!`, totalSec);
                 } else if (time.includes('m')) {
                     mtos = parseFloat(time.split(' ')[0]) * 60 * 1000;
                     sec = parseFloat(time.split(' ')[1]) * 1000;
                     totalSec = mtos + sec;
                     
-                    addReminder(authorID,`rpg ${item}`, `Time for \`RPG ${item.toUpperCase()}\` !!!`, totalSec);
+                    addReminder(message.author.id,`rpg ${item}`, `Time for \`RPG ${item.toUpperCase()}\` !!!`, totalSec);
                 }
             }
     }
@@ -536,17 +528,17 @@ client.on("message", async function (message) {
         message.channel.send(`<@${data.id}>, ${data.textMessage}`);
     }
 
-    async function addReminder(authorID, command, textMessage, delay) {
+    async function addReminder(message, command, textMessage, delay) {
         await rpgReminder.removeJobs(
             {
-                id: authorID,
+                id: message.author.id,
                 textMessage: textMessage,
                 command: command
             }
         );
         rpgReminder.re(
             {
-                id: authorID,
+                id: message.author.id,
                 textMessage: textMessage,
                 command: command
             },

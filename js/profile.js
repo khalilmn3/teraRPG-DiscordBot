@@ -24,7 +24,7 @@ async function profile(message, client, id, avatar, args1) {
         IFNULL(itemArmor3.emoji, '') as pantsEmoji, CONCAT(IFNULL(pants_modifier.name,"")," ",itemArmor3.name) as pants, IFNULL(armor3.def,0) as pantsDef,
         IFNULL(itemWeapon.emoji, '') as wEmoji, CONCAT(IFNULL(modifier_weapon.name,"")," ",itemWeapon.name) as weaponName,
         IF(armor1.armor_set_id=armor2.armor_set_id AND armor2.armor_set_id=armor3.armor_set_id, armor_set.bonus_set, 0) as bonus_armor_set,
-        utility.piggy_bank as Bank, utility.bug_net as BugNet, utility.mining_helmet as MiningHelmet, utility.ring as Ring,
+        utility.piggy_bank as Bank, utility.bug_net as BugNet, utility.mining_helmet as MiningHelmet, utility.ring as Ring, utility.pylon as Pylon,
         IFNULL(modifier_weapon.stat_change,0) as weapon_modifier,
         IFNULL(helmet_modifier.stat_change,0) as helmet_modifier,
         IFNULL(shirt_modifier.stat_change,0) as shirt_modifier,
@@ -108,17 +108,22 @@ async function profile(message, client, id, avatar, args1) {
                     inline: true
                 },
                 {
-                    value: `${data.MiningHelmet > 0 ? `<:Mining_Helmet:824176323194650624> **Mining Helmet**` : '◽ [empty]'}${data.BugNet ? `\n<:Bug_Net:824176322908913687> ** Bug Net **` : '\n◽ [empty]'}${data.Ring > 0 ? `\n<:Ring:824176323219292220> **Ring**` : ''}`,
+                    value: `${data.MiningHelmet > 0 ? `<:Mining_Helmet:824176323194650624> **Mining Helmet**` : '◽ [empty]'}${data.BugNet ? `\n<:Bug_Net:824176322908913687> ** Bug Net **` : '\n◽ [empty]'}${data.Ring > 0 ? `\n<:Ring:824176323219292220> **Ring**` : ''}${data.Pylon > 0 ? `\n<:Forest_Pylon:826645637788598294> **Pylon**` : ''}`,
                     name: "__UTILITY__",
                     inline: true
                 }],
             thumbnail: {
                 url: `https://cdn.discordapp.com/avatars/${id}/${avatar}.png?size=512`,
                 proxyURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${id}/${avatar}.png`,
-                height: 0,
-                width: 0
+                height: 70,
+                width: 40
             },
-            image: null,
+            // image: {
+            //     url: `https://cdn.discordapp.com/attachments/826591958768156692/826592862773837824/Walk_animation.gif`,
+            //     proxyURL: `https://images-ext-2.discordapp.net/external/x-zut8t2u6esGWxWBBOyZYXq59BmTg9lEZHwM21iOfQ/%3Fv%3D26/https://cdn.discordapp.com/attachments/826591958768156692/826592862773837824/Walk_animation.gif`,
+            //     height: 0,
+            //     width: 0
+            // },
             video: null,
             author: null,
             // author: {
