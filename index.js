@@ -72,6 +72,8 @@ import give from './js/adminCommands/giveItem.js';
 import armory from './js/commands/armory.js';
 import unOrEquip from './js/commands/un_equip.js';
 import booster from './js/adminCommands/booster.js';
+import miningExpedition from './js/commands/miningExpedition.js';
+import trade from './js/commands/trade.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -211,7 +213,7 @@ client.on("message", async function (message) {
         }
         if (command != '') {
             // FIND USER REGISTRATION
-            let isUserRegistred = await queryData(`SELECT id, active_command,  zone_id, max_zone, sub_zone, is_active, stat.gold, stat.level, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${message.author.id} LIMIT 1`)
+            let isUserRegistred = await queryData(`SELECT id, active_command, depth, zone_id, max_zone, sub_zone, is_active, stat.gold, stat.level, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${message.author.id} LIMIT 1`)
             if (waitingTime.has(message.author.id)) {
                 message.reply("Wait at least 1 second before getting typing this again.");
                 return;
@@ -350,6 +352,12 @@ client.on("message", async function (message) {
                     else if (command === 'equip' || command === 'unequip') {
                         log(message, commandBody);
                         unOrEquip(message, command, args[0], args[1]);
+                    } else if (command === 'minex' || command === 'me') {
+                        log(message, commandBody);
+                        miningExpedition(message,stat);
+                    } else if (command === 'trade') {
+                        log(message, commandBody);
+                        trade(message,stat, args);
                     }
                 }
             } else if (command === 'start') {

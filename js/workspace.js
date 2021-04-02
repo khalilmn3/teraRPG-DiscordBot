@@ -2,9 +2,9 @@ import db from '../db_config.js'
 import Discord from 'discord.js'
 
 async function workspace(message, args1) {
-    const avatar = message.author.avatar;
-    const id = message.author.id;
-    const username = message.author.username;
+    let avatar = message.author.avatar;
+    let id = message.author.id;
+    let username = message.author.username;
     
     let idMention = message.mentions.users.first();
     let tag = message.author.tag

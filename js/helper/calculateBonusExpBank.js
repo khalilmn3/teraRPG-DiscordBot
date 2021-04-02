@@ -4,7 +4,7 @@ function calculateBonusExpBank(val) {
     let bonusExp = 0;
     if (!isNaN(val) && val > 0) {
         if (val <= 1000) {
-            bonusExp = roundFloat (val / 1000);
+            bonusExp = roundFloat(val / 1000);
         } else if (val <= 10000) {
             bonusExp = roundFloat(val / 10000) + 1;
         } else if (val <= 100000) {
