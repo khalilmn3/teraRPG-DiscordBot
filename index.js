@@ -272,7 +272,7 @@ client.on("message", async function (message) {
                         tools(message, args[0]);
                     } else if (command === 'craft') {
                         log(message, commandBody);
-                        crafting(message, args[0], args[1], args[2]);
+                        crafting(message, commandBody, args[0], args[1], args[2]); 
                     } else if (command === 'zone' || command === 'z') {
                         log(message, commandBody);
                         teleport(message, stat, args);

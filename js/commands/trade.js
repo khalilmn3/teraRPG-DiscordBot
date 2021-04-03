@@ -1,6 +1,6 @@
 import Discord from "discord.js";
 import queryData from "../helper/query.js";
-import variable from "../helper/variable.js";
+import { variable } from "../helper/variable.js";
 
 async function trade(message, stat, args) {
     let maxZone = stat.max_zone.split('|');

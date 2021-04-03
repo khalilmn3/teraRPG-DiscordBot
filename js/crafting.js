@@ -1,5 +1,6 @@
 import queryData from "./helper/query.js";
 import Discord from "discord.js";
+import { variable, materialList } from "./helper/variable.js";
 
 const furnaceId = '171';
 const workbenchId = '170';
@@ -18,7 +19,9 @@ const platinumOreId = '8';
 const platinumBarId = '30';
 let date = new Date();
 
-async function crafting(message, args1, args2, args3) {
+async function crafting(message, commandsBody, args1, args2, args3) {
+    commandsBody = commandsBody.slice(6);
+    console.log(commandsBody);
     const id = message.author.id;
     const username = message.author.username;
     const avatar = message.author.avatar;
@@ -114,18 +117,44 @@ async function crafting(message, args1, args2, args3) {
         craftBar(message, id, username, goldBarId, goldOreId, '<:Gold_Bar:803907956424441856>', args1, args2, args3);
     } else if (args1 === 'platinum' && args2 === 'bar') {
         craftBar(message, id, username, platinumBarId, platinumOreId, '<:Platinum_Bar:803907956327317524>', args1, args2, args3);
-    } else if (args2 === 'sword') {
+    } else if (commandsBody === 'ice blade'
+        || commandsBody === 'mandible blade'
+        || commandsBody === 'blade of grass'
+        || commandsBody === 'night edge'
+        || commandsBody === 'blood butcherer'
+        || commandsBody === 'fiery greatsword'
+        || args2 === 'sword'
+    ) {
+        let existEq = await cekEquipment('sword', message.author.id);
+        if (existEq) {
+            return message.channel.send(`\\⛔ | **${message.author.username}**, there is no slot on your equipment \nfree up the slot than try again, you can \`sell/unequip\` it`)
+        }
+        craftWeapon(message, id, username, commandsBody, args1, args2)
+    } else if (args2 === 'helmet' || (args1 === 'wooden' && args2 === 'breastplate') || args2 === 'chainmail' || args2 === 'greaves'
+        || args2 === 'leggings'
+        || commandsBody === 'frost helmet'
+        || commandsBody === 'frost breastplate'
+        || commandsBody === 'frost leggings'
+        || commandsBody === 'fossil helmet'
+        || commandsBody === 'fossil plate'
+        || commandsBody === 'fossil greaves'
+        || commandsBody === 'jungle hat'
+        || commandsBody === 'jungle shirt'
+        || commandsBody === 'jungle pants'
+        || commandsBody === 'shadow helmet'
+        || commandsBody === 'shadow scalemail'
+        || commandsBody === 'shadow greaves'
+        || commandsBody === 'crimson helmet'
+        || commandsBody === 'crimson scalemail'
+        || commandsBody === 'crimson greaves'
+        || commandsBody === 'forbidden mask'
+        || commandsBody === 'forbidden robes'
+        || commandsBody === 'forbidden treads') {
         let existEq = await cekEquipment(args2, message.author.id);
         if (existEq) {
             return message.channel.send(`\\⛔ | **${message.author.username}**, there is no slot on your equipment \nfree up the slot than try again, you can \`sell/unequip\` it`)
         }
-        craftWeapon(message, id, username, args1, args2)
-    } else if (args2 === 'helmet' || (args1 === 'wooden' && args2 === 'breastplate') || args2 === 'chainmail' || args2 === 'greaves') {
-        let existEq = await cekEquipment(args2, message.author.id);
-        if (existEq) {
-            return message.channel.send(`\\⛔ | **${message.author.username}**, there is no slot on your equipment \nfree up the slot than try again, you can \`sell/unequip\` it`)
-        }
-        craftArmor(message, id, username, args1, args2)
+        craftArmor(message, id, username, commandsBody, args1, args2)
     } else if (args1 === 'list') {
         if (args2 === '2') {
             message.channel.send(new Discord.MessageEmbed({
@@ -146,13 +175,13 @@ async function crafting(message, args1, args2, args3) {
                     {
                         value: `<:Ice_Blade:827782178099298325>[+20 att]__ice blade__ : 10 <:Copper_Bar:803907956478836817> + 10 <:Frost_Core:827782125553057802> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Frost_Helmet:827782125549125662>[+2 def]__frost helmet__ : 15 <:Copper_Bar:803907956478836817> + 2 <:Frost_Core:827782125553057802> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Frost_Breastplate:827782125453312010>[+3 def]__frost breastplate__ : 20 <:Copper_Bar:803907956478836817> + 4 <:Frost_Core:827782125553057802> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Frost_Breastplate:827782125453312010>[+4 def]__frost breastplate__ : 20 <:Copper_Bar:803907956478836817> + 4 <:Frost_Core:827782125553057802> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n <:Frost_Leggings:827782125553320016>[+1 def]__frost leggings__ : 18 <:Copper_Bar:803907956478836817> + 3 <:Frost_Core:827782125553057802> ➜ <:Iron_Anvil:804145327435284500>`,
                         name: "Level 7 [bonus: +7 def ]",
                         inline: false
                     },
                     {
-                        value: `<:Iron_Broadsword:822685694995464202>[+33 att]__iron sword__ : 7 <:Iron_Bar:803907956528906241> +  <:Wood:804704694420766721>➜ <:Iron_Anvil:804145327435284500>` +
+                        value: `<:Iron_Broadsword:822685694995464202>[+33 att]__iron sword__ : 7 <:Iron_Bar:803907956528906241> + 5 <:Wood:804704694420766721>➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Iron_Helmet:822686919607058463>[+3 def]__iron helmet__ : 6 <:Iron_Bar:803907956528906241> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Iron_Chainmail:822686919611514881>[+6 def]__iron chainmail__ : 10 <:Iron_Bar:803907956528906241> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Iron_Greaves:822686919623573525>[+2 def]__iron greaves__ : 5 <:Iron_Bar:803907956528906241> ➜ <:Iron_Anvil:804145327435284500>`,
@@ -174,7 +203,7 @@ async function crafting(message, args1, args2, args3) {
                     {
                         value: `<:Mandible_Blade:827804986934951946>[+40 att]__mandible blade__ : 7 <:Iron_Bar:803907956528906241> + 10 <:Sturdy_Fossil:827782125158924289> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Fossil_Helmet:827782125629472769>[+3 def]__fossil helmet__ : 6 <:Iron_Bar:803907956528906241> + 2 <:Sturdy_Fossil:827782125158924289> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Fossil_Plate:827782125548863498>[+6 def]__fossil plate__ : 10 <:Iron_Bar:803907956528906241> + 4 <:Sturdy_Fossil:827782125158924289> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Fossil_Plate:827782125548863498>[+7 def]__fossil plate__ : 10 <:Iron_Bar:803907956528906241> + 4 <:Sturdy_Fossil:827782125158924289> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Fossil_Greaves:827782125390528513>[+2 def]__fossil greaves__ : 5 <:Iron_Bar:803907956528906241> + 3 <:Sturdy_Fossil:827782125158924289> ➜ <:Iron_Anvil:804145327435284500>`,
                         name: "Level 12 [bonus: +12 def ]",
                         inline: false
@@ -190,7 +219,7 @@ async function crafting(message, args1, args2, args3) {
                     {
                         value: `<:Blade_of_Grass:827782177982251018>[+60 att]__blade of grass__ : 6 <:Silver_Bar:803907956663910410> + 10 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Jungle_Hat:827782125485817926>[+6 def]__jungle hat__ : 5 <:Silver_Bar:803907956663910410> + 2 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Jungle_Shirt:827782125469171762>[+8 def]__jungle shirt__ : 9 <:Silver_Bar:803907956663910410> + 5 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Jungle_Shirt:827782125469171762>[+9 def]__jungle shirt__ : 9 <:Silver_Bar:803907956663910410> + 5 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Jungle_Pants:827782125461831700>[+4 def]__jungle pants__ : 4 <:Silver_Bar:803907956663910410> + 3 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>`,
                         name: "Level 17 [bonus: +17 def ]",
                         inline: false
@@ -218,7 +247,7 @@ async function crafting(message, args1, args2, args3) {
                     {
                         value: `<:Night27s_Edge:827782178255536179>[+80 att]__night edge__ : 5 <:Tungsten_Bar:803907956252344331> + 10 <:Shadow_Scale:827782125398786068> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Shadow_Helmet:827782125595131945>[+8 def]__shadow helmet__ : 4 <:Tungsten_Bar:803907956252344331> + 2 <:Shadow_Scale:827782125398786068> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Shadow_Scalemail:827782125599064074>[+10 def]__shadow scalemail__ : 8 <:Tungsten_Bar:803907956252344331> + 4 <:Shadow_Scale:827782125398786068> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Shadow_Scalemail:827782125599064074>[+11 def]__shadow scalemail__ : 8 <:Tungsten_Bar:803907956252344331> + 4 <:Shadow_Scale:827782125398786068> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Shadow_Greaves:827782125440598036>[+6 def]__shadow greaves__ : 3 <:Tungsten_Bar:803907956252344331> + 3 <:Shadow_Scale:827782125398786068> ➜ <:Iron_Anvil:804145327435284500>`,
                         name: "Level 27 [bonus: +24 def ]",
                         inline: false
@@ -245,7 +274,7 @@ async function crafting(message, args1, args2, args3) {
                     {
                         value: `<:Blood_Butcherer:827782178129444874>[+99 att]__blood butcherer__ : 4 <:Gold_Bar:803907956424441856> + 10 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Crimson_Helmet:827782125531955210>[+8 def]__crimson helmet__ : 3 <:Gold_Bar:803907956424441856> + 2 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Crimson_Scalemail:827782125162987563>[+12 def]__crimson scalemail__ : 7 <:Gold_Bar:803907956424441856> + 4 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Crimson_Scalemail:827782125162987563>[+13 def]__crimson scalemail__ : 7 <:Gold_Bar:803907956424441856> + 4 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Crimson_Greaves:827782125670891550>[+8 def]__crimson greaves__ : 2 <:Gold_Bar:803907956424441856> + 3 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>`,
                         name: "Level 37 [bonus: +30 def ]",
                         inline: false
@@ -264,8 +293,8 @@ async function crafting(message, args1, args2, args3) {
                         inline: false
                     },
                     {
-                        value: `<:Forbidden_Mask:827782125557514240>[+12 def]__forbidden helmet__ : 2 <:Platinum_Bar:803907956327317524> + 2 <:Forbidden_Fragment:827782125578092604> + 5 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Forbidden_Robes:827782125268500501>[+15 def]__forbidden robes__ : 5 <:Platinum_Bar:803907956327317524> + 2 <:Forbidden_Fragment:827782125578092604> + 4 <:Sturdy_Fossil:827782125158924289> + 10 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>` +
+                        value: `<:Forbidden_Mask:827782125557514240>[+12 def]__forbidden mask : 2 <:Platinum_Bar:803907956327317524> + 2 <:Forbidden_Fragment:827782125578092604> + 5 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Forbidden_Robes:827782125268500501>[+18 def]__forbidden robes__ : 5 <:Platinum_Bar:803907956327317524> + 2 <:Forbidden_Fragment:827782125578092604> + 4 <:Sturdy_Fossil:827782125158924289> + 10 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>` +
                             `\n<:Forbidden_Treads:827782125351600169>[+11 def]__forbidden treads__ : 1 <:Platinum_Bar:803907956327317524> + 4 <:Frost_Core:827782125553057802> + 6 <:Shadow_Scale:827782125398786068> ➜ <:Iron_Anvil:804145327435284500>`,
                         name: "[bonus: +50 def ]",
                         inline: false
@@ -340,17 +369,17 @@ async function craftBar(message,playerId,username, itemIdCrafted, itemIdMaterial
         }
 }
 
-async function craftWeapon(message, playerId, username, args1, args2) {
-    const weaponList = await queryData('SELECT weapon.id, item.name, item.emoji FROM weapon LEFT JOIN item ON (weapon.item_id = item.id) WHERE weapon.id<=7');
+async function craftWeapon(message, playerId, username, commandsBody, args1, args2) {
+    const weaponList = await queryData('SELECT weapon.id, weapon.level_required,  item.name, item.emoji FROM weapon LEFT JOIN item ON (weapon.item_id = item.id)');
     let weaponCraft;
     weaponList.forEach(element => {
         let name = element.name;
-        if (name.toString().toLowerCase() === `${args1} ${args2}`) {
+        if (name.toString().toLowerCase() === `${commandsBody}`) {
             weaponCraft = element
         }
     });
     // console.log(weaponList);
-    if (!weaponCraft) return;
+    if (!weaponCraft) return message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`);
     let existStations = [];
     if (args1 === 'wooden') {
         existStations = await queryData(`SELECT item_id_work_bench FROM tools WHERE player_id="${playerId}" AND item_id_work_bench="170" LIMIT 1`);
@@ -369,42 +398,33 @@ async function craftWeapon(message, playerId, username, args1, args2) {
         if (existItem.length > 0) {
             message.channel.send(`**${username}**, you already have this item`)
         } else {
-            if (args1 === 'wooden' && args2 === 'sword') {
-                let materialList = [
-                    { id: 179, name: 'wood', quantity: 20 }
-                ];
-                queryEquipment(message, playerId, level, weaponCraft, materialList, 1, 1);
-            } else if (args1 === 'copper' && args2 === 'sword') {
-                let materialList = [
-                    { id: copperBarId, name: 'copper bar', quantity: 10 }
-                ];
-                queryEquipment(message, playerId, level, weaponCraft, materialList, 1, 2);
-            } else if (args1 === 'iron' && args2 === 'sword') {
-                let materialList = [
-                    { id: ironBarId, name: 'iron bar', quantity: 10 }
-                ];
-                queryEquipment(message, playerId, level, weaponCraft, materialList, 1, 3);
-            } else if (args1 === 'silver' && args2 === 'sword') {
-                let materialList = [
-                    { id: silverBarId, name: 'silver bar', quantity:12 }
-                ];
-                queryEquipment(message, playerId, level, weaponCraft, materialList, 1, 4);
-            } else if (args1 === 'tungsten' && args2 === 'sword') {
-                let materialList = [
-                    { id: tungstenBarId, name: 'tungsten bar', quantity: 20 }
-                ];
-                queryEquipment(message, playerId, level, weaponCraft, materialList, 1, 5);
-            } else if (args1 === 'gold' && args2 === 'sword') {
-                let materialList = [
-                    { id: goldBarId, name: 'gold bar', quantity: 20 }
-                ];
-                queryEquipment(message, playerId, level, weaponCraft, materialList, 1, 6);
-            } else if (args1 === 'platinum' && args2 === 'sword') {
-                let materialList = [
-                    { id: platinumBarId, name: 'platinum bar', quantity: 25 }
-                ];
-                queryEquipment(message, playerId, level, weaponCraft, materialList, 1, 7);
-            } 
+            if (commandsBody === 'wooden sword') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.woodenSword, 1, 1);
+            } else if (commandsBody === 'copper sword') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.copperSword, 1, 2);
+            } else if (commandsBody === 'iron sword') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.ironSword, 1, 3);
+            } else if (commandsBody === 'silver sword') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.silverSword, 1, 4);
+            } else if (commandsBody === 'tungsten sword') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.tungstenSword, 1, 5);
+            } else if (commandsBody === 'gold sword') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.goldSword, 1, 6);
+            } else if (commandsBody === 'platinum sword') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.platinumSword, 1, 7);
+            } else if (commandsBody === 'ice blade') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.iceBlade, 1, 18);
+            } else if (commandsBody === 'mandible blade') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.mandibleBlade, 1, 19);
+            } else if (commandsBody === 'blade of grass') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.bladeGrass, 1, 20);
+            } else if (commandsBody === 'night edge') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.nightEdge, 1, 21);
+            } else if (commandsBody === 'blood butcherer') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.bloodButcherer, 1, 22);
+            } else if (commandsBody === 'fiery greatsword') {
+                queryEquipment(message, playerId, level, weaponCraft, materialList.fieryGreatsword, 1, 23);
+            }
         }
     } else {
         let stations = '';
@@ -417,17 +437,19 @@ async function craftWeapon(message, playerId, username, args1, args2) {
     }
 }
 
-async function craftArmor(message, playerId, username, args1, args2) {
-    const armorList = await queryData('SELECT armor.id, item.name, item.emoji FROM armor LEFT JOIN item ON (armor.item_id = item.id) WHERE armor.armor_set_id<=9');
+async function craftArmor(message, playerId, username, commandsBody, args1, args2) {
+    const armorList = await queryData('SELECT armor.id, item.name, item.emoji FROM armor LEFT JOIN item ON (armor.item_id = item.id) WHERE armor.armor_set_id>0');
     let armorCraft;
+    console.log(armorList)
+    console.log(commandsBody);
     armorList.forEach(element => {
         let name = element.name;
-        if (name.toString().toLowerCase() === `${args1} ${args2}`) {
+        if (name.toString().toLowerCase() === `${commandsBody}`) {
             armorCraft = element
         }
     });
     // console.log(armorList)
-    if (!armorCraft) return;
+    if (!armorCraft) return message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`);
     let existStations = [];
     if (args1 === 'wooden') {
         existStations = await queryData(`SELECT item_id_work_bench FROM tools WHERE player_id="${playerId}" AND item_id_work_bench="170" LIMIT 1`);
@@ -441,145 +463,90 @@ async function craftArmor(message, playerId, username, args1, args2) {
         level = 0;
     }
     if (existStations.length > 0) {
-        if (args1 === 'wooden') {
-            if (args2 === 'helmet') {
-                let materialList = [
-                    {id: 179, name: 'wood', quantity: 15}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 1);
-            } else if (args2 === 'breastplate') {
-                let materialList = [
-                    {id: 179, name: 'wood', quantity: 25}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 2);
-            } else if (args2 === 'greaves') {
-                let materialList = [
-                    {id: 179, name: 'wood', quantity: 20}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 3);
-            } else {
-                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-            }
-        } else if (args1 === 'copper') {
-            if (args2 === 'helmet') {
-                let materialList = [
-                    {id: 22, name: 'copper bar', quantity: 15}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 4);
-            } else if (args2 === 'chainmail') {
-                let materialList = [
-                    {id: 22, name: 'copper bar', quantity: 20}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 5);
-            } else if (args2 === 'greaves') {
-                let materialList = [
-                    {id: 22, name: 'copper bar', quantity: 18}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 6);
-            } else {
-                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-            }
-        } else if (args1 === 'iron') {
-            if (args2 === 'helmet') {
-                let materialList = [
-                    {id: 24, name: 'iron bar', quantity: 15}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 7);
-            } else if (args2 === 'chainmail') {
-                let materialList = [
-                    {id: 24, name: 'iron bar', quantity: 25}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 8);
-            } else if (args2 === 'greaves') {
-                let materialList = [
-                    {id: 24, name: 'iron bar', quantity: 20}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 9);
-            } else {
-                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-            }
-        } else if (args1 === 'silver') {
-            if (args2 === 'helmet') {
-                let materialList = [
-                    {id: 26, name: 'silver bar', quantity: 15}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 10);
-            } else if (args2 === 'chainmail') {
-                let materialList = [
-                    {id: 26, name: 'silver bar', quantity: 27}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 11);
-            } else if (args2 === 'greaves') {
-                let materialList = [
-                    {id: 26, name: 'silver bar', quantity: 21}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 12);
-            } else {
-                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-            }
-        } else if (args1 === 'tungsten') {
-            if (args2 === 'helmet') {
-                let materialList = [
-                    {id: 27, name: 'tungsten bar', quantity: 15}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 13);
-            } else if (args2 === 'chainmail') {
-                let materialList = [
-                    {id: 27, name: 'tungsten bar', quantity: 25}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 14);
-            } else if (args2 === 'greaves') {
-                let materialList = [
-                    {id: 27, name: 'tungsten bar', quantity: 20}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 15);
-            } else {
-                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-            }
-        } else if (args1 === 'gold') {
-            if (args2 === 'helmet') {
-                let materialList = [
-                    {id: 28, name: 'gold bar', quantity: 15}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 16);
-            } else if (args2 === 'chainmail') {
-                let materialList = [
-                    {id: 28, name: 'gold bar', quantity: 25}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 17);
-            } else if (args2 === 'greaves') {
-                let materialList = [
-                    {id: 28, name: 'gold bar', quantity: 20}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 18);
-            } else {
-                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-            }
-        } else if (args1 === 'platinum') {
-            if (args2 === 'helmet') {
-                let materialList = [
-                    {id: 30, name: 'platinum bar', quantity: 30}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 2, 19);
-            } else if (args2 === 'chainmail') {
-                let materialList = [
-                    {id: 30, name: 'platinum bar', quantity: 50}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 3, 20);
-            } else if (args2 === 'greaves') {
-                let materialList = [
-                    {id: 30, name: 'platinum bar', quantity: 40}
-                ]
-                queryEquipment(message, playerId, level, armorCraft, materialList, 4, 21);
-            } else {
-                message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
-            }
+        if (commandsBody === 'wooden helmet') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.woodenHelmet, 2, 1);
+        } else if (commandsBody === 'wooden breastplate') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.woodenBreastplate, 3, 2);
+        } else if (commandsBody === 'wooden greaves') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.woodenGreaves, 4, 3);
+        }  else if (commandsBody === 'copper helmet') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.copperHelmet, 2, 4);
+        } else if (commandsBody === 'copper chainmail') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.copperChainmail, 3, 5);
+        } else if (commandsBody === 'copper greaves') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.copperGreaves, 4, 6);
+        }else if (commandsBody === 'iron helmet') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.ironHelmet, 2, 7);
+        } else if (commandsBody === 'iron chainmail') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.ironChainmail, 3, 8);
+        } else if (commandsBody === 'iron greaves') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.ironGreaves, 4, 9);
+        } else if (commandsBody === 'silver helmet') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.silverHelmet, 2, 10);
+        } else if (commandsBody === 'silver chainmail') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.silverChainmail, 3, 11);
+        } else if (commandsBody === 'silver greaves') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.silverGreaves, 4, 12);
+        } else if (commandsBody === 'tungsten helmet') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.tungstenHelmet, 2, 13);
+        } else if (commandsBody === 'tungsten chainmail') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.tungstenChainmail, 3, 14);
+        } else if (commandsBody === 'tungsten greaves') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.tungstenGreaves, 4, 15);
+        } else if (commandsBody === 'gold helmet') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.goldHelmet, 2, 16);
+        } else if (commandsBody === 'gold chainmail') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.goldChainmail, 3, 17);
+        } else if (commandsBody === 'gold greaves') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.goldGreaves, 4, 18);
+        } else if (commandsBody === 'platinum helmet') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.platinumHelmet, 2, 19);
+        } else if (commandsBody === 'platinum chainmail') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.platinumChainmail, 3, 20);
+        } else if (commandsBody === 'platinum greaves') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.platinumGreaves, 4, 21);
+        } else if (commandsBody === 'frost helmet') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.frostHelmet, 2, 28);
+        } else if (commandsBody === 'frost breastplate') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.frostBreastplate, 3, 29);
+        } else if (commandsBody === 'frost leggings') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.frostLeggings, 4, 30);
+        } else if (commandsBody === 'fossil helmet') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.fossilHelmet, 2, 31);
+        } else if (commandsBody === 'fossil plate') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.fossilPlate, 3, 32);
+        } else if (commandsBody === 'fossil greaves') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.fossilGreaves, 4, 33);
+        } else if (commandsBody === 'jungle hat') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.jungleHat, 2, 34);
+        } else if (commandsBody === 'jungle shirt') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.jungleShirt, 3, 35);
+        } else if (commandsBody === 'jungle pants') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.junglePants, 4, 36);
+        } else if (commandsBody === 'shadow helmet') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.shadowHelmet, 2, 37);
+        } else if (commandsBody === 'shadow scalemail') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.shadowScalemail, 3, 38);
+        } else if (commandsBody === 'shadow greaves') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.shadowGreaves, 4, 39);
+        } else if (commandsBody === 'crimson helmet') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.crimsonHelmet, 2, 40);
+        } else if (commandsBody === 'crimson scalemail') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.crimsonScalemail, 3, 41);
+        } else if (commandsBody === 'crimson greaves') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.crimsonGreaves, 4, 42);
+        } else if (commandsBody === 'forbidden mask') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.forbiddenMask, 2, 43);
+        } else if (commandsBody === 'forbidden robes') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.forbiddenRobes, 3, 44);
+        } else if (commandsBody === 'forbidden treads') {
+            queryEquipment(message, playerId, level, armorCraft, materialList.forbiddenTreads, 4, 45);
         } else {
             message.channel.send(`What are you trying to craft,\nUse \'craft list\' to see craftable item`)
         }
     } else {
         let stations = '';
-        if (args1 === 'wooden' && args2 === 'sword') {
+        if (args1 === 'wooden') {
             stations = '<:Work_Bench:804145756918775828> **Work Bench**';
         } else {
             stations = '<:Iron_Anvil:804145327435284500> **Anvil**';
@@ -597,54 +564,34 @@ async function queryEquipment(message, playerId, level, armorCraft, materialList
     // console.log(equipmentSlot);
     // console.log(level);
     let modifierField = '';
-    if (equipmentTypeId === 4 || equipmentTypeId === 7 || equipmentTypeId === 10 || equipmentTypeId === 13 || equipmentTypeId === 16 || equipmentTypeId === 19) {
+    if (equipmentTypeId === 4 || equipmentTypeId === 7 || equipmentTypeId === 10
+        || equipmentTypeId === 13 || equipmentTypeId === 16 || equipmentTypeId === 19
+        || equipmentTypeId === 28 || equipmentTypeId === 31 || equipmentTypeId === 34
+        || equipmentTypeId === 37 || equipmentTypeId === 40 || equipmentTypeId === 43) {
         modifierField = ',helmet_modifier_id=0'
-    } else if (equipmentTypeId === 5 || equipmentTypeId === 8 || equipmentTypeId === 11 || equipmentTypeId === 14 || equipmentTypeId === 17 || equipmentTypeId === 20) {
+    } else if (equipmentTypeId === 5 || equipmentTypeId === 8 || equipmentTypeId === 11
+        || equipmentTypeId === 14 || equipmentTypeId === 17 || equipmentTypeId === 20
+        || equipmentTypeId === 29 || equipmentTypeId === 32 || equipmentTypeId === 35
+        || equipmentTypeId === 38 || equipmentTypeId === 41 || equipmentTypeId === 44) {
         modifierField = ',shirt_modifier_id=0'
-    } else if (equipmentTypeId === 6 || equipmentTypeId === 9 || equipmentTypeId === 12 || equipmentTypeId === 15 || equipmentTypeId === 18 || equipmentTypeId === 21) {
+    } else if (equipmentTypeId === 6 || equipmentTypeId === 9 || equipmentTypeId === 12
+        || equipmentTypeId === 15 || equipmentTypeId === 18 || equipmentTypeId === 21
+        || equipmentTypeId === 30 || equipmentTypeId === 33 || equipmentTypeId === 36
+        || equipmentTypeId === 39 || equipmentTypeId === 42 || equipmentTypeId === 45) {
         modifierField = ',pants_modifier_id=0'
     }
     if (equipmentSlot > 1) { //ARMOR
-        if ((equipmentTypeId == 4 || equipmentTypeId == 5 || equipmentTypeId == 6) && level < 5) {
+        if (level < armorCraft.level_required) {
             message.reply(`⛔ | your level is not eligable to craft this item!`);
-            return;
-        } else if ((equipmentTypeId == 7 || equipmentTypeId == 8 || equipmentTypeId == 9) && level < 10) {
-            message.reply(`⛔ | your level is not eligable to craft this item!`)
-            return;
-        } else if ((equipmentTypeId == 10 || equipmentTypeId == 11 || equipmentTypeId == 12) && level < 15) {
-            message.reply(`⛔ | your level is not eligable to craft this item!`)
-            return;
-        } else if ((equipmentTypeId == 13 || equipmentTypeId == 14 || equipmentTypeId == 15) && level < 25) {
-            message.reply(`⛔ | your level is not eligable to craft this item!`)
-            return;
-        } else if ((equipmentTypeId == 16 || equipmentTypeId == 17 || equipmentTypeId == 18) && level < 35) {
-            message.reply(`⛔ | your level is not eligable to craft this item!`)
-            return;
-        } else if ((equipmentTypeId == 19 || equipmentTypeId == 20 || equipmentTypeId == 21) && level < 50) {
-            message.reply(`⛔ | your level is not eligable to craft this item!`)
             return;
         }
     } else { // WEAPON
         modifierField = ',weapon_modifier_id=0'
-        if (equipmentTypeId == 2 && level < 5) {
-            message.reply(`⛔ | your level is not eligable to craft this item!`)
-            return;
-        } else if (equipmentTypeId == 3 && level < 10) {
-            message.reply(`⛔ | your level is not eligable to craft this item!`)
-            return;
-        } else if (equipmentTypeId == 4 && level < 15) {
-            message.reply(`⛔ | your level is not eligable to craft this item!`)
-            return;
-        } else if (equipmentTypeId == 5 && level < 25) {
-            message.reply(`⛔ | your level is not eligable to craft this item!`)
-            return;
-        } else if (equipmentTypeId == 6 && level < 35) {
-            message.reply(`⛔ | your level is not eligable to craft this item!`)
-            return;
-        } else if (equipmentTypeId == 7 && level < 55) {
+        if (level < armorCraft.level_required) {
             message.reply(`⛔ | your level is not eligable to craft this item!`)
             return;
         }
+        
     }
     let equipmentType = equipmentSlot == 1 ? 'weapon_id' : equipmentSlot == 2 ? 'helmet_id' : equipmentSlot == 3 ? 'shirt_id' : 'pants_id';
     let existItem = await queryData(`SELECT ${equipmentType} FROM equipment WHERE player_id="${playerId}" AND ${equipmentType}=${equipmentTypeId} LIMIT 1`);
@@ -652,17 +599,50 @@ async function queryEquipment(message, playerId, level, armorCraft, materialList
         message.channel.send(`**${message.author.username}**, you already have this item`);
         return;
     }
-    // let parameters1 = '';
-    // materialList.forEach((value) => {
-    //     parameters1 += ` AND item_id=${value.id} AND quantity>=${value.quantity}`;
-    // })
-    // let existMaterials = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" ${parameters1} LIMIT 1`);
-    let existMaterials = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" AND (item_id=${materialList[0].id} AND quantity>=${materialList[0].quantity}) LIMIT 1`);
-
-    if (existMaterials.length > 0) { 
-        materialList.forEach((value) => {
-            queryData(`UPDATE backpack SET quantity=quantity - ${value.quantity} WHERE player_id="${playerId}" AND item_id=${value.id} LIMIT 1`);
+    let exist = 1;
+    if (equipmentTypeId == 23 && equipmentSlot == 1) {
+        let cekItem = await queryData(`SELECT * FROM armory WHERE player_id="${playerId}" AND weapon_id IN (18,19,20,21,22) ORDER BY weapon_id LIMIT 5`);
+        let cekEach = '';
+        cekItem.forEach(element => {
+            if (element.weapon_id == '18') {
+                cekEach += 'e';
+            } else if (element.weapon_id == '19') {
+                cekEach += 'x';
+            } else if (element.weapon_id == '20') {
+                cekEach += 'i';
+            } else if (element.weapon_id == '21') {
+                cekEach += 's';
+            } else if (element.weapon_id == '22') {
+                cekEach += 't';
+            }
         });
+        if (cekEach == 'exist') {
+            exist = 1;
+        } else {
+            exist = 0;
+        }
+        console.log(cekEach);
+    } else {
+        let existMaterials = [];
+        // let exist = new Promise((resolve, reject) => {
+        for (const element of materialList) {
+            existMaterials = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" AND (item_id=${element.id} AND quantity>=${element.quantity}) LIMIT 1`);
+            if (!existMaterials.length > 0) {
+                exist = 0;
+            }
+        }
+    }
+    if (exist) {
+        if (equipmentTypeId == 23 && equipmentSlot === 1) {
+            queryData(`UPDATE armory SET weapon_id=0 WHERE player_id="${playerId}" LIMIT 5`);
+            materialList.forEach((value) => {
+                queryData(`UPDATE backpack SET quantity=quantity - ${value.quantity} WHERE player_id="${playerId}" AND item_id=${value.id} LIMIT 1`);
+            });
+        } else {
+            materialList.forEach((value) => {
+                queryData(`UPDATE backpack SET quantity=quantity - ${value.quantity} WHERE player_id="${playerId}" AND item_id=${value.id} LIMIT 1`);
+            });
+        }
         queryData(`INSERT INTO equipment SET ${equipmentType}=${equipmentTypeId} ${modifierField}, player_id="${playerId}" ON DUPLICATE KEY UPDATE ${equipmentType}=${equipmentTypeId} ${modifierField}`)
         message.channel.send(`**${message.author.username}** has successfuly crafted ${armorCraft.emoji} **${armorCraft.name}**`);
         return;
