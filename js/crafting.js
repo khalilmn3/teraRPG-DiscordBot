@@ -131,82 +131,161 @@ async function crafting(message, args1, args2, args3) {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
                 title: null,
-                description: 'Craft list 2 [Equipments], \`available list <1,2,3>\`',
+                description: 'Craft list 2 [Equipments], \`available list <1,2,3,4,5>\`',
                 url: null,
                 color: 10115509,
                 fields: [
                     {
-                        value: `<:Copper_Broadsword:822687359131844630>__copper sword__ : 10 <:Copper_Bar:803907956478836817> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Copper_Helmet:822686919574028318>__copper helmet__ : 15 <:Copper_Bar:803907956478836817> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Copper_Chainmail:822686919603388426>__copper chainmail__ : 20 <:Copper_Bar:803907956478836817> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Copper_Greaves:822686919636680714>__copper greaves__ : 18 <:Copper_Bar:803907956478836817> ➜ <:Iron_Anvil:804145327435284500>`,
-                        name: "Level 5",
+                        value: `<:Copper_Broadsword:822687359131844630>[+15 att]__copper sword__ : 10 <:Copper_Bar:803907956478836817> + 2 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Copper_Helmet:822686919574028318>[+2 def]__copper helmet__ : 15 <:Copper_Bar:803907956478836817> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Copper_Chainmail:822686919603388426>[+3 def]__copper chainmail__ : 20 <:Copper_Bar:803907956478836817> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Copper_Greaves:822686919636680714>[+1 def]__copper greaves__ : 18 <:Copper_Bar:803907956478836817> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 5 [bonus: +5 def ]",
                         inline: false
-                    },{
-                        value: `<:Iron_Broadsword:822685694995464202>__iron sword__ : 10 <:Iron_Bar:803907956528906241> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Iron_Helmet:822686919607058463>__iron helmet__ : 15 <:Iron_Bar:803907956528906241> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Iron_Chainmail:822686919611514881>__iron chainmail__ : 25 <:Iron_Bar:803907956528906241> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Iron_Greaves:822686919623573525>__iron greaves__ : 20 <:Iron_Bar:803907956528906241> ➜ <:Iron_Anvil:804145327435284500>`,
-                        name: "Level 10",
+                    },
+                    {
+                        value: `<:Ice_Blade:827782178099298325>[+20 att]__ice blade__ : 10 <:Copper_Bar:803907956478836817> + 10 <:Frost_Core:827782125553057802> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Frost_Helmet:827782125549125662>[+2 def]__frost helmet__ : 15 <:Copper_Bar:803907956478836817> + 2 <:Frost_Core:827782125553057802> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Frost_Breastplate:827782125453312010>[+3 def]__frost breastplate__ : 20 <:Copper_Bar:803907956478836817> + 4 <:Frost_Core:827782125553057802> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n <:Frost_Leggings:827782125553320016>[+1 def]__frost leggings__ : 18 <:Copper_Bar:803907956478836817> + 3 <:Frost_Core:827782125553057802> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 7 [bonus: +7 def ]",
                         inline: false
-                    },{
-                        value: `<:Silver_Shortsword:822687140777295874>__silver sword__ : 12 <:Silver_Bar:803907956663910410> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Silver_Helmet:822686919371784223>__silver helmet__ : 15 <:Silver_Bar:803907956663910410> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Silver_Chainmail:822686919855046656>__silver chainmail__ : 27 <:Silver_Bar:803907956663910410> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Silver_Greaves:822686920168701982>__silver greaves__ : 21 <:Silver_Bar:803907956663910410> ➜ <:Iron_Anvil:804145327435284500>`,
-                        name: "Level 15",
+                    },
+                    {
+                        value: `<:Iron_Broadsword:822685694995464202>[+33 att]__iron sword__ : 7 <:Iron_Bar:803907956528906241> +  <:Wood:804704694420766721>➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Iron_Helmet:822686919607058463>[+3 def]__iron helmet__ : 6 <:Iron_Bar:803907956528906241> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Iron_Chainmail:822686919611514881>[+6 def]__iron chainmail__ : 10 <:Iron_Bar:803907956528906241> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Iron_Greaves:822686919623573525>[+2 def]__iron greaves__ : 5 <:Iron_Bar:803907956528906241> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 10 [bonus: +10 def ]",
+                        inline: false
+                    }
+                ],
+                provider: null,
+                // timestamp: new Date(),
+            }))
+        } else if (args2 === '3') {
+            message.channel.send(new Discord.MessageEmbed({
+                type: "rich",
+                title: null,
+                description: 'Craft list 2 [Equipments], \`available list <1,2,3,4,5>\`',
+                url: null,
+                color: 10115509,
+                fields: [
+                    {
+                        value: `<:Mandible_Blade:827804986934951946>[+40 att]__mandible blade__ : 7 <:Iron_Bar:803907956528906241> + 10 <:Sturdy_Fossil:827782125158924289> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Fossil_Helmet:827782125629472769>[+3 def]__fossil helmet__ : 6 <:Iron_Bar:803907956528906241> + 2 <:Sturdy_Fossil:827782125158924289> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Fossil_Plate:827782125548863498>[+6 def]__fossil plate__ : 10 <:Iron_Bar:803907956528906241> + 4 <:Sturdy_Fossil:827782125158924289> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Fossil_Greaves:827782125390528513>[+2 def]__fossil greaves__ : 5 <:Iron_Bar:803907956528906241> + 3 <:Sturdy_Fossil:827782125158924289> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 12 [bonus: +12 def ]",
+                        inline: false
+                    },
+                    {
+                        value: `<:Silver_Shortsword:822687140777295874>[+51 att]__silver sword__ : 6 <:Silver_Bar:803907956663910410> + 15 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Silver_Helmet:822686919371784223>[+6 def]__silver helmet__ : 5 <:Silver_Bar:803907956663910410> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Silver_Chainmail:822686919855046656>[+8 def]__silver chainmail__ : 9 <:Silver_Bar:803907956663910410> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Silver_Greaves:822686920168701982>[+4 def]__silver greaves__ : 4 <:Silver_Bar:803907956663910410> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 15 [bonus: +15 def ]",
+                        inline: false
+                    },
+                    {
+                        value: `<:Blade_of_Grass:827782177982251018>[+60 att]__blade of grass__ : 6 <:Silver_Bar:803907956663910410> + 10 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Jungle_Hat:827782125485817926>[+6 def]__jungle hat__ : 5 <:Silver_Bar:803907956663910410> + 2 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Jungle_Shirt:827782125469171762>[+8 def]__jungle shirt__ : 9 <:Silver_Bar:803907956663910410> + 5 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Jungle_Pants:827782125461831700>[+4 def]__jungle pants__ : 4 <:Silver_Bar:803907956663910410> + 3 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 17 [bonus: +17 def ]",
+                        inline: false
+                    }
+                ],
+                provider: null,
+                // timestamp: new Date(),
+            }))
+        }  else if (args2 === '4') {
+            message.channel.send(new Discord.MessageEmbed({
+                type: "rich",
+                title: null,
+                description: 'Craft list 3 [Equipments], \`available list <1,2,3,4,5>\`',
+                url: null,
+                color: 10115509,
+                fields: [
+                    {
+                        value: `<:Tungsten_Broadsword:822687254890938378>[+72 att]__tungsten sword__ : 5 <:Tungsten_Bar:803907956252344331> + 25 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Tungsten_Helmet:822686919431028799>[+8 def]__tungsten helmet__ : 4 <:Tungsten_Bar:803907956252344331> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Tungsten_Chainmail:822686919980875786>[+10 def]__tungsten chainmail__ : 8 <:Tungsten_Bar:803907956252344331> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Tungsten_Greaves:822686919967375384>[+6 def]__tungsten greaves__ : 3 <:Tungsten_Bar:803907956252344331> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 25 [bonus: +21 def ]",
+                        inline: false
+                    },
+                    {
+                        value: `<:Night27s_Edge:827782178255536179>[+80 att]__night edge__ : 5 <:Tungsten_Bar:803907956252344331> + 10 <:Shadow_Scale:827782125398786068> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Shadow_Helmet:827782125595131945>[+8 def]__shadow helmet__ : 4 <:Tungsten_Bar:803907956252344331> + 2 <:Shadow_Scale:827782125398786068> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Shadow_Scalemail:827782125599064074>[+10 def]__shadow scalemail__ : 8 <:Tungsten_Bar:803907956252344331> + 4 <:Shadow_Scale:827782125398786068> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Shadow_Greaves:827782125440598036>[+6 def]__shadow greaves__ : 3 <:Tungsten_Bar:803907956252344331> + 3 <:Shadow_Scale:827782125398786068> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 27 [bonus: +24 def ]",
+                        inline: false
+                    },
+                    {
+                        value: `<:Gold_Broadsword:822687140823040066>[+89 att]__gold sword__ : 4 <:Gold_Bar:803907956424441856> + 35 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Gold_Helmet:822686919607451708>[+8 def]__gold helmet__ : 3 <:Gold_Bar:803907956424441856> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Gold_Chainmail:822686919510589441>[+12 def]__gold chainmail__ : 7 <:Gold_Bar:803907956424441856> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Gold_Greaves:822686919611514880>[+8 def]__gold greaves__ : 2 <:Gold_Bar:803907956424441856> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 35 [bonus: +27 def ]",
+                        inline: false
+                    },],
+                provider: null,
+                // timestamp: new Date(),
+            }))
+        }  else if (args2 === '5') {
+            message.channel.send(new Discord.MessageEmbed({
+                type: "rich",
+                title: null,
+                description: 'Craft list 3 [Equipments], \`available list <1,2,3,4,5>\`',
+                url: null,
+                color: 10115509,
+                fields: [
+                    {
+                        value: `<:Blood_Butcherer:827782178129444874>[+99 att]__blood butcherer__ : 4 <:Gold_Bar:803907956424441856> + 10 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Crimson_Helmet:827782125531955210>[+8 def]__crimson helmet__ : 3 <:Gold_Bar:803907956424441856> + 2 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Crimson_Scalemail:827782125162987563>[+12 def]__crimson scalemail__ : 7 <:Gold_Bar:803907956424441856> + 4 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Crimson_Greaves:827782125670891550>[+8 def]__crimson greaves__ : 2 <:Gold_Bar:803907956424441856> + 3 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 37 [bonus: +30 def ]",
+                        inline: false
+                    },
+                    {
+                        value: `<:Platinum_Broadsword:822687140797874246>[+101 att]__platinum sword__ : 3 <:Platinum_Bar:803907956327317524> + 50 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Platinum_Helmet:822686919820967977>[+12 def]__platinum helmet__ : 2 <:Platinum_Bar:803907956327317524> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Platinum_Chainmail:822686919552008203>[+15 def]__platinum chainmail__ : 5 <:Platinum_Bar:803907956327317524> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Platinum_Greaves:822686919787544627>[+11 def]__platinum greaves__ : 1 <:Platinum_Bar:803907956327317524> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 50 [bonus: +35 def ]",
+                        inline: false
+                    },
+                    {
+                        value: `<:Fiery_Greatsword:827782178154086430>[+150 att]__fiery greatsword__ : 1000 <:Wood:804704694420766721> + 1 <:Ice_Blade:827782178099298325> + 1 <:Mandible_Blade:827804986934951946> + 1 <:Blade_of_Grass:827782177982251018> + 1 <:Night27s_Edge:827782178255536179> + 1 <:Blood_Butcherer:827782178129444874> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "Level 55",
+                        inline: false
+                    },
+                    {
+                        value: `<:Forbidden_Mask:827782125557514240>[+12 def]__forbidden helmet__ : 2 <:Platinum_Bar:803907956327317524> + 2 <:Forbidden_Fragment:827782125578092604> + 5 <:Stinger:827782125705101343> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Forbidden_Robes:827782125268500501>[+15 def]__forbidden robes__ : 5 <:Platinum_Bar:803907956327317524> + 2 <:Forbidden_Fragment:827782125578092604> + 4 <:Sturdy_Fossil:827782125158924289> + 10 <:Tissue_Sample:827782125637599252> ➜ <:Iron_Anvil:804145327435284500>` +
+                            `\n<:Forbidden_Treads:827782125351600169>[+11 def]__forbidden treads__ : 1 <:Platinum_Bar:803907956327317524> + 4 <:Frost_Core:827782125553057802> + 6 <:Shadow_Scale:827782125398786068> ➜ <:Iron_Anvil:804145327435284500>`,
+                        name: "[bonus: +50 def ]",
                         inline: false
                     }],
                 provider: null,
                 // timestamp: new Date(),
             }))
-        }
-        else if (args2 === '3') {
+        }  else {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
                 title: null,
-                description: 'Craft list 3 [Equipments], \`available list <1,2,3>\`',
+                description: 'Craft list 1 , \`available list <1,2,3,4,5>\`',
                 url: null,
                 color: 10115509,
                 fields: [
                     {
-                        value: `<:Tungsten_Broadsword:822687254890938378>__tungsten sword__ : 20 <:Tungsten_Bar:803907956252344331> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Tungsten_Helmet:822686919431028799>__tungsten helmet__ : 15 <:Tungsten_Bar:803907956252344331> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Tungsten_Chainmail:822686919980875786>__tungsten chainmail__ : 25 <:Tungsten_Bar:803907956252344331> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Tungsten_Greaves:822686919967375384>__tungsten greaves__ : 20 <:Tungsten_Bar:803907956252344331> ➜ <:Iron_Anvil:804145327435284500>`,
-                        name: "Level 25",
-                        inline: false
-                    },{
-                        value: `<:Gold_Broadsword:822687140823040066>__gold sword__ : 20 <:Gold_Bar:803907956424441856> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Gold_Helmet:822686919607451708>__gold helmet__ : 15 <:Gold_Bar:803907956424441856> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Gold_Chainmail:822686919510589441>__gold chainmail__ : 25 <:Gold_Bar:803907956424441856> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Gold_Greaves:822686919611514880>__gold greaves__ : 20 <:Gold_Bar:803907956424441856> ➜ <:Iron_Anvil:804145327435284500>`,
-                        name: "Level 35",
-                        inline: false
-                    },{
-                        value: `<:Platinum_Broadsword:822687140797874246>__platinum sword__ : 25 <:Platinum_Bar:803907956327317524> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Platinum_Helmet:822686919820967977>__platinum helmet__ : 30 <:Platinum_Bar:803907956327317524> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Platinum_Chainmail:822686919552008203>__platinum chainmail__ : 50 <:Platinum_Bar:803907956327317524> ➜ <:Iron_Anvil:804145327435284500>` +
-                            `\n<:Platinum_Greaves:822686919787544627>__platinum greaves__ : 40 <:Platinum_Bar:803907956327317524> ➜ <:Iron_Anvil:804145327435284500>`,
-                        name: "Level 50",
-                        inline: false
-                    }],
-                provider: null,
-                // timestamp: new Date(),
-            }))
-        } else {
-            message.channel.send(new Discord.MessageEmbed({
-                type: "rich",
-                title: null,
-                description: 'Craft list 1 , \`available list <1,2,3>\`',
-                url: null,
-                color: 10115509,
-                fields: [
-                    {
-                        value: `<:Wooden_Sword:805054340435148800>__wooden sword__ : 20 <:Wood:804704694420766721> ➜ <:Work_Bench:804145756918775828>` +
-                            `\n<:Wood_Helmet:805054256063315969>__wooden helmet__ : 15 <:Wood:804704694420766721> ➜ <:Work_Bench:804145756918775828>` +
-                            `\n<:Wood_Breastplate:805054297435275264>__wooden breastplate__ : 25 <:Wood:804704694420766721> ➜ <:Work_Bench:804145756918775828>` +
-                            `\n<:Wood_Greaves:805054271736250439>__wooden greaves__ : 20 <:Wood:804704694420766721> ➜ <:Work_Bench:804145756918775828>`,
+                        value: `<:Wooden_Sword:805054340435148800>[+5 att]__wooden sword__ : 20 <:Wood:804704694420766721> ➜ <:Work_Bench:804145756918775828>` +
+                            `\n<:Wood_Helmet:805054256063315969>[+1 def]__wooden helmet__ : 15 <:Wood:804704694420766721> ➜ <:Work_Bench:804145756918775828>` +
+                            `\n<:Wood_Breastplate:805054297435275264>[+2 def]__wooden breastplate__ : 25 <:Wood:804704694420766721> ➜ <:Work_Bench:804145756918775828>` +
+                            `\n<:Wood_Greaves:805054271736250439>[+1 def]__wooden greaves__ : 20 <:Wood:804704694420766721> ➜ <:Work_Bench:804145756918775828>`,
                         name: "Equipments",
                         inline: false
                     },
