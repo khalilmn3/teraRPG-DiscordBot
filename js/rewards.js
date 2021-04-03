@@ -23,7 +23,7 @@ async function rewards(message,command, stat) {
                 fields: [
                     {
                         name: `Vote`,
-                        value: `Wanna get more rewards?,\nVote me on [here](https://top.gg/bot/804295231838355466)\nRewards doubled on weekend`,
+                        value: `Wanna get more rewards?\n[Vote me on here](https://top.gg/bot/804295231838355466)\nRewards doubled on weekends`,
                         inline: false,
                     },
                     {

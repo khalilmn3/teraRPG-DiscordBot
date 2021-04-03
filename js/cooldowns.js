@@ -16,6 +16,7 @@ async function cooldowns(message, command, args1) {
     let currentTime = Math.round(new Date().getTime() / 1000);
     cooldowns = cooldowns.length > 0 ? cooldowns[0] : 0;
     let explore = (currentTime - cooldowns.explore) > 60 ? 0 : 60 - (currentTime - cooldowns.explore);
+    let expedition = (currentTime - cooldowns.explore) > 1800 ? 0 : 1800 - (currentTime - cooldowns.explore);
     let work = (currentTime - cooldowns.work) > 300 ? 0 : 300 - (currentTime - cooldowns.work);
     // TODO hourly reward
         // let hourly = (currentTime - cooldowns.hourly) > 3600 ? 0 : 3600 - (currentTime - cooldowns.hourly);
@@ -35,6 +36,11 @@ async function cooldowns(message, command, args1) {
                 {
                     value: explore > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(explore)}` : `:white_check_mark: | READY`,
                     name: `-----------**GRINDING**-----------\nExplore`,
+                    inline: false
+                },
+                {
+                    value: expedition > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(expedition)}` : `:white_check_mark: | READY`,
+                    name: `Mining Expedition`,
                     inline: false
                 },
                 {
@@ -93,6 +99,7 @@ async function cooldowns(message, command, args1) {
         }));
     } else {
         let grindings = (explore === 0 ? `**Explore** \n:white_check_mark: | READY \n` : '') + 
+                (expedition === 0 ? `**Mining Expedition** \n:white_check_mark: | READY \n` : '') +
                 (work === 0 ? `**Work [ mine | chop ]** \n:white_check_mark: | READY \n` : '') +
                 (fish === 0 ? `**Fish** \n:white_check_mark: | READY \n` : '') +
                 (junken === 0 ? `**Junken** \n:white_check_mark: | READY \n` : '') +

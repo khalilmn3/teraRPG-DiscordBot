@@ -31,7 +31,7 @@ import AutoPoster from 'topgg-autoposter';
 const waitingTime = new Set();
 // Command
 import profile from './js/profile.js';
-import hunt from './js/hunt.js';
+import hunt from './js/commands/hunt.js';
 import work from './js/work.js';
 import healingPotion from './js/healingPotion.js';
 import backpack from './js/backpack.js';
@@ -72,8 +72,8 @@ import give from './js/adminCommands/giveItem.js';
 import armory from './js/commands/armory.js';
 import unOrEquip from './js/commands/un_equip.js';
 import booster from './js/adminCommands/booster.js';
-import miningExpedition from './js/commands/miningExpedition.js';
 import trade from './js/commands/trade.js';
+import adventure from './js/adventure.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -352,9 +352,9 @@ client.on("message", async function (message) {
                     else if (command === 'equip' || command === 'unequip') {
                         log(message, commandBody);
                         unOrEquip(message, command, args[0], args[1]);
-                    } else if (command === 'minex' || command === 'me') {
+                    } else if (command === 'minex' || command === 'me' || command === 'adventure' || command === 'adv') {
                         log(message, commandBody);
-                        miningExpedition(message,stat);
+                        adventure(message,stat);
                     } else if (command === 'trade') {
                         log(message, commandBody);
                         trade(message,stat, args);

@@ -5,6 +5,7 @@ import { activeCommand, deactiveCommand } from "./helper/setActiveCommand.js";
 async function sellItem(message, args) {
     // let args = itemName.split(' ');
     let value = 1;
+    let itemName = '';
     if (args[0] === 'weapon' || args[0] === 'helmet' || args[0] === 'shirt' || args[0] === 'pants') {
         return sellEquipment(message, args[0], args[1])
     } else {
@@ -85,7 +86,7 @@ async function sellItem(message, args) {
             message.reply(`you can't sell this item`)
         }
     } else {
-        message.reply(`what are you trying to sell?`);
+        message.reply(`what are you trying to sell?\ndon't forget to provide the amount`);
     }
 }
 

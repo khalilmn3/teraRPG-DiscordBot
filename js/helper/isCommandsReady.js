@@ -32,6 +32,9 @@ async function isCommandsReady(playerId, commands, zone) {
     } else if (commands === 'dungeon') {
         field = 'dungeon'
         timeLimit = 43200
+    } else if (commands === 'expedition') {
+        field = 'expedition'
+        timeLimit = 1800
     }
     let lastTime = await queryData(`SELECT ${field} FROM cooldowns WHERE player_id="${playerId}" LIMIT 1`);
     // console.log(lastTime);

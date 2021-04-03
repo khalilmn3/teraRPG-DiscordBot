@@ -4,13 +4,13 @@ import variable from "../helper/variable.js";
 
 async function trade(message, stat, args) {
     let maxZone = stat.max_zone.split('|');
-    maxZone = stat.zone_id;
+    maxZone = maxZone[0];
     if ((args[0] === 'a' || args[0] === 'b')
         || ((args[0] === 'c' || args[0] === 'd') && maxZone >= 2)
-        || ((args[0] === 'e' || args[0] === 'f') && maxZone >= 3)
+        || ((args[0] === 'e' || args[0] === 'f') && maxZone >= 2)
         || ((args[0] === 'g' || args[0] === 'g') && maxZone >= 4)
-        || ((args[0] === 'i' || args[0] === 'j') && maxZone >= 5)
-        || ((args[0] === 'k' || args[0] === 'l') && maxZone >= 6)) {
+        || ((args[0] === 'i' || args[0] === 'j') && maxZone >= 4)
+        || ((args[0] === 'k' || args[0] === 'l') && maxZone >= 5)) {
         let qty = args[1] > 0 ? args[1] : 1;
         let amount = 1;
         let nameFrom = '';
@@ -151,10 +151,10 @@ async function trade(message, stat, args) {
 name: `__\`ID      TRADE      ID\`__`,
 value: `__a__ ⇢ \`${maxZone <= 3 ? maxZone : maxZone == 4 ? 2 : 3}\` <:Wood:804704694420766721> ⇄ <:Copper_Ore:803930190266630144> \`1\` ⇠ __b__
 ${maxZone >= 2 ? `__c__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Copper_Ore:803930190266630144> ⇄ <:Iron_Ore:803930082782609439> \`1\` ⇠ __d__` : ''}
-${maxZone >= 3 ? `__e__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Iron_Ore:803930082782609439> ⇄ <:Silver_Ore:803930635613372416> \`1\` ⇠ __f__` : ''}
+${maxZone >= 2 ? `__e__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Iron_Ore:803930082782609439> ⇄ <:Silver_Ore:803930635613372416> \`1\` ⇠ __f__` : ''}
 ${maxZone >= 4 ? `__g__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Silver_Ore:803930635613372416> ⇄ <:Tungsten_Ore:803930285187006495> \`1\` ⇠ __h__` : ''}
-${maxZone >= 5 ? `__i__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Tungsten_Ore:803930285187006495> ⇄ <:Gold_Ore:803930116270587914> \`1\` ⇠ __j__` : ''}
-${maxZone >= 6 ? `__k__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Gold_Ore:803930116270587914> ⇄ <:Platinum_Ore:803930281547399229> \`1\` ⇠ __l__` : ''}`,
+${maxZone >= 4 ? `__i__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Tungsten_Ore:803930285187006495> ⇄ <:Gold_Ore:803930116270587914> \`1\` ⇠ __j__` : ''}
+${maxZone >= 5 ? `__k__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Gold_Ore:803930116270587914> ⇄ <:Platinum_Ore:803930281547399229> \`1\` ⇠ __l__` : ''}`,
 inline: true
 },
                 {

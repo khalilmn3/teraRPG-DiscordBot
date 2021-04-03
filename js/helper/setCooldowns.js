@@ -23,6 +23,8 @@ function setCooldowns(playerId, command) {
         field = 'junken'
     } else if (command === 'dungeon') {
         field = 'dungeon'
+    } else if (command === 'expedition') {
+        field = 'expedition'
     }
     if (!config.DEBUG) {
         queryData(`INSERT cooldowns SET player_id="${playerId}", ${field}="${inTime}", timestamp=NOW() ON DUPLICATE KEY UPDATE ${field}="${inTime}"`);
