@@ -16,7 +16,7 @@ async function bank(message) {
             fields: [
                 {
                     name: `__BALANCE__`,
-                    value: `<:gold_coin:801440909006209025> **Gold**: ${currencyFormat(bank.gold)}\n<:piggy_bank:801444684194906142> **Bank**: ${currencyFormat(bank.bank)}\n ➥ **Benefit**: ${expBonus}%`,
+                    value: `<:gold_coin:801440909006209025> **Gold**: ${currencyFormat(bank.gold)}\n<:piggy_bank:801444684194906142> **Bank**: ${currencyFormat(bank.bank)}\n ➥ **Benefit**: ${expBonus.toFixed(2)}%`,
                     inline: false,
                 },
                 {

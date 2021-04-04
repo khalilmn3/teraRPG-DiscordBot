@@ -49,6 +49,7 @@ async function hunt(message) {
             monsterData = await queryData(`SELECT * FROM enemy WHERE is_boss="0" AND zone_id=${stat.zone_id}`)
             myCache.set('monsterData', monsterData);
         }
+        let activeBooster = await queryData(`SELECT * FROM configuration WHERE value>0 AND id IN (2,3,4,5)`);
         let monster = await randomizeChance(monsterData);
         let weapon = stat.weaponName ? `${stat.wEmoji} ${stat.weaponName}` : '\\👊bare hand'
         let playerAttack = getAttack(stat.basic_attack, stat.attack, stat.level, stat.weapon_modifier);
@@ -79,12 +80,12 @@ async function hunt(message) {
                 queryData(`UPDATE stat SET hp=${maxHp}, mp=${maxMp}, level=level - 1, current_experience=0 WHERE player_id="${message.author.id}"`);
                 battleLog = `\n${monster.emoji}**${monster.name}** beaten **${message.author.username}** down \nyou got nothing but a shameful and your level drop by 1`;
                 // logMsg = `${message.author.sername} Lost in battle with ${monster.emoji} ** ${monster.name} **\nyou got nothig but a shameful and your level drop by 1.`;
-                return messageSend(message, stat, battleLog, reward);
+                return messageSend(message, stat, battleLog, reward, activeBooster);
             } else {
                 queryData(`UPDATE stat SET hp=1, current_experience=0 WHERE player_id="${message.author.id}"`);
                 battleLog = `\n${monster.emoji}**${monster.name}** beaten **${message.author.username}** down \nyou got nothing but a shameful`;
                 // logMsg = `:skull_crossbones: | **${username}** Lost in battle with ${monster.emoji} ** ${monster.name} **,\n Be carefull next time and make sure \n you already prepared before going to wild.`;
-                return messageSend(message, stat, battleLog, reward);
+                return messageSend(message, stat, battleLog, reward, activeBooster);
             }
         }
         let dropItemList = await queryData(`SELECT id,emoji, name, chance FROM item WHERE id=${monster.drop_item_id} LIMIT 1`);
@@ -96,14 +97,14 @@ async function hunt(message) {
         }
         reward = `\n__**Rewards**__:${dropItemMsg}\n\`+${currencyFormat(exp)} 𝑔𝑜𝓁𝒹\`\n\`+${currencyFormat(gold)} 𝑒𝓍𝓅\``;
         addExpGold(message, message.author, stat, exp, gold, { hp: playerHP });
-        messageSend(message, stat, battleLog, reward);
+        messageSend(message, stat, battleLog, reward, activeBooster);
 
     } else {
         message.channel.send(cooldownMessage(message.author.id, message.author.username, message.author.avatar, 'explore', cooldowns.waitingTime));
     }
 }
 
-function messageSend(message, stat, battleLog, reward) {
+function messageSend(message, stat, battleLog, reward, booster) {
     message.channel.send(new Discord.MessageEmbed({
         type: 'rich',
         color: 10275563,
@@ -115,6 +116,9 @@ function messageSend(message, stat, battleLog, reward) {
                 inline: false,
             },
         ],
+        footer: {
+            text: booster.length > 0 ? `Booster is active cek with [tera booster]` : null
+        }
     }))
 }
 export default hunt;

@@ -442,6 +442,16 @@ client.on("message", async function (message) {
             await agenda.schedule(time, `${command} ${message.author.id}`);
         }
     
+        async function boosterExpire(message, command, textMessage, time) {
+            agenda.define(`${command} ${message.author.id}`, async job => {
+                queryData(`UPDATE configuration SET value=0 WHERE id=3 LIMIT 1`);
+            });
+        
+            await agenda.start();
+            await agenda.cancel({ name: `${command} ${message.author.id}` });
+            await agenda.schedule(time, `${command} ${message.author.id}`);
+        }
+    
         
     async function cooldownsReminder(item, message) {
         let a = null;
