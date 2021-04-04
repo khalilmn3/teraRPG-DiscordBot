@@ -62,12 +62,11 @@ async function hunt(message) {
         exp = await addBonusExp(message, exp); // bonus from booster
         let gold = subArea >= 2 ? randomNumber(monster.min_coin, monster.max_coin) : monster.min_coin;
         gold = await addBonusGold(message, gold); // bonus from booster
-        let dmgToPlayer = monsterDamage - playerDef > 0 ? monsterDamage - playerDef : 0;
-        let playerHP = stat.hp - dmgToPlayer >= 0 ? stat.hp - dmgToPlayer : 0;
+        monster.hp = parseInt(monster.hp) - parseInt(playerAttack)
+        let dmgToPlayer = monster.hp > 0 && monsterDamage - playerDef > 0 ? monsterDamage - playerDef : 0;
+        let playerHP = stat.hp - dmgToPlayer > 0 ? stat.hp - dmgToPlayer : 0;
         let battleLog = `\nand successfully beaten ${monster.emoji}**${monster.name}\n** with **${weapon}** current HP __${playerHP}/${playerMaxHP}__`;
-        let reward = `\n__**Rewards**__:\n\`+${currencyFormat(exp)} 𝑔𝑜𝓁𝒹\`\n\`+${currencyFormat(gold)} 𝑒𝓍𝓅\``;
-       
-        
+        let reward = ``;
 
         if (playerHP <= 0) {
             playerHP = 1;
@@ -88,7 +87,14 @@ async function hunt(message) {
                 return messageSend(message, stat, battleLog, reward);
             }
         }
-    
+        let dropItemList = await queryData(`SELECT id,emoji, name, chance FROM item WHERE id=${monster.drop_item_id} LIMIT 1`);
+        let randomDropItem = randomizeChance(dropItemList);
+        let dropItemMsg = '';
+        if (randomDropItem) {
+            queryData(`CALL insert_item_backpack_procedure(${message.author.id}, ${randomDropItem.id}, "1")`);
+            dropItemMsg = `\n\`+1\`${randomDropItem.emoji}\`${randomDropItem.name}\``
+        }
+        reward = `\n__**Rewards**__:${dropItemMsg}\n\`+${currencyFormat(exp)} 𝑔𝑜𝓁𝒹\`\n\`+${currencyFormat(gold)} 𝑒𝓍𝓅\``;
         addExpGold(message, message.author, stat, exp, gold, { hp: playerHP });
         messageSend(message, stat, battleLog, reward);
 
