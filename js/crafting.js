@@ -21,7 +21,7 @@ let date = new Date();
 
 async function crafting(message, commandsBody, args1, args2, args3) {
     commandsBody = commandsBody.slice(6);
-    console.log(commandsBody);
+    // console.log(commandsBody);
     const id = message.author.id;
     const username = message.author.username;
     const avatar = message.author.avatar;
@@ -440,8 +440,8 @@ async function craftWeapon(message, playerId, username, commandsBody, args1, arg
 async function craftArmor(message, playerId, username, commandsBody, args1, args2) {
     const armorList = await queryData('SELECT armor.id, item.name, item.emoji FROM armor LEFT JOIN item ON (armor.item_id = item.id) WHERE armor.armor_set_id>0');
     let armorCraft;
-    console.log(armorList)
-    console.log(commandsBody);
+    // console.log(armorList)
+    // console.log(commandsBody);
     armorList.forEach(element => {
         let name = element.name;
         if (name.toString().toLowerCase() === `${commandsBody}`) {
@@ -621,7 +621,6 @@ async function queryEquipment(message, playerId, level, armorCraft, materialList
         } else {
             exist = 0;
         }
-        console.log(cekEach);
     } else {
         let existMaterials = [];
         // let exist = new Promise((resolve, reject) => {

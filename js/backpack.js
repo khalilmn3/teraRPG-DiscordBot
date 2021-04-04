@@ -60,7 +60,7 @@ async function backpack(message, args1) {
                     bar += `${nextBar}${key.emoji} **${key.name}**: ${key.quantity}`;
                     nextBar = "\n"
                 }
-            } else if (key.type_id === 18) {
+            } else if (key.type_id === 18 || key.type_id === 11) {
                 if (key.quantity > 0) {
                     items += `${nextItems}${key.emoji} **${key.name}**: ${key.quantity}`;
                     nextItems = "\n"

@@ -219,10 +219,33 @@ var  materialList = {
                 { id: variable.shadowScale, name: 'platinum bar', quantity: 6 }
         ],
 }
+var materialUpgradeTool= {
+        ironPickaxe: [ 
+                {id:variable.ironBarId, name: 'bar', quantity: 25},
+                {id:variable.woodId, name: 'wood', quantity: 15}
+        ],
+        silverPickaxe: [ 
+                {id:variable.silverBarId, name: 'bar', quantity: 20},
+                {id:variable.woodId, name: 'wood', quantity: 20}
+        ],
+        tungstenPickaxe: [ 
+                {id:variable.tungstenBarId, name: 'bar', quantity: 15},
+                {id:variable.woodId, name: 'wood', quantity: 35}
+        ],
+        goldPickaxe: [ 
+                {id:variable.goldBarId, name: 'bar', quantity: 10},
+                {id:variable.woodId, name: 'wood', quantity: 50}
+        ],
+        platinumPickaxe: [ 
+                {id:variable.platinumBarId, name: 'bar', quantity: 5},
+                {id:variable.woodId, name: 'wood', quantity: 75}
+        ],
+}
                 
 
 
 export {
         variable,
-        materialList
+        materialList,
+        materialUpgradeTool
 }

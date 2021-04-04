@@ -116,7 +116,8 @@ async function sellEquipment(message, args1, args2) {
     }
     if (data) {
         if (data[args2].id) {
-            let price = parseInt(data[args2].sell_price) * (!isNaN(parseInt(data[args2].modifier_id)) ? parseInt(data[args2].modifier_id) : 1);
+            let modifier = data[args2].modifier_id > 0 ? data[args2].modifier_id : 1;
+            let price = parseInt(data[args2].sell_price) * modifier;
             let filter = m => m.author.id === message.author.id
                 activeCommand(message.author.id);
                 await message.reply(`Are you sure to sell ${data[args2].emoji} **${data[args2].name}** for **${currencyFormat(price)}** gold? \`YES\` / \`NO\``).then(() => {

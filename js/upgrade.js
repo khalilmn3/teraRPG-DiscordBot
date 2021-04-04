@@ -1,5 +1,6 @@
 import Discord from 'discord.js';
 import queryData from './helper/query.js';
+import { materialUpgradeTool } from './helper/variable.js';
 
 
 function upgrade(message, args1) {
@@ -17,11 +18,11 @@ function upgrade(message, args1) {
             color: 10115509,
             fields: [
                 {
-                    value: `<:Copper_Pickaxe:803907956424835124> ➜ <:Iron_Pickaxe:805727630564786186> : 25 <:Iron_Bar:803907956528906241> + 45 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
-                        `\n<:Iron_Pickaxe:805727630564786186> ➜ <:Silver_Pickaxe:805727630769782794> : 25 <:Silver_Bar:803907956663910410> + 45 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
-                        `\n<:Silver_Pickaxe:805727630769782794> ➜ <:Tungsten_Pickaxe:803907956571504681> : 25 <:Tungsten_Bar:803907956252344331> + 45 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
-                        `\n<:Tungsten_Pickaxe:803907956571504681> ➜ <:Gold_Pickaxe:803907956734165012> : 25 <:Gold_Bar:803907956424441856> + 45 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
-                        `\n<:Gold_Pickaxe:803907956734165012> ➜ <:Platinum_Pickaxe:803907956675575828> : 25 <:Platinum_Bar:803907956327317524> + 45 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>`,
+                    value: `<:Copper_Pickaxe:803907956424835124> ➜ <:Iron_Pickaxe:805727630564786186> : 25 <:Iron_Bar:803907956528906241> + 15 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                        `\n<:Iron_Pickaxe:805727630564786186> ➜ <:Silver_Pickaxe:805727630769782794> : 20 <:Silver_Bar:803907956663910410> + 20 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                        `\n<:Silver_Pickaxe:805727630769782794> ➜ <:Tungsten_Pickaxe:803907956571504681> : 15 <:Tungsten_Bar:803907956252344331> + 35 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>` +
+                        `\n<:Tungsten_Pickaxe:803907956571504681> ➜ <:Gold_Pickaxe:803907956734165012> : 10 <:Gold_Bar:803907956424441856> + 50 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>`,
+                        // `\n<:Gold_Pickaxe:803907956734165012> ➜ <:Platinum_Pickaxe:803907956675575828> : 5 <:Platinum_Bar:803907956327317524> + 75 <:Wood:804704694420766721> ➜ <:Iron_Anvil:804145327435284500>`,
                     name: "Pickaxe",
                     inline: false
                 },],
@@ -50,32 +51,37 @@ async function upgradeTools(message, playerId, id) {
     let toolsName = id == 1 ? 'Pickaxe' : 'Axe';
     if (toolsTier < 5) {
         if (toolsDetail.anvil_id > 0) {
-            let materialBarId = '';
+            let materialList = '';
             let upgradeToId = '';
             if (toolsTier == 1) {
                 upgradeToId = id == 1 ? 48 : 91;
-                materialBarId = 24;
+                materialList = materialUpgradeTool.ironPickaxe;
             } else if (toolsTier == 2) {
                 upgradeToId = id == 1 ? 50 : 93;
-                materialBarId = 26;
+                materialList = materialUpgradeTool.silverPickaxe
             } else if (toolsTier == 3) {
                 upgradeToId = id == 1 ? 51 : 94;
-                materialBarId = 27;
+                materialList = materialUpgradeTool.tungstenPickaxe
             } else if (toolsTier == 4) {
                 upgradeToId = id == 1 ? 52 : 95;
-                materialBarId = 28;
+                materialList = materialUpgradeTool.goldPickaxe
             }
             // else if (toolsTier == 5) {
             //     upgradeToId = id == 1 ? 56 : 96;
-            //     materialBarId = 30;
+            //     materialList = 30;
             // }
-            let materialList = [
-                {id:materialBarId, name: 'bar', quantity: 25},
-                {id:179, name: 'wood', quantity: 45}
-            ]
-            let existMaterials1 = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" AND (item_id=${materialList[0].id} AND quantity>=${materialList[0].quantity}) LIMIT 1`);
-            let existMaterials2 = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" AND (item_id=${materialList[1].id} AND quantity>=${materialList[1].quantity}) LIMIT 1`);
-            if (existMaterials1.length > 0 && existMaterials2.length > 0) {
+            let existMaterials = [];
+            let exist = 1;
+            // let exist = new Promise((resolve, reject) => {
+            for (const element of materialList) {
+                existMaterials = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" AND (item_id=${element.id} AND quantity>=${element.quantity}) LIMIT 1`);
+                if (!existMaterials.length > 0) {
+                    exist = 0;
+                }
+            }
+            // let existMaterials1 = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" AND (item_id=${materialList[0].id} AND quantity>=${materialList[0].quantity}) LIMIT 1`);
+            // let existMaterials2 = await queryData(`SELECT item_id FROM backpack WHERE player_id="${playerId}" AND (item_id=${materialList[1].id} AND quantity>=${materialList[1].quantity}) LIMIT 1`);
+            if (exist) {
                 materialList.forEach((value) => {
                     queryData(`UPDATE backpack SET quantity=quantity-${value.quantity} WHERE player_id="${playerId}" AND item_id="${value.id}"`);
                 });
