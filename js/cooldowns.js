@@ -35,12 +35,12 @@ async function cooldowns(message, command, args1) {
             fields: [
                 {
                     value: explore > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(explore)}` : `:white_check_mark: | READY`,
-                    name: `-----------**GRINDING**-----------\nExplore`,
+                    name: `-----------**GRINDING**-----------\nExplore [ exp ]`,
                     inline: false
                 },
                 {
                     value: expedition > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(expedition)}` : `:white_check_mark: | READY`,
-                    name: `Mining Expedition`,
+                    name: `Mining Expedition [ me ]`,
                     inline: false
                 },
                 {

@@ -9,12 +9,12 @@ function help(message, client) {
             color: 10115509,
             fields: [
                 {
-                    value: `profile, tools, workspace, backpack, cooldown, ready, armory, zone`,
+                    value: `profile, tools, workspace, backpack, cooldown, ready, armory, zone, booster`,
                     name: ":information_source:  __STATUS__",
                     inline: false
                 },
                 {
-                    value: `explore, fish, heal, dungeon <@player>`,
+                    value: `explore, fish, heal, dungeon <@player>, mine expedition [me]`,
                     name: ":crossed_swords: __GRINDING__",
                     inline: false
                 },
