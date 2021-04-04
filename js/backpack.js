@@ -9,6 +9,10 @@ async function backpack(message, args1) {
     let nextItems = "";
     let bait = '';
     let nextBait = '';
+    let ore = '';
+    let nextOre = '';
+    let bar = '';
+    let nextBar = '';
     let avatar = message.author.avatar;
     let id = message.author.id;
     let username = message.author.username;
@@ -46,12 +50,22 @@ async function backpack(message, args1) {
     });
     if (data.length > 0) {
         for (const key of data) {
-            if (key.item_group_id === 1) {
+            if (key.type_id === 7) {
+                if (key.quantity > 0) {
+                    ore += `${nextOre}${key.emoji} **${key.name}**: ${key.quantity}`;
+                    nextOre = "\n"
+                }
+            } else if (key.type_id === 8) {
+                if (key.quantity > 0) {
+                    bar += `${nextBar}${key.emoji} **${key.name}**: ${key.quantity}`;
+                    nextBar = "\n"
+                }
+            } else if (key.type_id === 18) {
                 if (key.quantity > 0) {
                     items += `${nextItems}${key.emoji} **${key.name}**: ${key.quantity}`;
                     nextItems = "\n"
                 }
-            } else if (key.item_group_id === 2 || key.item_group_id === 6) {
+            }  else if (key.item_group_id === 2 || key.item_group_id === 6) {
                 if (key.quantity > 0) {
                     consumables += `${nextConsumables}${key.emoji} **${key.name}**: ${key.quantity}`;
                     nextConsumables = "\n"
@@ -76,6 +90,14 @@ async function backpack(message, args1) {
         "color": 10115509,
         "timestamp": null,
         "fields": [{
+            "value": ore ? ore : 'Empty',
+            "name": "__ORES__",
+            "inline": true
+        },{
+            "value": bar ? bar : 'Empty',
+            "name": "__BARS__",
+            "inline": true
+        },{
             "value": items ? items : 'Empty',
             "name": "__MATERIALS__",
             "inline": true
