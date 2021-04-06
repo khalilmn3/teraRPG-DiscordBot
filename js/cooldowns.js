@@ -5,14 +5,15 @@ import Discord from 'discord.js';
 async function cooldowns(message, command, args1) {
     let mentions = message.mentions.users.first();
     let user = mentions ? mentions : message.author;
-
+    let id = user.id;
+    let username = user.username;
     if (message.author.id === '668740503075815424') {
         if (parseInt(args1) > 0) {
-            user.id = args1;
-            user.username = args1;
+            id = args1;
+            username = args1;
         }
     }
-    let cooldowns = await queryData(`SELECT * FROM cooldowns WHERE player_id="${user.id}" LIMIT 1`);
+    let cooldowns = await queryData(`SELECT * FROM cooldowns WHERE player_id="${id}" LIMIT 1`);
     let currentTime = Math.round(new Date().getTime() / 1000);
     cooldowns = cooldowns.length > 0 ? cooldowns[0] : 0;
     let explore = (currentTime - cooldowns.explore) > 60 ? 0 : 60 - (currentTime - cooldowns.explore);
@@ -85,10 +86,10 @@ async function cooldowns(message, command, args1) {
                     inline: false
                 },],
             author: {
-                name: `${user.username}'s cooldowns`,
+                name: `${username}'s cooldowns`,
                 url: null,
-                iconURL: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=512`,
-                proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+                iconURL: `https://cdn.discordapp.com/avatars/${id}/${user.avatar}.png?size=512`,
+                proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${id}/${user.avatar}.png`
             },
             footer: {
                 text: `Short version \`tera rd\``,
@@ -139,10 +140,10 @@ async function cooldowns(message, command, args1) {
             color: 10115509,
             fields: fields,
             author: {
-                name: `${user.username}'s ready`,
+                name: `${username}'s ready`,
                 url: null,
-                iconURL: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=512`,
-                proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+                iconURL: `https://cdn.discordapp.com/avatars/${id}/${user.avatar}.png?size=512`,
+                proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${id}/${user.avatar}.png`
             },
             footer: {
                 text: `Long version \`tera cd\``,
