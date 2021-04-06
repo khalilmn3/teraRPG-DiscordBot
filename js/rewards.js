@@ -12,7 +12,7 @@ async function rewards(message,command, stat) {
         if (cooldowns.isReady) {
             status = 'You haven\'t voted yet';
         } else {
-            status = `You already voted, \nYou can vote again in ${cooldowns.waitingTime}`;
+            status = `You already voted, \nYou can vote again in\n${cooldowns.waitingTime}`;
         }
             // setCooldowns(message.author.id, 'vote');
             message.channel.send(new Discord.MessageEmbed({

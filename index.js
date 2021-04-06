@@ -130,28 +130,29 @@ client.on("message", async function (message) {
                 if (args[0] === 'set') {
                     message.delete;
                     client.channels.cache.get("818359215562424330").setName(`\\🟡-Status`)
-                    client.channels.cache.get("818359215562424330").send(`\\🟡 Bot is Preparing for Maintenance`)
+                    client.channels.cache.get("818359215562424330").send(`\\🟡 Bot is Preparing for Maintenance\n${body}`)
                     await queryData(`update configuration set value=1 where id=1;`);
                     message.channel.send(`Server set prepare maintenance`);
                 } else if (args[0] === 'unset') {
                     message.delete;
                     client.channels.cache.get("818359215562424330").setName(`\\🟢-Status`)
-                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online`)
+                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online\n${body}`)
                     await queryData(`update configuration set value=0 where id=1;`);
                     message.channel.send(`Server unset prepare maintenance`);
                 }
             }  else if (command === "maintenance") {
                 if (args[0] === 'set') {
+                    let note = args.
                     message.delete;
                     client.channels.cache.get("818359215562424330").setName(`\\🔴-Status`)
-                    client.channels.cache.get("818359215562424330").send(`\\🔴 Bot Offline\n-Under Maintenance `)
+                    client.channels.cache.get("818359215562424330").send(`\\🔴 Bot Offline\n-Under Maintenance\n${body}`)
                     await queryData(`update configuration set value=0 where id=1;`);
                     await queryData(`update configuration set value=1 where id=6;`);
                     message.channel.send(`Server set maintenance`);
                 } else if (args[0] === 'unset') {
                     message.delete;
                     client.channels.cache.get("818359215562424330").setName(`\\🟢-Status`)
-                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online`)
+                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online\n${body}`)
                     await queryData(`update configuration set value=0 where id=6;`);
                     message.channel.send(`Server unset maintenance`);
                 }
@@ -201,7 +202,7 @@ client.on("message", async function (message) {
                 return;
             } else if (command === "math") {
                 try {
-                    const num = eval(body);
+                    let num = eval(body);
                     message.reply(num);
                 } catch (error) {
                     return;
@@ -223,8 +224,8 @@ client.on("message", async function (message) {
                 let stat = isUserRegistred[0];
                 if (isUserRegistred[0].is_active) { // Check Banned User
                     let configuration = await queryData(`SELECT value FROM configuration WHERE id IN (1,6) ORDER BY id LIMIT 2`);
-                    let prepareMaintenance = configuration.length > 0 ? configuration[0].value : false;
-                    let maintenance = configuration.length > 0 ? configuration[1].value : false;
+                    let prepareMaintenance = configuration.length > 0 ? parseInt(configuration[0].value) : false;
+                    let maintenance = configuration.length > 0 ? parseInt(configuration[1].value) : false;
                     if (isUserRegistred[0].active_command === 1) {
                         message.reply(`you have an active command, end it before processing another!`)
                         return;
@@ -259,6 +260,9 @@ client.on("message", async function (message) {
                     } else if (command === 'heal') {
                         log(message, commandBody);
                         healingPotion(message, 0, message.author.id, message.author.username);
+                    } else if (command === 'minex' || commandBody.includes('mine expedition') || command === 'me' || command === 'adventure' || command === 'adv') {
+                        log(message, commandBody);
+                        adventure(message,stat);
                     } else if (command === 'mine' || command === 'chop') {
                         log(message, commandBody);
                         work(message, command, isUserRegistred[0].zone_id);
@@ -353,9 +357,6 @@ client.on("message", async function (message) {
                     else if (command === 'equip' || command === 'unequip') {
                         log(message, commandBody);
                         unOrEquip(message, command, args[0], args[1]);
-                    } else if (command === 'minex' || command === 'me' || command === 'adventure' || command === 'adv') {
-                        log(message, commandBody);
-                        adventure(message,stat);
                     } else if (command === 'trade') {
                         log(message, commandBody);
                         trade(message,stat, args);

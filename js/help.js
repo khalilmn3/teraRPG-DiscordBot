@@ -14,7 +14,7 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `explore, fish, heal, dungeon <@player>, mining expedition [me]`,
+                    value: `explore, fish, heal, dungeon <@player>, mine expedition [me]`,
                     name: ":crossed_swords: __GRINDING__",
                     inline: false
                 },
