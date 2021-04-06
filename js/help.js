@@ -14,7 +14,7 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `explore, fish, heal, dungeon <@player>, mine expedition [me]`,
+                    value: `explore, fish, heal, dungeon <@player>, mining expedition [me]`,
                     name: ":crossed_swords: __GRINDING__",
                     inline: false
                 },
@@ -24,7 +24,7 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `craft <item_name>, craft list, upgrade <pickaxe>, upgrade list\nreforge info <1/2>`,
+                    value: `craft <item_name>, craft list, smelt, upgrade <pickaxe>, upgrade list\nreforge info <1/2>`,
                     name: ":tools: __CRAFTING__",
                     inline: false
                 },

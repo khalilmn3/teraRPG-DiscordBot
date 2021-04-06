@@ -74,6 +74,7 @@ import unOrEquip from './js/commands/un_equip.js';
 import booster from './js/adminCommands/booster.js';
 import trade from './js/commands/trade.js';
 import adventure from './js/adventure.js';
+import smelt from './js/commands/smelt.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -358,6 +359,9 @@ client.on("message", async function (message) {
                     } else if (command === 'trade') {
                         log(message, commandBody);
                         trade(message,stat, args);
+                    } else if (command === 'smelt') {
+                        log(message, commandBody);
+                        smelt(message, args);
                     }
                 }
             } else if (command === 'start') {

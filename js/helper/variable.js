@@ -1,5 +1,8 @@
 var variable =
 {
+        workBenchId: '170',
+        furnaceId: '171',
+        anvilId: '173',
         woodId: '179',
         copperOreId: '1',
         ironOreId: '3',
@@ -241,11 +244,23 @@ var materialUpgradeTool= {
                 {id:variable.woodId, name: 'wood', quantity: 75}
         ],
 }
+var emojiName = {
+        workBench: '<:Work_Bench:804145756918775828> **work bench**',
+        anvil: '<:Iron_Anvil:804145327435284500> **anvil**',
+        furnace: '<:Furnace:804145327513796688> **furnace**',
+        copperBar: '<:Copper_Bar:803907956478836817> **copper bar**',
+        ironBar: '<:Iron_Bar:803907956528906241> **iron bar**',
+        silverBar: '<:Silver_Bar:803907956663910410> **silver bar**',
+        tungstenBar: '<:Tungsten_Bar:803907956252344331> **tungsten bar**',
+        goldBar: '<:Gold_Bar:803907956424441856> **gold bar**',
+        platinumBar: '<:Platinum_Bar:803907956327317524> **platinum bar**',
+}
                 
 
 
 export {
         variable,
         materialList,
-        materialUpgradeTool
+        materialUpgradeTool,
+        emojiName
 }
