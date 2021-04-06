@@ -19,6 +19,7 @@ async function voteRewardsSend(client, player_id, isWeekend) {
         let diamond = 1 * multiplyWeekend;
         let ironCrate = 1 * multiplyWeekend;
         let potion = (10 * multiplyWeekend) * parseInt(userExist[0].level);
+        potion = potion > 100 ? 100 : potion;
         queryData(`CALL insert_item_backpack_procedure("${player_id}", "266", ${potion})`);
         queryData(`CALL insert_item_backpack_procedure("${player_id}", "223", ${ironCrate})`);
         queryData(`UPDATE stat SET gold=gold + ${gold}, diamond=diamond + ${diamond} WHERE player_id="${player_id}" LIMIT 1`);
