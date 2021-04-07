@@ -44,8 +44,8 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `ping, invite, report, suggest`,
-                    name: ":gear: __TOOLS__",
+                    value: `ping, invite, report, suggest, donate`,
+                    name: ":gear: __UTILITY__",
                     inline: false
                 }],
             thumbnail: {
