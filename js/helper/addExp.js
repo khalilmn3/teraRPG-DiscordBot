@@ -7,6 +7,10 @@ async function addExpGold(message, player, stat, expAdd, goldAdd, currentPlayerS
     let totalExp = parseInt(expAdd) + parseInt(stat.current_experience);
 
     let levelUPmessage = '';
+    let addHP = '';
+    if (currentPlayerStat) {
+        addHP= `, hp='${currentPlayerStat.hp}'`
+    }
     if (totalExp >= expNeedToNextLevel) {
         // LEVEL UP
         let cExp = totalExp - expNeedToNextLevel;
@@ -17,7 +21,7 @@ async function addExpGold(message, player, stat, expAdd, goldAdd, currentPlayerS
         
         message.channel.send(levelUPmessage);
     } else {
-        queryData(`UPDATE stat SET current_experience=${totalExp}, hp='${currentPlayerStat.hp}', gold=gold + ${goldAdd} WHERE player_id="${player.id}" LIMIT 1`);
+        queryData(`UPDATE stat SET current_experience=${totalExp}${addHP}, gold=gold + ${goldAdd} WHERE player_id="${player.id}" LIMIT 1`);
     }
 }
 

@@ -6,7 +6,7 @@ function getAttack(basicAttack, attack, level, weaponEnchant) {
     weaponEnchant = !isNaN(parseFloat(weaponEnchant)) ? parseFloat(weaponEnchant) : 0;
     level = parseInt(level) > 0 ? parseInt(level) : 0;
     let modifier = attack * weaponEnchant;
-    let att = basicAttack + level + attack + modifier
+    let att = basicAttack + level + attack + parseFloat(modifier)
     return att
 }
 

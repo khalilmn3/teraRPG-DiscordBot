@@ -9,42 +9,42 @@ function help(message, client) {
             color: 10115509,
             fields: [
                 {
-                    value: `profile, tools, workspace, backpack, cooldown, ready, armory, zone, booster`,
+                    value:`\`profile\`,\`tools\`,\`workspace\`,\`backpack\`,\`cooldown\`,\n\`ready\`,\`armory\`,\`zone\`,\`booster\``,
                     name: ":information_source:  __STATUS__",
                     inline: false
                 },
                 {
-                    value: `explore, fish, heal, dungeon <@player>, mine expedition [me]`,
+                    value: `\`explore\`,\`fish\`,\`heal\`,\`dungeon <@player>\`,\`servant\`,\`mine expedition [me]\``,
                     name: ":crossed_swords: __GRINDING__",
                     inline: false
                 },
                 {
-                    value: `chop, mine`,
+                    value: `\`chop\`,\` mine\``,
                     name: ":pick: __WORKING__",
                     inline: false
                 },
                 {
-                    value: `craft <item_name>, craft list, smelt, upgrade <pickaxe>, upgrade list\nreforge info <1/2>`,
+                    value: `\`,craft <item_name>\`,\`craft list\`,\`smelt\`,\`upgrade <pickaxe>\`,\n\`upgrade list\`,\`reforge info <1/2>\``,
                     name: ":tools: __CRAFTING__",
                     inline: false
                 },
                 {
-                    value: `market, shop, deposit, withdraw, bank, buy <item_name>,\n sell <item_name>, open <crate> <amount>, trade`,
+                    value: `\`market\`,\`shop\`,\`deposit\`,\`withdraw\`,\`bank\`,\`buy <item_name>\`,\n\`sell <item_name>\`,\`open <crate> <amount>\`,\`trade\``,
                     name: ":moneybag: __ECONOMY__",
                     inline: false
                 },
                 {
-                    value: `cf <h/t> <amount>, lottery, junken <@player>`,
+                    value: `\`cf <h/t> <amount>\`,\`lottery\`,\`junken <@player>\``,
                     name: ":moneybag: __MINI GAMES__",
                     inline: false
                 },
                 {
-                    value: `vote, daily, weekly`,
+                    value: `\`vote\`,\`daily\`,\`weekly\``,
                     name: ":gift: __CLAIM REWARDS__",
                     inline: false
                 },
                 {
-                    value: `ping, invite, report, suggest, donate`,
+                    value: `\`ping\`,\`invite\`,\`report\`,\`suggest\`,\`donate\``,
                     name: ":gear: __UTILITY__",
                     inline: false
                 }],

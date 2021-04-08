@@ -61,7 +61,7 @@ async function cooldowns(message, command, args1) {
                 },
                 {
                     value: dungeon > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(dungeon)}` : `:white_check_mark: | READY`,
-                    name: `Dungeon`,
+                    name: `Dungeon | Servant`,
                     inline: false
                 },
                 // TODO hourly
@@ -104,7 +104,7 @@ async function cooldowns(message, command, args1) {
                 (work === 0 ? `**Work [ mine | chop ]** \n:white_check_mark: | READY \n` : '') +
                 (fish === 0 ? `**Fish** \n:white_check_mark: | READY \n` : '') +
                 (junken === 0 ? `**Junken** \n:white_check_mark: | READY \n` : '') +
-                (dungeon === 0 ? `**Dungeon** \n:white_check_mark: | READY \n` : '')
+                (dungeon === 0 ? `**Dungeon | Servant** \n:white_check_mark: | READY \n` : '')
         let rewards =
                 // TODO hourly
                 // (hourly === 0 ? `**Hourly** \n:white_check_mark: | READY \n` : '') +

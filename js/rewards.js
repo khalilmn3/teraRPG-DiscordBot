@@ -4,6 +4,7 @@ import setCooldowns from "./helper/setCooldowns.js";
 import Discord from 'discord.js'
 import queryData from "./helper/query.js";
 import currencyFormat from "./helper/currency.js";
+import addExpGold from "./helper/addExp.js";
 
 async function rewards(message,command, stat) {
     if (command == 'vote') {
@@ -120,20 +121,21 @@ async function rewards(message,command, stat) {
         let gold = 2500 + multiply;
         let exp = (50 * Math.pow(stat.level,3) - 150 * Math.pow(stat.level, 2) + 400 * (stat.level)) / 3 / 2
         let totalExp = parseInt(exp) + parseInt(stat.current_experience);
-        let levelEXP = await queryData(`SELECT experience, id FROM level WHERE id=${stat.level + 1} LIMIT 1`)
+        // let levelEXP = await queryData(`SELECT experience, id FROM level WHERE id=${stat.level + 1} LIMIT 1`)
         let levelUPmessage = '';
-        if (levelEXP.length > 0 && totalExp >= levelEXP[0].experience) {
-            // LEVEL UP
-            let data = await queryData(`SELECT id, experience FROM level WHERE experience<=${totalExp} ORDER BY id DESC LIMIT 1`)
-            let nLevel = levelEXP[0].id;
-            let cExp = totalExp - levelEXP[0].experience;
-            let maxHp = 5 * (nLevel + stat.basic_hp);
-            let maxMp = 5 * (nLevel + stat.basic_mp);
-            queryData(`UPDATE stat SET level="${nLevel}", current_experience=${cExp}, gold=gold + ${gold},  hp="${maxHp}", mp="${maxMp}" WHERE player_id="${message.author.id}" LIMIT 1`);
-            levelUPmessage = `> :tada: | **${message.author.username}** Level up +${nLevel - stat.level}, HP restored`
-        } else {
-            queryData(`UPDATE stat SET current_experience=${totalExp}, gold=gold + ${gold} WHERE player_id="${message.author.id}" LIMIT 1`);
-        }
+        // if (levelEXP.length > 0 && totalExp >= levelEXP[0].experience) {
+        //     // LEVEL UP
+        //     let data = await queryData(`SELECT id, experience FROM level WHERE experience<=${totalExp} ORDER BY id DESC LIMIT 1`)
+        //     let nLevel = levelEXP[0].id;
+        //     let cExp = totalExp - levelEXP[0].experience;
+        //     let maxHp = 5 * (nLevel + stat.basic_hp);
+        //     let maxMp = 5 * (nLevel + stat.basic_mp);
+            
+        //     queryData(`UPDATE stat SET level="${nLevel}", current_experience=${cExp}, gold=gold + ${gold},  hp="${maxHp}", mp="${maxMp}" WHERE player_id="${message.author.id}" LIMIT 1`);
+        //     levelUPmessage = `> :tada: | **${message.author.username}** Level up +${nLevel - stat.level}, HP restored`
+        // } else {
+        //     queryData(`UPDATE stat SET current_experience=${totalExp}, gold=gold + ${gold} WHERE player_id="${message.author.id}" LIMIT 1`);
+        // }
         message.channel.send(new Discord.MessageEmbed({
             type: "rich",
             description: null,
@@ -153,9 +155,10 @@ async function rewards(message,command, stat) {
             timestamp: new Date(),
             files: []
         }));
-        message.channel.send(levelUPmessage);
+        addExpGold(message, message.author, stat, exp, gold, null );
+        // message.channel.send(levelUPmessage);
         } else {
-            message.channel.send(cooldownMessage(message.author.id, message.author.username, message.author.avatar, 'Weekly', cooldowns.waitingTime));
+            message.channel.send(cooldownMessage(message.author.id, message.author.username, message.author.avatar, 'weekly', cooldowns.waitingTime));
         }
     }
 }

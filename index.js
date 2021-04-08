@@ -76,6 +76,7 @@ import trade from './js/commands/trade.js';
 import adventure from './js/adventure.js';
 import smelt from './js/commands/smelt.js';
 import donate from './js/commands/donate.js';
+import servant from './js/commands/servant.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -367,6 +368,9 @@ client.on("message", async function (message) {
                     } else if (command === 'donate') {
                         log(message, commandBody);
                         donate(message);
+                    } else if (command === 'servant') {
+                        log(message, commandBody);
+                        servant(message);
                     }
                 }
             } else if (command === 'start') {

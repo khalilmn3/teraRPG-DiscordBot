@@ -1,10 +1,21 @@
 import Discord from "discord.js";
 import currencyFormat from "../helper/currency.js";
 import { getAttack } from "../helper/getBattleStat.js";
+import isCommandsReady from "../helper/isCommandsReady.js";
 import queryData from "../helper/query.js";
 import randomNumber from "../helper/randomNumberWithMinMax.js";
+import setCooldowns from "../helper/setCooldowns.js";
 
 async function servant(message) {
+    let player1 = message.author;
+    // let player2 = message.mentions.users.first();
+    // if (player2 && player2.id != message.author.id) {
+    let cooldowns = await isCommandsReady(player1.id, 'dungeon');
+        // let cooldowns2 = await isCommandsReady(player2.id, 'dungeon');
+    if (!cooldowns.isReady) {
+        return message.channel.send(cooldownMessage(player1.id, player1.username, player1.avatar, 'Dungeon', cooldowns.waitingTime));
+    }
+    setCooldowns(message.author.id, 'dungeon');
     let servants = await queryData(`SELECT * FROM servants`);
     let stat = await queryData(`SELECT stat.*, IFNULL(weapon.attack,0) as attack, zone.name as zone,
                             IFNULL(itemWeapon.emoji, '') as wEmoji, CONCAT(IFNULL(modifier_weapon.name,"")," ",itemWeapon.name) as weaponName,
@@ -67,7 +78,7 @@ async function servant(message) {
             return response.content.toLowerCase() === `join ${randomNumberParty}`
         };
         
-         return await msg.channel.awaitMessages(filter, { max:3, time: 30000 })
+         return await msg.channel.awaitMessages(filter, { max:9, time: 20000 })
              .then(collected => {
                  collected.forEach(element => {
                      let player = element.author
