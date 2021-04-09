@@ -1,4 +1,5 @@
 import Discord from "discord.js";
+import { cooldownMessage } from "../embeddedMessage.js";
 import currencyFormat from "../helper/currency.js";
 import { getAttack } from "../helper/getBattleStat.js";
 import isCommandsReady from "../helper/isCommandsReady.js";
