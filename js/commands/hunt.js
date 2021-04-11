@@ -95,7 +95,7 @@ async function hunt(message) {
             queryData(`CALL insert_item_backpack_procedure(${message.author.id}, ${randomDropItem.id}, "1")`);
             dropItemMsg = `\n\`+1\`${randomDropItem.emoji}\`${randomDropItem.name}\``
         }
-        reward = `\n__**Rewards**__:${dropItemMsg}\n\`+${currencyFormat(exp)} 𝑔𝑜𝓁𝒹\`\n\`+${currencyFormat(gold)} 𝑒𝓍𝓅\``;
+        reward = `\n__**Rewards**__:${dropItemMsg}\n\`+${currencyFormat(exp)} 𝑒𝓍𝓅\`\n\`+${currencyFormat(gold)} 𝑔𝑜𝓁𝒹\``;
         addExpGold(message, message.author, stat, exp, gold, { hp: playerHP });
         messageSend(message, stat, battleLog, reward, activeBooster);
 
