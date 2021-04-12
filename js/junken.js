@@ -146,7 +146,7 @@ async function junken(message,stat) {
                                             }
                                             
                                             let winResult = winner == 'Draw' ? `> Round ${count} : **Draw**` : `Round ${count} winner : <@${winner.id}>`;
-                                            if (junkenResult.player1 == 0 && junkenResult.player1 == 0) {
+                                            if (junkenResult.player1 == 0 && junkenResult.player2 == 0) {
                                                 message.channel.send('Both user not responding the DM, Junken cancelled!');
                                                 deactiveCommand([player1.id, player2.id])
                                             } else {
