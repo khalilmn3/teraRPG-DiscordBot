@@ -3,6 +3,7 @@ import db from '../db_config.js'
 import Discord from 'discord.js';
 import currencyFormat from './helper/currency.js';
 import { getAttack, getDefense, getMaxExp, getMaxHP, getMaxMP } from './helper/getBattleStat.js';
+import queryData from './helper/query.js';
 
 async function profile(message, client, id, avatar, args1) {
     let idMention = message.mentions.users.first();
@@ -48,6 +49,8 @@ async function profile(message, client, id, avatar, args1) {
         LEFT JOIN utility ON (stat.player_id=utility.player_id)
         WHERE stat.player_id = '${id}' LIMIT 1`;
     let data = [];
+    let rating = await queryData(`SELECT points FROM duel WHERE player_id=${message.author.id} LIMIT 1`);
+    rating = rating.length > 0 ? rating[0].points : 0;
     db.query(query, async function (err, result) {
         if (err) throw err;
         if (result.length < 1) {
@@ -134,7 +137,7 @@ async function profile(message, client, id, avatar, args1) {
             // },
             provider: null,
             footer: {
-                text: `More commands on \`tera help\``,
+                text: `Rating: ${rating}`,
                 iconURL: `https://cdn.discordapp.com/avatars/${client.user.id}/${client.user.avatar}.png?size=512`,
                 proxyIconURL: `https://images-ext-1.discordapp.net/external/DIxgPOIeSdmfHuboNFOPhyAJyjRQ9bUoQMePmqundGg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${client.user.id}/${client.user.avatar}.png`
             },

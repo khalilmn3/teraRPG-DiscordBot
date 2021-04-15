@@ -14,5 +14,7 @@ export default {
     noEntry: '\\🚫',
     workBench: '<:Work_Bench:804145756918775828>',
     anvil: '<:Iron_Anvil:804145327435284500>',
-    furnace: '<:Furnace:804145327513796688>'
+    furnace: '<:Furnace:804145327513796688>',
+    exp: '𝑒𝓍𝓅',
+    gold: '𝑔𝑜𝓁𝒹'
 };

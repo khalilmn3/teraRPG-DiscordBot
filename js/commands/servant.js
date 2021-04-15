@@ -9,8 +9,27 @@ import setCooldowns from "../helper/setCooldowns.js";
 
 async function servant(message) {
     let player1 = message.author;
-    // let player2 = message.mentions.users.first();
+    let playerJoins = message.mentions.users;
+    console.log(playerJoins)
     // if (player2 && player2.id != message.author.id) {
+    let isCooldown = false;
+    if (playerJoins) {
+        let loopi = await playerJoins.forEach(async function loop(values, keys) {
+            console.log('awal');
+            if(isCooldown){return}
+            let cooldowns = await isCommandsReady(keys, 'dungeon');
+            if (!cooldowns.isReady) {
+                isCooldown = true;
+                console.log(isCooldown);
+                return message.channel.send(cooldownMessage(values.id, values.username, values.avatar, 'Servant', cooldowns.waitingTime));
+            }
+            console.log(keys);
+        })
+    await Promise.all([loopi]);
+    }
+    if (isCooldown) { return };
+    console.log('after');
+    console.log(isCooldown);
     let cooldowns = await isCommandsReady(player1.id, 'dungeon');
         // let cooldowns2 = await isCommandsReady(player2.id, 'dungeon');
     if (!cooldowns.isReady) {

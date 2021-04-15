@@ -77,6 +77,7 @@ import adventure from './js/adventure.js';
 import smelt from './js/commands/smelt.js';
 import donate from './js/commands/donate.js';
 import servant from './js/commands/servant.js';
+import duel from './js/commands/duel.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -130,13 +131,13 @@ client.on("message", async function (message) {
                 return;
             } else if (command === "prepare") {
                 if (args[0] === 'set') {
-                    message.delete;
+                    message.delete();
                     client.channels.cache.get("818359215562424330").setName(`\\🟡-Status`)
                     client.channels.cache.get("818359215562424330").send(`\\🟡 Bot is Preparing for Maintenance\n${body}`)
                     await queryData(`update configuration set value=1 where id=1;`);
                     message.channel.send(`Server set prepare maintenance`);
                 } else if (args[0] === 'unset') {
-                    message.delete;
+                    message.delete();
                     client.channels.cache.get("818359215562424330").setName(`\\🟢-Status`)
                     client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online\n${body}`)
                     await queryData(`update configuration set value=0 where id=1;`);
@@ -145,14 +146,14 @@ client.on("message", async function (message) {
             }  else if (command === "maintenance") {
                 if (args[0] === 'set') {
                     let note = args.
-                    message.delete;
+                    message.delete();
                     client.channels.cache.get("818359215562424330").setName(`\\🔴-Status`)
                     client.channels.cache.get("818359215562424330").send(`\\🔴 Bot Offline\n-Under Maintenance\n${body}`)
                     await queryData(`update configuration set value=0 where id=1;`);
                     await queryData(`update configuration set value=1 where id=6;`);
                     message.channel.send(`Server set maintenance`);
                 } else if (args[0] === 'unset') {
-                    message.delete;
+                    message.delete();
                     client.channels.cache.get("818359215562424330").setName(`\\🟢-Status`)
                     client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online\n${body}`)
                     await queryData(`update configuration set value=0 where id=6;`);
@@ -371,6 +372,9 @@ client.on("message", async function (message) {
                     } else if (command === 'servant') {
                         log(message, commandBody);
                         servant(message);
+                    } else if (command === 'duel') {
+                        log(message, commandBody);
+                        duel(message,stat);
                     }
                 }
             } else if (command === 'start') {
