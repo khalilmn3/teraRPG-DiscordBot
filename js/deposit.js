@@ -23,7 +23,7 @@ async function deposit(message, args1) {
         if (gold !== 0) {
             if (gold.piggy_bank) { 
                     queryData(`UPDATE stat SET bank=bank+gold, gold=0 WHERE player_id="${message.author.id}" LIMIT 1`);
-                    message.channel.send(`You have been withdraw <:gold_coin:801440909006209025>${currencyFormat(gold.gold)} ➜ <:piggy_bank:801444684194906142>.`)
+                    message.channel.send(`You have been deposit <:gold_coin:801440909006209025>${currencyFormat(gold.gold)} ➜ <:piggy_bank:801444684194906142>.`)
             } else {
                 message.reply('You don\'t have <:piggy_bank:801444684194906142>**piggy bank**!');
             }
