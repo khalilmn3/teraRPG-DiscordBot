@@ -1,6 +1,7 @@
 import queryData from "./helper/query.js";
 import Discord from "discord.js";
 import { variable, materialList } from "./helper/variable.js";
+import questProgress from "./utils/questProgress.js";
 
 const furnaceId = '171';
 const workbenchId = '170';
@@ -361,6 +362,11 @@ async function craftBar(message,playerId,username, itemIdCrafted, itemIdMaterial
                 amount = amount.length > 0 ? amount[0][0]['@qty'] : 0;
                 queryData(`UPDATE backpack SET quantity=quantity-${materialsReq} WHERE player_id="${playerId}" AND item_id="${itemIdMaterial}"`)
                 message.channel.send(`<:Furnace:804145327513796688> | **${username}** has successfully crafted x${qty} ${emoji} **${args1} ${args2}**, \nYou now have x${amount} ${emoji} **${args1} ${args2}** in your backpack\nuse\`smelt\` to smelting item bar`)
+
+                // QUEST PROGRESS ITEM COPPER BAR
+                if (itemIdCrafted == 22) {
+                    questProgress(message.author.id, 7, qty);
+                }
             } else {
                 message.reply(`:no_entry_sign: | you don't have enough materials to craft x${qty} ${emoji} **${args1} ${args2}**,\ngo work and get the materials it need, you can also check crafter material receipts with \`tera craft\`!`)
             }

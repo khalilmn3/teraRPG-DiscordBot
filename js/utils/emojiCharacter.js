@@ -16,5 +16,6 @@ export default {
     anvil: '<:Iron_Anvil:804145327435284500>',
     furnace: '<:Furnace:804145327513796688>',
     exp: '𝑒𝓍𝓅',
-    gold: '𝑔𝑜𝓁𝒹'
+    gold: '𝑔𝑜𝓁𝒹',
+    gold2: '<:gold_coin:801440909006209025>'
 };

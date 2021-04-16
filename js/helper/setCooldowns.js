@@ -25,6 +25,8 @@ function setCooldowns(playerId, command) {
         field = 'dungeon'
     } else if (command === 'expedition') {
         field = 'expedition'
+    } else if (command === 'quest') {
+        field = 'quest'
     }
     if (!config.DEBUG) {
         queryData(`INSERT cooldowns SET player_id="${playerId}", ${field}="${inTime}", timestamp=NOW() ON DUPLICATE KEY UPDATE ${field}="${inTime}"`);

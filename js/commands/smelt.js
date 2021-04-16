@@ -2,6 +2,7 @@ import Discord from "discord.js";
 import queryData from "../helper/query.js";
 import { emojiName, variable } from "../helper/variable.js";
 import emojiCharacter from "../utils/emojiCharacter.js";
+import questProgress from "../utils/questProgress.js";
 import symbol from "../utils/symbol.js";
 
 async function smelt(message, args) {
@@ -63,6 +64,12 @@ async function processSmelt(message, itemID, itemIDTo, quantity, emojiNames) {
             //     proxyIconURL: null
             // },
         });
+
+        // QUEST PROGRESS ITEM COPPER BAR
+        if (itemIDTo == 22) {
+            questProgress(message.author.id, 8, quantity);
+        }
+
         queryData(`CALL insert_item_backpack_procedure(${message.author.id}, ${itemIDTo}, ${qtyAfterSmelt})`);
         queryData(`UPDATE backpack SET quantity=quantity-${quantity} WHERE player_id="${message.author.id}" AND item_id="${itemID}" LIMIT 1`);
         // message.channel.send(embed);

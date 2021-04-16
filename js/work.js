@@ -5,6 +5,7 @@ import setCooldowns from './helper/setCooldowns.js';
 import { cooldownMessage } from './embeddedMessage.js';
 import randomNumber from './helper/randomNumberWithMinMax.js';
 import myCache from './cache/leaderboardChace.js';
+import questProgress from './utils/questProgress.js';
 
 async function work(message, workingCommand, zone_id) {
     let cooldowns = await isCommandsReady(message.author.id, 'work');
@@ -73,6 +74,8 @@ async function work(message, workingCommand, zone_id) {
                         queryData(`UPDATE tools SET pickaxe_exp=${totalExp}, pickaxe_level=${nextLevel} WHERE player_id="${message.author.id}" LIMIT 1`);
                         message.channel.send(`${data.axeEmoji} | **${message.author.username}** is working with his **${data.axeName}**,\n${itemDrop.emoji} | Found **${itemDrop.name}** but it harder than your tool, lucky you still gaining **${Math.round(itemDrop.exp / 2)}xp**`)
                     }
+                    // QUEST PROGRESS
+                    questProgress(message.author.id, 4);
                 } else {
                     totalExp = Math.round(notFoundItemXP + parseInt(levelPickaxe.pickaxe_exp));
                     if (totalExp > expNextLevel) {
@@ -114,6 +117,9 @@ async function work(message, workingCommand, zone_id) {
                         queryData(`UPDATE tools SET axe_exp=${totalExp}, axe_level=${nextLevel} WHERE player_id="${message.author.id}" LIMIT 1`);
                         message.channel.send(`${data.axeEmoji} | **${message.author.username}** working with his **${data.axeName}**,\n${itemDrop.emoji} | strike **${itemDrop.name}** but he didn't have stamina left to take it, \ncause by low tier tool, lucky you still gaining **${Math.round(itemDrop.exp / 2)}xp**`)
                     }
+                    
+                    // QUEST PROGRESS
+                    questProgress(message.author.id, 5);
                 } else {
                     totalExp = Math.round(notFoundItemXP + parseInt(levelAxe.axe_exp));
                     if (totalExp > expNextLevel) {

@@ -78,6 +78,7 @@ import smelt from './js/commands/smelt.js';
 import donate from './js/commands/donate.js';
 import servant from './js/commands/servant.js';
 import duel from './js/commands/duel.js';
+import quest from './js/commands/quest.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -375,6 +376,9 @@ client.on("message", async function (message) {
                     } else if (command === 'duel') {
                         log(message, commandBody);
                         duel(message,stat);
+                    } else if (command === 'quest') {
+                        log(message, commandBody);
+                        quest(message,stat);
                     }
                 }
             } else if (command === 'start') {

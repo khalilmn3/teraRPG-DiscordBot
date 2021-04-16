@@ -6,6 +6,7 @@ import isCommandsReady from "../helper/isCommandsReady.js";
 import queryData from "../helper/query.js";
 import randomNumber from "../helper/randomNumberWithMinMax.js";
 import setCooldowns from "../helper/setCooldowns.js";
+import questProgress from "../utils/questProgress.js";
 
 async function servant(message) {
     let player1 = message.author;
@@ -157,6 +158,8 @@ async function servant(message) {
     
     if (randomBattleResult <= chance) {
         embedResult = embedWin;
+        // QUEST PROGRESS
+        questProgress(message.author.id, 6);
         queryData(`UPDATE stat SET gold=gold+${gold} WHERE player_id="${message.author.id}" LIMIT 1`);
     } else {
         embedResult = embedLose;

@@ -12,6 +12,7 @@ import { addBonusExp, addBonusGold } from './helper/configuration.js';
 import myCache from './cache/leaderboardChace.js';
 import { getAttack, getDefense, getMaxHP, getMaxMP } from './helper/getBattleStat.js';
 import currencyFormat from './helper/currency.js';
+import questProgress from './utils/questProgress.js';
 
 async function adventure(message) {
     let cooldowns = await isCommandsReady(message.author.id, 'expedition');
@@ -133,8 +134,10 @@ async function adventure(message) {
                 msg.embeds[0].fields[2].value = logMsg;
                 msg.embeds[0].footer.text = `Turn: ${turn}\nNote: rewards based on your mining depth and zone`;
                 msg.edit(msg.embeds[0])
-                        
+                
                 addExpGold(message, message.author, stat, exp, gold, { hp: playerCurrentHP });
+                // QUEST PROGRESS
+                questProgress(message.author.id, 3);
             }, 1500);
         });        
     } else {

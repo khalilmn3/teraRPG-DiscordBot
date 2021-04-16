@@ -19,6 +19,7 @@ async function cooldowns(message, command, args1) {
     let explore = (currentTime - cooldowns.explore) > 60 ? 0 : 60 - (currentTime - cooldowns.explore);
     let expedition = (currentTime - cooldowns.expedition) > 1800 ? 0 : 1800 - (currentTime - cooldowns.expedition);
     let work = (currentTime - cooldowns.work) > 300 ? 0 : 300 - (currentTime - cooldowns.work);
+    let quest = (currentTime - cooldowns.quest) > 10800 ? 0 : 10800 - (currentTime - cooldowns.quest);
     // TODO hourly reward
         // let hourly = (currentTime - cooldowns.hourly) > 3600 ? 0 : 3600 - (currentTime - cooldowns.hourly);
         let junken = (currentTime - cooldowns.junken) > 3600 ? 0 : 3600 - (currentTime - cooldowns.junken);
@@ -64,6 +65,11 @@ async function cooldowns(message, command, args1) {
                     name: `Dungeon | Servant`,
                     inline: false
                 },
+                {
+                    value: quest > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(quest)}` : `:white_check_mark: | READY`,
+                    name: `Quest`,
+                    inline: false
+                },
                 // TODO hourly
                 // {
                 //     value: hourly > 0 ? `:hourglass_flowing_sand: | ${secondsToDHms(hourly)}` : `:white_check_mark: | READY`,
@@ -104,7 +110,8 @@ async function cooldowns(message, command, args1) {
                 (work === 0 ? `**Work [ mine | chop ]** \n:white_check_mark: | READY \n` : '') +
                 (fish === 0 ? `**Fish** \n:white_check_mark: | READY \n` : '') +
                 (junken === 0 ? `**Junken | Duel** \n:white_check_mark: | READY \n` : '') +
-                (dungeon === 0 ? `**Dungeon | Servant** \n:white_check_mark: | READY \n` : '')
+                (dungeon === 0 ? `**Dungeon | Servant** \n:white_check_mark: | READY \n` : '') +
+                (quest === 0 ? `**Quest** \n:white_check_mark: | READY \n` : '')
         let rewards =
                 // TODO hourly
                 // (hourly === 0 ? `**Hourly** \n:white_check_mark: | READY \n` : '') +

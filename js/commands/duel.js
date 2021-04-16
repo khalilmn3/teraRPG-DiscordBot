@@ -10,6 +10,7 @@ import emojiCharacter from "../utils/emojiCharacter.js";
 import { getAttack, getDefense, getMaxExp, getMaxHP } from "../helper/getBattleStat.js";
 import randomNumber from "../helper/randomNumberWithMinMax.js";
 import generateHPEmoji from "../helper/emojiGenerate.js";
+import questProgress from "../utils/questProgress.js";
 
 async function duel(message,stat) {
     let player2 = message.mentions.users.first();
@@ -299,6 +300,9 @@ async function duel(message,stat) {
                                                     }
                                                     fieldRewards = exp > 0 ? { name: '__👑Rewards__', value: rewards } : null;
                                                     deactiveCommand([player1.id, player2.id])
+                                                    
+                                                    // QUEST PROGRESS
+                                                    questProgress(message.author.id, 2);
                                                 }
                                                 let player1HPBar = generateHPEmoji(player1Stat.hp, player1Stat.maxHP, true)
                                                     let player2HPBar = generateHPEmoji(player2Stat.hp, player2Stat.maxHP, true)
