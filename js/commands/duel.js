@@ -58,7 +58,8 @@ async function duel(message,stat) {
                                     message2.delete();
                                     // Load player data from DB
                                     let playerData = await getPlayerData(player1, player2);
-                                    
+                                    setCooldowns(player1.id, 'junken');
+                                    setCooldowns(player2.id, 'junken');
                                     let player1Stat = {
                                         id: player1,
                                         level: playerData[0].level,
@@ -89,20 +90,23 @@ async function duel(message,stat) {
                                         url: null,
                                         color: 'RANDOM',
                                         fields: [{
-                                            name: `Ready!!!`,
-                                            value: `Battle will begin in 5 minutes`,
+                                            name: `Duel between ${player1.username} vs ${player2.username}`,
+                                            value: `Prepare your self!!!`,
                                             inline: false,
                                         },
                                         {
                                             name: `${player1.username}`,
-                                            value: `HP: ${player1Stat.hp}/${player1Stat.maxHP}\n${generateHPEmoji(player1Stat.hp, player1Stat.maxHP, true)}\nRating: ${player1Stat.rating}`,
+                                            value: `HP: ${player1Stat.hp}/${player1Stat.maxHP}\n${generateHPEmoji(player1Stat.hp, player1Stat.maxHP, true)}\n🎖️Rating: ${player1Stat.rating}\n🗡️Attack: ${Math.floor(player1Stat.attack)}\n🛡️Defence: ${player1Stat.def}`,
                                             inline: true,
                                         },
                                         {
                                             name: `${player2.username}`,
-                                            value: `HP: ${player2Stat.hp}/${player2Stat.maxHP}\n${generateHPEmoji(player2Stat.hp, player2Stat.maxHP, true)}\nRating: ${player2Stat.rating}`,
+                                            value: `HP: ${player2Stat.hp}/${player2Stat.maxHP}\n${generateHPEmoji(player2Stat.hp, player2Stat.maxHP, true)}\n🎖️Rating: ${player2Stat.rating}\n🗡️Attack: ${Math.floor(player2Stat.attack)}\n🛡️Defence: ${player2Stat.def}`,
                                             inline: true,
-                                            }]
+                                            }],
+                                        footer: {
+                                            text: `Battle will begins in 5 minutes`
+                                        }
                                     });
                                     message2.channel.send(embed)
                                     var repeat = async function () {
@@ -155,6 +159,11 @@ async function duel(message,stat) {
                                                     let chance = randomNumber(1, 100);
                                                     if (chance <= 40) {
                                                         combat2Detail = `Successfully dodge the attack and take no damage`;
+                                                        if (chance <= 5) {
+                                                            let damage = Math.floor(calculateDamage(player2Stat.attack, player2Stat.def));
+                                                            player1Stat.hp = player1Stat.hp - damage;
+                                                            combat2Detail = `Successfully dodge the attack and using stab deal ${damage} dmg `
+                                                        }
                                                         combat1Detail = `Basic attack dealt 0 dmg`;
                                                     } else {
                                                         combat2Detail = `Failed dodge the attack and received ${damage} dmg`;
@@ -208,6 +217,11 @@ async function duel(message,stat) {
                                                     let chance = randomNumber(1, 100);
                                                     if (chance <= 40) {
                                                         combat1Detail = `Successfully dodge the attack and take no damage`;
+                                                        if (chance <= 5) {
+                                                            let damage = Math.floor(calculateDamage(player1Stat.attack, player1Stat.def));
+                                                            player2Stat.hp = player2Stat.hp - damage;
+                                                            combat1Detail = `Successfully dodge the attack and using stab deal ${damage} dmg `
+                                                        }
                                                         combat2Detail = `Basic attack dealt 0 dmg`;
                                                     } else {
                                                         combat1Detail = `Failed to dodge the attack and received ${damage} dmg`;
@@ -227,6 +241,7 @@ async function duel(message,stat) {
                                                 
                                             } else if (junkenResult.player2 === '🤺') { // DODGE
                                                 combat2Title = `${player2.username} using dodge`;
+
                                                 if (junkenResult.player1 === '🛡️' || junkenResult.player1 === '🤺') {
                                                     combat2Detail = `Nothing happen`;    
                                                 }
@@ -372,9 +387,9 @@ async function play(player, stat, result) {
         color: 10115509,
         fields: [{
             name: `Choose your move`,
-            value: `🗡️ | \`Attack\` 100% attack power and 15% chance to critical damage
+            value: `🗡️ | \`Attack\` 100% attack power and 15% chance to deals critical damage
 🛡️ | \`Stance\` reduce 50% damage taken and 25% chance to full counter
-🤺 | \`Dodge\` 40% chance to not taken any damage
+🤺 | \`Dodge\` 40% chance to not taken any damage and 5% chance to use \`stab\` deals 50% dmg from opponent attack
 ♿ | \`Flee\` Flee from current battle`,
             
             inline: false,
@@ -412,7 +427,7 @@ async function getPlayerData(player1, player2) {
     let playerData = await queryData(`SELECT player.is_active, hp, mp, current_experience, level, basic_hp, basic_mp, basic_attack, basic_def, weapon.attack, zone_id, sub_zone,
              IF(armor1.armor_set_id=armor2.armor_set_id AND armor2.armor_set_id=armor3.armor_set_id, armor_set.bonus_set, 0) as bonus_armor_set,
             IFNULL(armor1.def,0) as helmetDef,
-            IFNULL(armor2.def,0) as chestDef,
+            IFNULL(armor2.def,0) as shirtDef,
             IFNULL(armor3.def,0) as pantsDef,
             IFNULL(modifier_weapon.stat_change,0) as weapon_modifier,
             IFNULL(helmet_modifier.stat_change,0) as helmet_modifier,

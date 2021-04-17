@@ -66,7 +66,7 @@ async function processSmelt(message, itemID, itemIDTo, quantity, emojiNames) {
         });
 
         // QUEST PROGRESS ITEM COPPER BAR
-        if (itemIDTo == 22) {
+        if (itemID == 22) {
             questProgress(message.author.id, 8, quantity);
         }
 
