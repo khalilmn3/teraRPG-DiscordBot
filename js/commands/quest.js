@@ -16,8 +16,7 @@ async function quest(message, stat) {
     activeQuest = activeQuest.length > 0 ? activeQuest[0] : undefined;
     let field = {};
     let textFooter = '';
-    if (activeQuest) {
-        if (activeQuest.required_done >= activeQuest.required) { // if quest is completed
+        if (activeQuest && activeQuest.required_done >= activeQuest.required) { // if quest is completed
             field = {
                 name: `Quest completed`,
                 value: `\\📋 | Quest: __${activeQuest.name}__\n\n**Claimed Rewards\\🎁**\n\`+${currencyFormat(activeQuest.gold)}\` <:gold_coin:801440909006209025>\n\`+${currencyFormat(activeQuest.exp)}\` ${emojiCharacter.exp}`,
@@ -26,16 +25,14 @@ async function quest(message, stat) {
             addExpGold(message, message.author, stat, activeQuest.exp, activeQuest.gold, null);
             queryData(`UPDATE active_quest SET is_done=1 WHERE player_id=${message.author.id} LIMIT 1`);
             textFooter = `Done!`
-        } else {
+        } else if (activeQuest && !cooldowns.isReady) {
             field = {
                 name: `Complete this quest to get rewards`,
                 value: `\\📋 | Active quest: __${activeQuest.name}__\n\n**Rewards**\n\`+${currencyFormat(activeQuest.gold)}\` <:gold_coin:801440909006209025>\n\`+${currencyFormat(activeQuest.exp)}\` ${emojiCharacter.exp}`,
                 inline: true,
             }
             textFooter = `Progress ${activeQuest.required_done}/${activeQuest.required} | Expires in: ${cooldowns.waitingTime}`
-        }
-    } else {
-        if (cooldowns.isReady) {
+        } else if (cooldowns.isReady) {
             let questList = await queryData(`SELECT * FROM cfg_quest`);
             let randomQuest = randomNumber(0, questList.length - 1);
             questList = questList[randomQuest];
@@ -60,7 +57,7 @@ async function quest(message, stat) {
             message.channel.send(cooldownMessage(message.author.id, message.author.username, message.author.avatar, 'Quest', cooldowns.waitingTime));
             return;
         }
-    }
+    
     let embed = new Discord.MessageEmbed({
         type: "rich",
         description: null,
