@@ -92,26 +92,26 @@ async function sellItem(message, args) {
 async function sellEquipment(message, args1, args2) {
     let equipmentItem = '';
     let data = '';
-    let modifier = '';
+    let modifierField = '';
     let mainTable = isNaN(parseInt(args2)) ? 'equipment' : 'armory';
     args2 = isNaN(parseInt(args2)) ? 0 : args2;
 
     if (args1 === 'weapon') {
         data = await query(message.author.id, mainTable, 'weapon', 'weapon');
         equipmentItem = 'weapon_id'
-        modifier = 'weapon_modifier_id';
+        modifierField = 'weapon_modifier_id';
     } else if (args1 === 'helmet') {
         data = await query(message.author.id, mainTable, 'helmet', 'armor');
         equipmentItem = 'helmet_id'
-        modifier = 'helmet_modifier_id';
+        modifierField = 'helmet_modifier_id';
     } else if (args1 === 'shirt') {
         data = await query(message.author.id, mainTable, 'shirt', 'armor');
         equipmentItem = 'shirt_id'
-        modifier = 'shirt_modifier_id';
+        modifierField = 'shirt_modifier_id';
     } else if (args1 === 'pants') {
         data = await query(message.author.id, mainTable, 'pants', 'armor');
         equipmentItem = 'pants_id'
-        modifier = 'pants_modifier_id';
+        modifierField = 'pants_modifier_id';
     }
     if (data) {
         if (data[args2].id) {
@@ -128,7 +128,7 @@ async function sellEquipment(message, args1, args2) {
                         .then(message => {
                             message = message.first();
                             if (message.content.toUpperCase() == 'YES' || message.content.toUpperCase() == 'Y') {
-                                queryData(`UPDATE ${mainTable} SET ${equipmentItem}=0, ${modifier}=0  WHERE player_id="${message.author.id}" AND ${equipmentItem}="${data[args2].id}" AND ${modifier}=${data[args2].modifier_id} LIMIT 1`);
+                                queryData(`UPDATE ${mainTable} SET ${equipmentItem}=0, ${modifierField}=0  WHERE player_id="${message.author.id}" AND ${equipmentItem}="${data[args2].id}" AND ${modifierField}=${data[args2].modifier_id} LIMIT 1`);
                                 queryData(`UPDATE stat SET gold=gold+${price} WHERE player_id="${message.author.id}" LIMIT 1`);
                                 
                                 message.channel.send(`**${message.author.username}**, sold ${data[args2].emoji}\`${data[args2].name}\` for <:gold_coin:801440909006209025> **${currencyFormat(price)}**`)
