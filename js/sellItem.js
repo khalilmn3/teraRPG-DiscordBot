@@ -40,16 +40,15 @@ async function sellItem(message, args) {
             (SELECT 
                 c.item_id, c.quantity
             FROM
-                backpack c 
-                LEFT JOIN backpack d 
-                ON c.item_id = d.item_id
-            WHERE d.player_id = "${message.author.id}" AND d.quantity >= ${value == "ALL" ? 1 : value}) b 
+                backpack c
+            WHERE c.player_id = "${message.author.id}" AND c.quantity >= ${value == "ALL" ? 1 : value}) b 
             ON a.id = b.item_id 
         WHERE a.name = "${itemName}" LIMIT 1`);
     // console.log(itemExist)
     // console.log(value)
     if (itemExist.length > 0) {
         if (itemExist[0].sell_price > 0) {
+            console.log(itemExist)
             if (itemExist[0].quantity >= value || (value === 'ALL' && itemExist[0].quantity > 0)) {
                 if (value === 'ALL') { value = itemExist[0].quantity }
                 let totalPrice = value * itemExist[0].sell_price
