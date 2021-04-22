@@ -3,8 +3,8 @@ import queryData from "./query.js";
 
 async function addBonusExpGold(message, exp, gold) {
     // GLOBAL/SERVER BOOSTER
-    console.log('exp'+exp)
-    console.log('gold'+gold)
+    // console.log('exp'+exp)
+    // console.log('gold'+gold)
     let configuration = await queryData(`SELECT * FROM configuration WHERE type="2"`);
     let globalExp = 0;
     let serverExp = 0;
@@ -63,13 +63,13 @@ async function addBonusExpGold(message, exp, gold) {
     if (isNaN(totalGold)){
         totalGold = 0;
     }
-    console.log('Pexp'+globalExp)
-    console.log('Pgold'+personalGold)
-    console.log('TPexp'+totalPercentEXP)
-    console.log('TPgold'+totalPercentGold)
+    // console.log('Pexp'+globalExp)
+    // console.log('Pgold'+personalGold)
+    // console.log('TPexp'+totalPercentEXP)
+    // console.log('TPgold'+totalPercentGold)
 
-    console.log('Texp'+totalExp)
-    console.log('Tgold'+totalGold)
+    // console.log('Texp'+totalExp)
+    // console.log('Tgold'+totalGold)
     
     return {
         exp: totalExp,

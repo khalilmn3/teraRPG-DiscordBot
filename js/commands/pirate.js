@@ -1,9 +1,10 @@
 import Discord from "discord.js"
+import currencyFormat from "../helper/currency.js";
 import queryData from "../helper/query.js";
 import randomNumber from "../helper/randomNumberWithMinMax.js";
 import emojiCharacter from "../utils/emojiCharacter.js";
 
-async function pirate(message) {
+async function pirate(message, stat) {
     let embed = new Discord.MessageEmbed({
         type: "rich",
         description: null,
@@ -66,6 +67,8 @@ async function pirate(message) {
             let usersJoin = 0;
             let users = [];
             let winChance = 60;
+            let randomGold = randomNumber(500, 1000);
+            let goldWin = (randomGold * stat.level) / 10;
             await msg.channel.awaitMessages(filter, { max: 10, time: 20000 })
                 .then(collected => {
                     collected.forEach((element) => { 
@@ -76,6 +79,7 @@ async function pirate(message) {
                     })
                 })
             winChance = winChance > 100 ? 100 : winChance;
+            goldWin = Math.floor(goldWin * usersJoin);
             let luckyCoinWin = '';
             let discountCardWin = '';
             let cutlassWin = '';
@@ -128,6 +132,7 @@ async function pirate(message) {
                     gold.push(element);
                     if (playerGold) { playerGold += ', ' }
                     playerGold += element.username;
+                    queryData(`UPDATE stat SET gold=gold+${goldWin} WHERE player_id=${element.id} LIMIT 1`);
                 }
             })
             
@@ -138,8 +143,8 @@ async function pirate(message) {
                 color: 1231235,
                 fields: [
                     {
-                        name: 'Pirates has been defeated',
-                        value: `**Rewards**\n${luckyCoinWin ? `<:Lucky_Coin:833189137179344897> \`lucky coin\`: ${luckyCoinWin.username}\n` : ''}${discountCardWin ? `<:Discount_Card:833189137141334036> \`discount card\`: ${discountCardWin.username}\n` : ''}${cutlassWin ? `<:Cutlass:833189137213423636> cutlass: ${cutlassWin.username}\n` : ''}${emojiCharacter.gold2} \`+1000 gold\`: ${playerGold} `
+                        name: 'PIRATES HAS BEEN DEFEATED!',
+                        value: `**Rewards**\n${luckyCoinWin ? `<:Lucky_Coin:833189137179344897> \`lucky coin\`: ${luckyCoinWin.username}\n` : ''}${discountCardWin ? `<:Discount_Card:833189137141334036> \`discount card\`: ${discountCardWin.username}\n` : ''}${cutlassWin ? `<:Cutlass:833189137213423636> cutlass: ${cutlassWin.username}\n` : ''}${playerGold ? `${emojiCharacter.gold2} \`+${currencyFormat(goldWin)} ${emojiCharacter.gold}\`: ${playerGold}` : ''}`
                     }
                 ],
                 // footer: {

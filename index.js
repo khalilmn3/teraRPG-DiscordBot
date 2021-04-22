@@ -82,6 +82,7 @@ import quest from './js/commands/quest.js';
 import pirate from './js/commands/pirate.js';
 import use from './js/commands/useItem.js';
 import code from './js/commands/code.js';
+import randomNumber from './js/helper/randomNumberWithMinMax.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -249,6 +250,16 @@ client.on("message", async function (message) {
                         message.channel.send('🛠️ | Bot is preparing for maintenance...!');
                         return;
                     }
+
+                    if (command == 'exp' || command == 'me' || command == 'chop' || command == 'mine' || command == 'fish' || command == 'mine expedition' || command == 'explore') {
+                        
+                        // RANDOM INVASION PIRATE
+                        let randomize = randomNumber(1, 100);
+                        if (randomize <= 1) {
+                            pirate(message,stat);
+                        }
+                    }
+
                     if (command === "ping") {
                         log(message, commandBody);
                         let timeTaken = Date.now() - message.createdTimestamp;
@@ -268,6 +279,7 @@ client.on("message", async function (message) {
                     } else if (command === 'explore' | command === 'exp') {
                         log(message, commandBody);
                         hunt(message, 0, message.author.id, message.author.username);
+                        
                     } else if (command === 'heal') {
                         log(message, commandBody);
                         healingPotion(message, 0, message.author.id, message.author.username);
@@ -386,10 +398,12 @@ client.on("message", async function (message) {
                     } else if (command === 'quest') {
                         log(message, commandBody);
                         quest(message,stat);
-                    } else if (command === 'pirate') {
-                        log(message, commandBody);
-                        pirate(message,stat);
-                    } else if (command === 'use') {
+                    }
+                    // else if (command === 'pirate') {
+                    //     log(message, commandBody);
+                    //     pirate(message,stat);
+                    // }
+                    else if (command === 'use') {
                         log(message, commandBody);
                         use(message,commandBody);
                     } else if (command === 'code') {
