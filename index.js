@@ -85,6 +85,7 @@ import code from './js/commands/code.js';
 import randomNumber from './js/helper/randomNumberWithMinMax.js';
 import info from './js/commands/info.js';
 import notification from './js/commands/notification.js';
+import notifUrl from './js/adminCommands/addUrlNotif.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -225,6 +226,8 @@ client.on("message", async function (message) {
                 give(message, args);
             } else if (command === 'booster') {
                 booster(message, args);
+            } else if (command === 'updatenotif') {
+                notifUrl(message, args[0]);
             }
         }
         if (command != '') {
