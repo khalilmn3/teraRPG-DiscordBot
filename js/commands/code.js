@@ -9,7 +9,7 @@ async function code(message, args) {
     if (code === 'lucky') {
         let cekCodeX = await cekCode(message.author.id, code)
         if (!cekCodeX) {
-            rewards = `\`x1\` ${limitedTimeUse.luckyCoinEmoji} \`lucky coin\``
+            rewards = `\`x1\` ${limitedTimeUse.luckyCoinEmoji} \`lucky coin\` \n\n**Usage**\n\`use lucky coin\`\n\`info lucky coin\``
             message.channel.send(embed(message, rewards, code));
             queryData(`INSERT code SET player_id=${message.author.id}, code="${code}"`)
 

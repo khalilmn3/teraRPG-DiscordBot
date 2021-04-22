@@ -84,6 +84,7 @@ import use from './js/commands/useItem.js';
 import code from './js/commands/code.js';
 import randomNumber from './js/helper/randomNumberWithMinMax.js';
 import info from './js/commands/info.js';
+import notification from './js/commands/notification.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -413,6 +414,9 @@ client.on("message", async function (message) {
                     } else if (command === 'info') {
                         log(message, commandBody);
                         info(message,commandBody);
+                    } else if (command === 'notification' || command === 'notif') {
+                        log(message, commandBody);
+                        notification(message);
                     }
                 }
             } else if (command === 'start') {

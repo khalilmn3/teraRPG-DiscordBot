@@ -9,12 +9,12 @@ function help(message, client) {
             color: 10115509,
             fields: [
                 {
-                    value:`\`profile\`,\`tools\`,\`workspace\`,\`backpack\`,\`cooldown\`,\n\`ready\`,\`armory\`,\`zone\`,\`booster\``,
+                    value:`\`profile\`,\`tools\`,\`workspace\`,\`backpack\`,\`cooldown\`,\n\`ready\`,\`armory\`,\`zone\`,\`booster\`, \`info\``,
                     name: ":information_source:  __STATUS__",
                     inline: false
                 },
                 {
-                    value: `\`explore\`,\`fish\`,\`heal\`,\`dungeon <@player>\`,\`servant\`,\`mine expedition [me]\`, \`duel @player\``,
+                    value: `\`explore\`,\`fish\`,\`heal\`,\`dungeon <@player>\`,\`servant\`,\n\`mine expedition [me]\`, \`duel @player\``,
                     name: ":crossed_swords: __GRINDING__",
                     inline: false
                 },
@@ -44,7 +44,7 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `\`ping\`,\`invite\`,\`report\`,\`suggest\`,\`donate\``,
+                    value: `\`ping\`,\`invite\`,\`report\`,\`suggest\`,\`donate\`, \`notification\``,
                     name: ":gear: __UTILITY__",
                     inline: false
                 }],
