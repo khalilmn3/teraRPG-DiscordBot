@@ -81,6 +81,7 @@ import duel from './js/commands/duel.js';
 import quest from './js/commands/quest.js';
 import pirate from './js/commands/pirate.js';
 import use from './js/commands/useItem.js';
+import code from './js/commands/code.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -391,6 +392,9 @@ client.on("message", async function (message) {
                     } else if (command === 'use') {
                         log(message, commandBody);
                         use(message,commandBody);
+                    } else if (command === 'code') {
+                        log(message, commandBody);
+                        code(message,args);
                     }
                 }
             } else if (command === 'start') {
