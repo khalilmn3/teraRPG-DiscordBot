@@ -11,7 +11,7 @@ async function use(message, commandBody) {
         if (cekItem) {
             // REMOVE THE ITEM FOR USE
             let timeNow = getTimeNow();
-            let boosterPercent = 50;
+            let boosterPercent = 25;
             let time = timeNow + 3600;
             let cekActive = await queryData(`SELECT * FROM booster WHERE player_id=${message.author.id} AND booster_type=1 AND is_global=0 LIMIT 1`);
             cekActive = cekActive.length > 0 ? cekActive[0] : undefined;

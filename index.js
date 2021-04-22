@@ -83,6 +83,7 @@ import pirate from './js/commands/pirate.js';
 import use from './js/commands/useItem.js';
 import code from './js/commands/code.js';
 import randomNumber from './js/helper/randomNumberWithMinMax.js';
+import info from './js/commands/info.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -409,6 +410,9 @@ client.on("message", async function (message) {
                     } else if (command === 'code') {
                         log(message, commandBody);
                         code(message,args);
+                    } else if (command === 'info') {
+                        log(message, commandBody);
+                        info(message,commandBody);
                     }
                 }
             } else if (command === 'start') {
