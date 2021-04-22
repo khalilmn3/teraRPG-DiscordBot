@@ -131,6 +131,7 @@ async function openCrate(client, message, args) {
                         \`x1\`  <:Angler_Vest:826083566940979200> \`black shirt\`
                         \`x1\`  <:Angler_Pants:826083566525349919> \`black pants\`
                         \`x10\` <:Healing_Potion:810747622859735100> \`healing potion\`
+                        \`x10\` <:Apprentice_Bait:824271452056059985> \`apprentice bait\`
                         `,
                         inline: false,
                     }],
@@ -153,6 +154,7 @@ async function openCrate(client, message, args) {
                     ON DUPLICATE KEY UPDATE ${weaponID}, ${helmetID}, ${shirtID}, ${pantsID}`);
                 queryData(`UPDATE backpack SET quantity=0 WHERE player_id="${message.author.id}" AND item_id="282" LIMIT 1`);
                 queryData(`CALL insert_item_backpack_procedure(${message.author.id}, 266, 10)`);
+                queryData(`CALL insert_item_backpack_procedure(${message.author.id}, 271, 10)`);
 
                 message.channel.send(itemMessage);
             } else {

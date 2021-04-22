@@ -255,6 +255,13 @@ var emojiName = {
         goldBar: '<:Gold_Bar:803907956424441856> **gold bar**',
         platinumBar: '<:Platinum_Bar:803907956327317524> **platinum bar**',
 }
+
+var limitedTimeUse = {
+        luckyCoinEmoji: '<:Lucky_Coin:833189137179344897>',
+        dicountCardEmoji: '<:Discount_Card:833189137141334036>',
+        luckyCoinId: '319',
+        dicountCardId: '320'
+}
                 
 
 
@@ -262,5 +269,6 @@ export {
         variable,
         materialList,
         materialUpgradeTool,
-        emojiName
+        emojiName,
+        limitedTimeUse
 }

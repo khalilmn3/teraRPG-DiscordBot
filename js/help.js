@@ -24,7 +24,7 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `\`,craft <item_name>\`,\`craft list\`,\`smelt\`,\`upgrade <pickaxe>\`,\n\`upgrade list\`,\`reforge info <1/2>\``,
+                    value: `\`craft <item_name>\`,\`craft list\`,\`smelt\`,\`upgrade <pickaxe>\`,\n\`upgrade list\`,\`reforge info <1/2>\``,
                     name: ":tools: __CRAFTING__",
                     inline: false
                 },

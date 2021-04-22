@@ -8,7 +8,7 @@ import { cooldownMessage } from './embeddedMessage.js';
 import randomNumber from './helper/randomNumberWithMinMax.js';
 import addExpGold from './helper/addExp.js';
 import calculateBonusExpBank from './helper/calculateBonusExpBank.js';
-import { addBonusExp, addBonusGold } from './helper/configuration.js';
+import { addBonusExpGold, addBonusGold } from './helper/configuration.js';
 import myCache from './cache/leaderboardChace.js';
 import { getAttack, getDefense, getMaxHP, getMaxMP } from './helper/getBattleStat.js';
 import currencyFormat from './helper/currency.js';
@@ -66,11 +66,12 @@ async function adventure(message) {
         // Add bonus exp 
         let bonusExp = calculateBonusExpBank(stat.bank);
         exp = Math.round(exp + bonusExp);
-        exp = await addBonusExp(message, exp); //booster
         let depth = stat.depth > 100000 ? 100000 : stat.depth;
         let gold = depth * (monster.gold * subArea)
         gold = Math.round(parseInt(gold) + ((gold * stat.zone_id) / 2));
-        gold = await addBonusGold(message, gold); //booster
+        let booster = await addBonusExpGold(message, exp, gold); //booster
+        exp = booster.exp;
+        gold = booster.gold //booster
         monster.hp = subArea >= 2 ? monster.hp * 2 : monster.hp;
         let monsterCurrentHP = monster.hp;
         monster.currentHP = monsterCurrentHP;
@@ -126,7 +127,7 @@ async function adventure(message) {
                 return;
             }
             
-            let reward = `\n__**Rewards**__\n\`+${currencyFormat(exp)} 𝑔𝑜𝓁𝒹\n+${currencyFormat(gold)} 𝑒𝓍𝓅\``;
+            let reward = `\n__**Rewards**__\n\`+${currencyFormat(exp)} 𝑒𝓍𝓅\n+${currencyFormat(gold)} 𝑔𝑜𝓁𝒹\``;
             setTimeout(() => {
                 logMsg = `**${message.author.username}** ${weaponMsg}\n${monster.emoji} **${monster.name}** has knocked down${reward}`;
                 msg.embeds[0].fields[0].value = `HP: ${monsterCurrentHP}/${monster.hp}\nAT: ${Math.round((monster.min_damage + monster.max_damage) / 2)}`;

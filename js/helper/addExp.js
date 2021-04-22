@@ -1,3 +1,4 @@
+import { getTimeNow } from "../utils/utils.js";
 import { getMaxExp, getMaxHP, getMaxMP } from "./getBattleStat.js";
 import queryData from "./query.js";
 

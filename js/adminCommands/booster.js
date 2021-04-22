@@ -1,10 +1,12 @@
 import agenda from "../helper/agenda.js";
 import queryData from "../helper/query.js";
 
-function booster(message, args) {
+async function booster(message, args) {
+
     if (args[0] === 'global') {
         if (args[1] === 'exp') {
             if (!isNaN(args[2])) {
+                // queryData(`SELECT * FROM booster WHERE player_id=${message.author.id} AND is_global=1 AND booster_type=2`)
                 queryData(`UPDATE configuration SET value=${args[2]} WHERE id=2 LIMIT 1`);
                 message.delete();
                 message.channel.send(`Global exp booster is setup to ${args[2]}%`);

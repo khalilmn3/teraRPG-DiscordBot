@@ -1,7 +1,21 @@
 import Discord from 'discord.js';
 import queryData from './helper/query.js';
+import { limitedTimeUse } from './helper/variable.js';
+import { getTimeNow,secondsToDHms } from "./utils/utils.js";
 async function bonus(message) {
     let bonus = await queryData(`SELECT * FROM configuration WHERE type="2"`);
+    
+    let timeNow = getTimeNow();
+    let booster = await queryData(`SELECT * FROM booster WHERE player_id=${message.author.id} AND time>${timeNow}`);
+    let privateGold = '';
+    if (booster.length > 0) {
+        booster.forEach(element => {
+            if (element.booster_type == 1) {
+                privateGold = `${limitedTimeUse.luckyCoinEmoji}Lucky coin: __\`+${element.percent}%\`__ | \`(${(secondsToDHms(booster[0].time - timeNow))})\``
+            }
+        })
+    }
+
     let serverExp = 0;
     let globalExp = 0;
     let serverGold = 0;
@@ -19,13 +33,14 @@ async function bonus(message) {
     });
     let gold = '[no active booster]';
     let exp = '[no active booster]';
-    if (serverGold > 0 || globalGold > 0) {
-        gold = `${serverGold > 0 ? '\`Server\`: \`+' + serverGold + '%\`' : ''}
-                ${globalGold > 0 ? '\`Global\`: \`+' + globalGold + '%\`' : ''}`
+    if (serverGold > 0 || globalGold > 0 || privateGold) {
+        gold = `${serverGold > 0 ? '<:server:834619390384799834>Server: __\`+' + serverGold + '%\`__' : ''}
+${globalGold > 0 ? '🌏Global: __\`+' + globalGold + '%\`__' : ''}
+${privateGold ? privateGold : ''}`
     }
     if (serverExp > 0 || globalExp > 0) {
-        exp = `${serverExp > 0 ? '\`Server\`: \`+' + serverExp+'%\`' : ''}
-                ${globalExp > 0 ? '\`Global\`: \`+' + globalExp+'%\`' : ''}`
+        exp = `${serverExp > 0 ? '<:server:834619390384799834>Server: __\`+' + serverExp+'%\`__' : ''}
+${globalExp > 0 ? '🌏Global: __\`+' + globalExp+'%\`__' : ''}`
     }
     message.channel.send(new Discord.MessageEmbed({
         type: "rich",
@@ -47,7 +62,7 @@ async function bonus(message) {
             inline: false,
         }],
         author: {
-            "name": `${message.author.username}'s booster`,
+            "name": `${message.author.username}'s boosters`,
             "url": null,
             "iconURL": `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
             "proxyIconURL": `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`

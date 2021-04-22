@@ -8,7 +8,7 @@ import { cooldownMessage } from '../embeddedMessage.js';
 import randomNumber from '../helper/randomNumberWithMinMax.js';
 import addExpGold from '../helper/addExp.js';
 import calculateBonusExpBank from '../helper/calculateBonusExpBank.js';
-import { addBonusExp, addBonusGold } from '../helper/configuration.js';
+import { addBonusExpGold } from '../helper/configuration.js';
 import myCache from '../cache/leaderboardChace.js';
 import { getAttack, getDefense, getMaxHP, getMaxMP } from '../helper/getBattleStat.js';
 import questProgress from "../utils/questProgress.js";
@@ -60,10 +60,11 @@ async function hunt(message) {
         let monsterDamage = subArea >= 2 ? randomNumber(monster.min_damage, monster.max_damage) : monster.min_damage;
         let exp = subArea >= 2 ? randomNumber(monster.min_exp, monster.max_exp) : monster.min_exp;
         let bonusExp = calculateBonusExpBank(stat.bank); // bonus from bank
-        exp = Math.round(exp + bonusExp);
-        exp = await addBonusExp(message, exp); // bonus from booster
         let gold = subArea >= 2 ? randomNumber(monster.min_coin, monster.max_coin) : monster.min_coin;
-        gold = await addBonusGold(message, gold); // bonus from booster
+        exp = Math.round(exp + bonusExp);
+        let booster = await addBonusExpGold(message, exp, gold); // bonus from booster
+        exp = booster.exp
+        gold = booster.gold // bonus from booster
         monster.hp = parseInt(monster.hp) - parseInt(playerAttack)
         let dmgToPlayer = monster.hp > 0 && monsterDamage - playerDef > 0 ? monsterDamage - playerDef : 0;
         let playerHP = stat.hp - dmgToPlayer > 0 ? stat.hp - dmgToPlayer : 0;
@@ -76,8 +77,8 @@ async function hunt(message) {
             gold = 0;
             exp = 0;
             if (stat.level > 1) {
-                maxHp = getMaxHP(stat.basic_hp, stat.level - 1);
-                maxMp = getMaxMP(stat.basic_mp, stat.level - 1);
+                let maxHp = getMaxHP(stat.basic_hp, stat.level - 1);
+                let maxMp = getMaxMP(stat.basic_mp, stat.level - 1);
                 queryData(`UPDATE stat SET hp=${maxHp}, mp=${maxMp}, level=level - 1, current_experience=0 WHERE player_id="${message.author.id}"`);
                 battleLog = `\n${monster.emoji}**${monster.name}** beaten **${message.author.username}** down \nyou got nothing but a shameful and your level drop by 1`;
                 // logMsg = `${message.author.sername} Lost in battle with ${monster.emoji} ** ${monster.name} **\nyou got nothig but a shameful and your level drop by 1.`;

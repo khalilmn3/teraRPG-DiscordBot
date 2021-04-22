@@ -79,6 +79,8 @@ import donate from './js/commands/donate.js';
 import servant from './js/commands/servant.js';
 import duel from './js/commands/duel.js';
 import quest from './js/commands/quest.js';
+import pirate from './js/commands/pirate.js';
+import use from './js/commands/useItem.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -91,7 +93,7 @@ const guildMember = new Discord.GuildMember();
 
 client.login(config.BOT_TOKEN);
 
-const dbl = new DBL(config.DBL_TOKEN, { webhookPort: 5555, webhookAuth: '11211' });
+const dbl = new DBL(config.DBL_TOKEN, { webhookPort: config.PORT_WEBHOOK, webhookAuth: '11211' });
 dbl.webhook.on('vote', (vote)=>{
     voteRewardsSend(client,vote.user,vote.isWeekend)
     const webhook = new Discord.WebhookClient('822314548291698718', '4pmafrE03jh1nB8Ee_66WTyPKWC3M_hD-nbL9SZIgYTMl_5adXmo_YB4aqYaxi1mDSVL');
@@ -130,37 +132,32 @@ client.on("message", async function (message) {
                 message.channel.send(body);
                 message.delete();
                 return;
-            } else if (command === "prepare") {
-                if (args[0] === 'set') {
+            } else if (command === "pset") {
                     message.delete();
                     client.channels.cache.get("818359215562424330").setName(`\\🟡-Status`)
-                    client.channels.cache.get("818359215562424330").send(`\\🟡 Bot is Preparing for Maintenance\n${body}`)
+                    client.channels.cache.get("818359215562424330").send(`\\🟡 Bot is Preparing for Maintenance\n\`\`\`${body}\`\`\``)
                     await queryData(`update configuration set value=1 where id=1;`);
                     message.channel.send(`Server set prepare maintenance`);
-                } else if (args[0] === 'unset') {
+            } else if (command === "punset") {
                     message.delete();
                     client.channels.cache.get("818359215562424330").setName(`\\🟢-Status`)
-                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online\n${body}`)
+                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online\n\`\`\`${body}\`\`\``)
                     await queryData(`update configuration set value=0 where id=1;`);
                     message.channel.send(`Server unset prepare maintenance`);
-                }
-            }  else if (command === "maintenance") {
-                if (args[0] === 'set') {
-                    let note = args.
+            } else if (command === "mtset") {
                     message.delete();
                     client.channels.cache.get("818359215562424330").setName(`\\🔴-Status`)
-                    client.channels.cache.get("818359215562424330").send(`\\🔴 Bot Offline\n-Under Maintenance\n${body}`)
+                    client.channels.cache.get("818359215562424330").send(`\\🔴 Bot Offline\n-Under Maintenance\n\`\`\`${body}\`\`\``)
                     await queryData(`update configuration set value=0 where id=1;`);
                     await queryData(`update configuration set value=1 where id=6;`);
                     message.channel.send(`Server set maintenance`);
-                } else if (args[0] === 'unset') {
+            }   else if (command === "mtunset") {
                     message.delete();
                     client.channels.cache.get("818359215562424330").setName(`\\🟢-Status`)
-                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online\n${body}`)
+                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online\n\`\`\`${body}\`\`\``)
                     await queryData(`update configuration set value=0 where id=6;`);
                     message.channel.send(`Server unset maintenance`);
-                }
-            } else if (command === "member") {
+            }else if (command === "member") {
                 let member = await queryData(`SELECT count(*) as totalMember FROM player`);
                 // console.log(member[0].totalMember);
                 message.channel.send(`total member : ${member[0].totalMember}`);
@@ -210,6 +207,15 @@ client.on("message", async function (message) {
                     message.reply(num);
                 } catch (error) {
                     return;
+                }
+            } else if (command === "raw") {
+                message.delete()
+                try {
+                    let num = eval(body);
+                    message.reply(`\`\`\`${num}\`\`\``);
+                    console.log(num)
+                } catch (error) {
+                    message.reply(`\`\`\`${error.toString()}\`\`\``);
                 }
             }  else if (command === "give") {
                 give(message, args);
@@ -379,6 +385,12 @@ client.on("message", async function (message) {
                     } else if (command === 'quest') {
                         log(message, commandBody);
                         quest(message,stat);
+                    } else if (command === 'pirate') {
+                        log(message, commandBody);
+                        pirate(message,stat);
+                    } else if (command === 'use') {
+                        log(message, commandBody);
+                        use(message,commandBody);
                     }
                 }
             } else if (command === 'start') {
