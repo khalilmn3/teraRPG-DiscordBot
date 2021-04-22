@@ -340,7 +340,7 @@ client.on("message", async function (message) {
                         market(message);
                     }  else if (command === 'shop') {
                         log(message, commandBody);
-                        shop(message);
+                        shop(message, stat);
                     } else if (command === 'buy') {
                         log(message, commandBody);
                         buy(message, args[0], args[1], args[2]);

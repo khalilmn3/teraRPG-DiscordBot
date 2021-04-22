@@ -1,15 +1,26 @@
 import Discord from 'discord.js';
-function shop(message) {
+import currencyFormat from './helper/currency.js';
+import queryData from './helper/query.js';
+import { limitedTimeUse } from './helper/variable.js';
+import emojiCharacter from './utils/emojiCharacter.js';
+async function shop(message, stat) {
+    let cekDiscountCard = await queryData(`SELECT * FROM backpack WHERE player_id=${message.author.id} AND item_id=${limitedTimeUse.dicountCardId} AND quantity>0 LIMIT 1`);
+    cekDiscountCard = cekDiscountCard.length > 0 ? 20 : 0;
+
     message.channel.send(new Discord.MessageEmbed({
         type: "rich",
-        description: null,
+        // description: `*Balance: ${stat.gold}*`,
         url: null,
         color: 10115509,
         fields: [
             {
+                name: `*Balance*: ${emojiCharacter.gold2}${currencyFormat(stat.gold)}`,
+                value: `*Discount card*: ${limitedTimeUse.dicountCardEmoji}${cekDiscountCard}%`
+            },
+            {
                 name: `Shop`,
-                value: `<:Healing_Potion:810747622859735100>  \`Healing Potion\` | \`restore heal point-\` 35 <:gold_coin:801440909006209025> 
-<:Apprentice_Bait:824271452056059985> \`Apprentice Bait\` | \`15% bait power----\` 75 <:gold_coin:801440909006209025>`,
+                value: `<:Healing_Potion:810747622859735100>  \`Healing Potion\` | \`restore heal point-\` ${cekDiscountCard ? `~~*35*~~ 28` : '35'} <:gold_coin:801440909006209025> 
+<:Apprentice_Bait:824271452056059985> \`Apprentice Bait\` | \`15% bait power----\` ${cekDiscountCard ? `~~*75*~~ 60` : '75'} <:gold_coin:801440909006209025>`,
                 
 // <:Mining_Helmet:824176323194650624> \`Mining Helmet\` | \`eliminate rock when mining--------------\` 35 <:diamond:801441006247084042>`,`
 // <:Ring:824176323219292220> \`Ring\` | \`Marrie me!!!-----------------------------------\` 175 <:diamond:801441006247084042>`,
