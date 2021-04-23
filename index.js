@@ -128,6 +128,9 @@ client.on("message", async function (message) {
     
     if (content.startsWith(teraRPGPrefix)) {
         const commandBody = message.content.slice(teraRPGPrefix.length).toLowerCase();
+        let rawArgs = message.content.slice(teraRPGPrefix.length);
+        rawArgs = rawArgs.trim().split(/ +/);
+        rawArgs.shift();
         const args = commandBody.trim().split(/ +/);
         const command = args.shift().toLowerCase();
         const prefixCommand = teraRPGPrefix + command;
@@ -227,7 +230,7 @@ client.on("message", async function (message) {
             } else if (command === 'booster') {
                 booster(message, args);
             } else if (command === 'updatenotif') {
-                notifUrl(message, args[0]);
+                notifUrl(message, rawArgs[0]);
             }
         }
         if (command != '') {
@@ -262,6 +265,15 @@ client.on("message", async function (message) {
                         let randomize = randomNumber(1, 100);
                         if (randomize <= 1) {
                             pirate(message,stat);
+                        }
+                    }
+
+                    if (command == 'p' || command == 'profile') {
+                        let notifIsRead = await queryData(`SELECT * FROM notification_read WHERE player_id=${message.author.id} AND is_read=1 LIMIT 1`);
+                        notifIsRead = notifIsRead.length > 0 ? notifIsRead[0] : undefined;
+
+                        if (!notifIsRead) {
+                            notification(message);
                         }
                     }
 

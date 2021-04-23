@@ -18,6 +18,8 @@ async function code(message, args) {
         } else {
             message.channel.send(`${emojiCharacter.noEntry} | You have already claimed this code!!!`);
         }
+    } else {
+        message.channel.send(``)
     }
 }
 

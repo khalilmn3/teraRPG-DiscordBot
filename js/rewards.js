@@ -9,7 +9,15 @@ import addExpGold from "./helper/addExp.js";
 async function rewards(message,command, stat) {
     if (command == 'vote') {
         let cooldowns = await isCommandsReady(message.author.id, 'vote');
+        let dayOfWeek = new Date();
+        dayOfWeek = dayOfWeek.getDay();
+        let isWeekend = (dayOfWeek === 6) || (dayOfWeek === 0); // 6 = Saturday, 0 = Sunday
+        let multiplyWeekend = isWeekend ? 2 : 1;
         let status = '';
+        let potion = (Math.floor(stat.level / 2) + 2) * multiplyWeekend;
+        potion = potion <= 0 ? 1 : potion;
+        let gold = (1352 * stat.level) * multiplyWeekend;
+
         if (cooldowns.isReady) {
             status = 'You haven\'t voted yet';
         } else {
@@ -24,12 +32,12 @@ async function rewards(message,command, stat) {
                 fields: [
                     {
                         name: `Vote`,
-                        value: `Wanna get more rewards?\n[Vote me on here](https://top.gg/bot/804295231838355466/vote)\nRewards doubled on weekends`,
+                        value: `Wanna get more rewards?\n[Vote me on here](https://top.gg/bot/804295231838355466/vote)`,
                         inline: false,
                     },
                     {
                         name: `Rewards`,
-                        value: `• <:diamond:801441006247084042> \`1\`\n• <:Iron_Crate:810034071307943976> \`1\`\n• <:Healing_Potion:810747622859735100> \`10 x level\`\n• <:gold_coin:801440909006209025> \`1.500 x level\``,
+                        value: `•  \`+1\`<:diamond:801441006247084042>\`Diamond\`\n• \`+1\`<:Iron_Crate:810034071307943976>\`Iron crate\`\n• \`+${potion}\`<:Healing_Potion:810747622859735100>\`Healing potion\`\n• \`+${currencyFormat(gold)}\`<:gold_coin:801440909006209025>\`gold\``,
                         inline: true,
                     },
                     {
@@ -37,7 +45,10 @@ async function rewards(message,command, stat) {
                         value: status,
                         inline: true,
                     }
-                ]
+                ],
+                footer: {
+                    text: 'Rewards doubled on weekends'
+                }
             }));
             // message.channel.send('Vote cooming soon!!!');
         // } else {
