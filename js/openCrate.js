@@ -4,8 +4,10 @@ import Discord from 'discord.js';
 import randomNumber from "./helper/randomNumberWithMinMax.js";
 import currencyFormat from "./helper/currency.js";
 
-async function openCrate(client, message, args) {
+async function openCrate(client, message, args, stat) {
     if (args.length > 0) {
+        let maxZone = stat.max_zone;
+        maxZone = maxZone.split('|')[0];
         let type = args[0].toLowerCase();
         let qty = args.length > 1 && parseInt(args[2]) > 0 ? args[2] : 1;
         let itemId = 'x';
@@ -30,12 +32,29 @@ async function openCrate(client, message, args) {
                 if (crate[0].quantity >= qty) {
                     // reduce crate from backpack
                     queryData(`UPDATE backpack SET quantity=quantity - ${qty} WHERE player_id="${message.author.id}" AND item_id="${itemId}"`)
-                    let item = await queryData(`SELECT crate_item.id_sort, item.id, item.emoji, item.name as itemName, crate_item.chance, crate_item.min, crate_item.max FROM crate_item 
+                    let item = await queryData(`SELECT IFNULL(min_depth,0) as min_depth, crate_item.id_sort, item.id, item.emoji, item.name as itemName, crate_item.chance, crate_item.min, crate_item.max FROM crate_item 
                         LEFT JOIN item ON (crate_item.item_id=item.id)
                         LEFT JOIN item as crate ON (crate_item.crate_item_id=item.id)
-                        WHERE crate_item.crate_item_id="${itemId}"`)
+                        LEFT JOIN discoverable_ore ON (crate_item.item_id=discoverable_ore.item_id)
+                        WHERE crate_item.crate_item_id="${itemId}" 
+                        AND IFNULL(min_depth,0) <= ${stat.depth} 
+                        AND zone <= ${maxZone}
+                        ORDER BY crate_item.id_sort ASC`);
                     let randomItem = 0;
                     let itemGot = [];
+                    let chance = 0;
+                    // console.log(item);
+                    item.forEach(element => {
+                        chance += element.chance;
+                    });
+                    if (chance < 100) {
+                        let chanceLeft = 100 - chance;
+                        // untuk dibagi
+                        chanceLeft = chanceLeft / item.length;
+                        for (let index = 0; index < item.length; index++) {
+                            item[index].chance += chanceLeft;
+                        }
+                    }
                     for (let x = 0; x < qty; x++) {
                         randomItem = randomizeChance(item)
                         if (randomItem !== 0) {
@@ -68,6 +87,15 @@ async function openCrate(client, message, args) {
                                 });
                             }
                         }
+                        // else {
+                        //     itemGot.push({
+                        //         id_sort: 1,
+                        //         id: 264,
+                        //         name: 'Gold',
+                        //         emoji: randomItem.emoji,
+                        //         qty: qtyX
+                        //     });
+                        // }
                     }
 
                     // sorting item

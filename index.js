@@ -343,7 +343,7 @@ client.on("message", async function (message) {
                         fishing(message, stat);
                     } else if (command === 'open') {
                         log(message, commandBody);
-                        openCrate(client, message, args);
+                        openCrate(client, message, args, stat);
                     } else if (command === 'invite') {
                         log(message, commandBody);
                         invite(message);
