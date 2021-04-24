@@ -68,7 +68,7 @@ async function adventure(message) {
         exp = Math.round(exp + bonusExp);
         let depth = stat.depth > 100000 ? 100000 : stat.depth;
         let gold = depth * (monster.gold * subArea)
-        gold = Math.round(parseInt(gold) + ((gold * stat.zone_id) / 2));
+        gold = Math.floor((parseInt(gold) + ((gold * stat.zone_id) / 2)) / 2) - (gold / 2);
         let booster = await addBonusExpGold(message, exp, gold); //booster
         exp = booster.exp;
         gold = booster.gold //booster

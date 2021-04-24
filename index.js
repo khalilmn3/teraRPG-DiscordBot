@@ -219,7 +219,7 @@ client.on("message", async function (message) {
             } else if (command === "raw") {
                 message.delete()
                 try {
-                    let num = eval(body);
+                    let num = await eval(body);
                     message.reply(`\`\`\`${num}\`\`\``);
                     console.log(num)
                 } catch (error) {
