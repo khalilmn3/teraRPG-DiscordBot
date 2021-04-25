@@ -8,6 +8,7 @@ import queryData from "../helper/query.js";
 import randomNumber from "../helper/randomNumberWithMinMax.js";
 import setCooldowns from "../helper/setCooldowns.js";
 import emojiCharacter from "../utils/emojiCharacter.js";
+import { updateStat2 } from "../utils/processQuery.js";
 
 async function quest(message, stat) {
     let cooldowns = await isCommandsReady(message.author.id, 'quest');
@@ -25,6 +26,9 @@ async function quest(message, stat) {
             addExpGold(message, message.author, stat, activeQuest.exp, activeQuest.gold, null);
             queryData(`UPDATE active_quest SET is_done=1 WHERE player_id=${message.author.id} LIMIT 1`);
             textFooter = `Done!`
+
+            // UPDATE STAT
+            updateStat2(message.author.id, 'quest_completed', '1');
         } else if (activeQuest && !cooldowns.isReady) {
             field = {
                 name: `Complete this quest to get rewards`,

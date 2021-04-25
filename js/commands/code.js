@@ -19,7 +19,7 @@ async function code(message, args) {
             message.channel.send(`${emojiCharacter.noEntry} | You have already claimed this code!!!`);
         }
     } else {
-        message.channel.send(``)
+        message.channel.send(`Invalid code!`);
     }
 }
 

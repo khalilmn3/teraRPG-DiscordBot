@@ -12,6 +12,7 @@ import { addBonusExpGold } from '../helper/configuration.js';
 import myCache from '../cache/leaderboardChace.js';
 import { getAttack, getDefense, getMaxHP, getMaxMP } from '../helper/getBattleStat.js';
 import questProgress from "../utils/questProgress.js";
+import { updateStat2 } from "../utils/processQuery.js";
 
 async function hunt(message) {
     let cooldowns = await isCommandsReady(message.author.id, 'explore');
@@ -92,6 +93,9 @@ async function hunt(message) {
         }
         // QUEST PROGRESS
         questProgress(message.author.id, 1);
+        // UPDATE STAT
+        updateStat2(message.author.id, 'monster_kills', '1');
+        
         let dropItemList = await queryData(`SELECT id,emoji, name, chance FROM item WHERE id=${monster.drop_item_id} LIMIT 1`);
         let randomDropItem = randomizeChance(dropItemList);
         let dropItemMsg = '';

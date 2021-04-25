@@ -5,6 +5,7 @@ import Discord from 'discord.js'
 import queryData from "./helper/query.js";
 import currencyFormat from "./helper/currency.js";
 import addExpGold from "./helper/addExp.js";
+import { updateStat2 } from "./utils/processQuery.js";
 
 async function rewards(message,command, stat) {
     if (command == 'vote') {
@@ -37,7 +38,7 @@ async function rewards(message,command, stat) {
                     },
                     {
                         name: `Rewards`,
-                        value: `•  \`+1\`<:diamond:801441006247084042>\`Diamond\`\n• \`+1\`<:Iron_Crate:810034071307943976>\`Iron crate\`\n• \`+${potion}\`<:Healing_Potion:810747622859735100>\`Healing potion\`\n• \`+${currencyFormat(gold)}\`<:gold_coin:801440909006209025>\`gold\``,
+                        value: `• \`+1\`<:diamond:801441006247084042>\`Diamond\`\n• \`+1\`<:Iron_Crate:810034071307943976>\`Iron crate\`\n• \`+${potion}\`<:Healing_Potion:810747622859735100>\`Healing potion\`\n• \`+${currencyFormat(gold)}\`<:gold_coin:801440909006209025>\`gold\``,
                         inline: true,
                     },
                     {
@@ -98,6 +99,8 @@ async function rewards(message,command, stat) {
                 queryData(`UPDATE stat SET gold=gold + ${gold} WHERE player_id="${message.author.id}" LIMIT 1`);
             }
             await queryData(`UPDATE cooldowns SET daily_streak="${dailyStreak}" WHERE player_id="${message.author.id}" LIMIT 1`)
+            // UPDATE STAT
+            updateStat2(message.author.id, 'daily_strikes', dailyStreak);
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
                 description: null,

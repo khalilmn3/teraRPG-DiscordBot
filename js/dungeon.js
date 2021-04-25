@@ -9,6 +9,7 @@ import isCommandsReady from "./helper/isCommandsReady.js";
 import queryData from "./helper/query.js";
 import { activeCommand, deactiveCommand } from "./helper/setActiveCommand.js";
 import setCooldowns from "./helper/setCooldowns.js";
+import { updateStat2 } from "./utils/processQuery.js";
 
 var greatHealUsed = 10;
 
@@ -244,6 +245,10 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         }))
         addExpGold(message, player1, playerList[0], expReward, goldReward, player1Stat);
         addExpGold(message, player2, playerList[1], expReward, goldReward, player2Stat);
+        // UPDATE STAT
+        updateStat2(player2.id, 'boss_kills', '1');
+        updateStat2(player1.id, 'boss_kills', '1');
+
         //move zone 
         if (playerList[0].zone_id < 7) {
             let newSubZone = playerList[0].sub_zone == 1 ? 2 : 1;

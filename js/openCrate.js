@@ -3,6 +3,7 @@ import randomizeChance from "./helper/randomize.js";
 import Discord from 'discord.js';
 import randomNumber from "./helper/randomNumberWithMinMax.js";
 import currencyFormat from "./helper/currency.js";
+import { updateStat2 } from "./utils/processQuery.js";
 
 async function openCrate(client, message, args, stat) {
     if (args.length > 0) {
@@ -133,6 +134,10 @@ async function openCrate(client, message, args, stat) {
                             }],
                             files: []
                         });
+                        
+                        // UPDATE STAT
+                        updateStat2(message.author.id, 'crate_opened', qty);
+
                         message.channel.send(`${crate[0].emoji} | **${message.author.username}** is opening ${qty} **${crate[0].name}**...`, itemMessage)
                     } else {
                         message.reply('no data found')

@@ -26,6 +26,7 @@ async function voteRewardsSend(client, player_id, isWeekend) {
         queryData(`UPDATE stat SET gold=gold + ${gold}, diamond=diamond + ${diamond} WHERE player_id="${player_id}" LIMIT 1`);
         queryData(`UPDATE votes SET rewards_sent_count=rewards_sent_count + 1 WHERE player_id="${player_id}" LIMIT 1`);
         setCooldowns(player_id, 'vote');
+        
         // DM User
         client.users.fetch(`${player_id}`).then((user) => {
             user.send(new Discord.MessageEmbed({
