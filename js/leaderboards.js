@@ -90,6 +90,8 @@ async function ranks(message, args1) {
                 timestamp: new Date()
             }));
         }
+    } else {
+        message.channel.send('Available ranks: \`level\`, \`depth\`, \`gold\`')
     }
 }
 
