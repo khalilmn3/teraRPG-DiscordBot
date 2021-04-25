@@ -1,11 +1,13 @@
 import { limitedTimeUse } from "../helper/variable.js";
 import Discord from 'discord.js';
+import emojiCharacter from "../utils/emojiCharacter.js";
 
-function info(message, commandBody) {
+function info(message, args, commandBody) {
     commandBody = commandBody.slice(5);
     let name = '';
     let info = '';
     let obtain = '';
+    if(!args){ return message.channel.send('Correct usage \`tera info [item name]\`')}
     if (commandBody === 'lucky coin') {
         name = limitedTimeUse.luckyCoinEmoji+'Lucky coin';
         info = 'Item gold booster that gives you 25% more gold \nwhen using \`explore\` and \`mining expedition\`\n - **usage** \`use lucky coin\`';
@@ -75,6 +77,10 @@ function info(message, commandBody) {
         name = 'Bait';
         info = 'Bait is using on \`fish\`, If the player has multiple bait items in their inventory\nthey are used from the bottom slot of the backpack to the top.\nTherefore, the bottom bait item will be used first.';
         obtain = '\`shop\`, \`chop\` when having bug net';
+    }  else if (commandBody === 'marketplace') {
+        name = 'Marketplace';
+        info = `a Place to buy and sell items on TeraRPG\n\n**Usage**\n**• tera marketplace\n\` Display list of marketplace\`\n• tera marketplace add [item name] [price]*\n\` List an item to the marketplace\`\n• tera marketplace buy [id]\n\` Buy an item from marketplace\`\n• tera marketplace remove [id]\n\` Remove an item from marketplace\`\n• tera marketplace search [item name]\n\` Search items from marketplace\`\n• tera marketplace list\n\` Display own list on marketplace\`\n• tera marketplace @[user]\n\` Display other user list on marketplace\`**`;
+        obtain = '*Level 5';
     } else {
         return message.channel.send(`Cannot found info related!`);
     }

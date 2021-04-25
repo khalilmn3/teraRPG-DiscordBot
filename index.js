@@ -87,6 +87,10 @@ import info from './js/commands/info.js';
 import notification from './js/commands/notification.js';
 import notifUrl from './js/adminCommands/addUrlNotif.js';
 import stats from './js/commands/stats.js';
+import marketAdd from './js/commands/marketplace/marketAdd.js';
+import marketplace from './js/commands/marketplace/marketplace.js';
+import marketRemove from './js/commands/marketplace/marketRemove.js';
+import marketBuy from './js/commands/marketplace/marketBuy.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -122,6 +126,7 @@ client.on('ready', () => {
 client.on("message", async function (message) {
     let content = message.content.toLowerCase();
     if (message.author.bot) {
+        // console.log(message.embeds)
         return;
     }
     // ================================================================================================================================
@@ -134,6 +139,7 @@ client.on("message", async function (message) {
         rawArgs.shift();
         const args = commandBody.trim().split(/ +/);
         const command = args.shift().toLowerCase();
+        // const command2 = args.shift().toLowerCase();
         const prefixCommand = teraRPGPrefix + command;
         const body = message.content.replace(prefixCommand, '');
         if (message.author.id === '668740503075815424') {
@@ -366,7 +372,7 @@ client.on("message", async function (message) {
                     } else if (command === 'ranks') {
                         log(message, commandBody);
                         ranks(message, args[0]);
-                    } else if (command === 'market') {
+                    }else if (command === 'market') {
                         log(message, commandBody);
                         market(message);
                     }  else if (command === 'shop') {
@@ -429,13 +435,25 @@ client.on("message", async function (message) {
                         code(message,args);
                     } else if (command === 'info') {
                         log(message, commandBody);
-                        info(message,commandBody);
+                        info(message,args, commandBody);
                     } else if (command === 'notification' || command === 'notif') {
                         log(message, commandBody);
                         notification(message);
                     } else if (command === 'stats' || command === 'stat') {
                         log(message, commandBody);
                         stats(message);
+                    } else if (command === 'marketplace' && args[0] == 'add') {
+                        log(message, commandBody);
+                        marketAdd(message, args, commandBody, stat);
+                    } else if (command === 'marketplace' && args[0] == 'remove') {
+                        log(message, commandBody);
+                        marketRemove(message, args, body);
+                    }  else if (command === 'marketplace' && args[0] == 'buy') {
+                        log(message, commandBody);
+                        marketBuy(message, args, stat);
+                    } else if (command === 'marketplace') {
+                        log(message, commandBody);
+                        marketplace(message, args, commandBody);
                     }
                 }
             } else if (command === 'start') {

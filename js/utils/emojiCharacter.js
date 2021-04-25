@@ -17,5 +17,6 @@ export default {
     furnace: '<:Furnace:804145327513796688>',
     exp: '𝑒𝓍𝓅',
     gold: '𝑔𝑜𝓁𝒹',
-    gold2: '<:gold_coin:801440909006209025>'
+    gold2: '<:gold_coin:801440909006209025>',
+    blank: '<:blank:835528030683922472>'
 };
