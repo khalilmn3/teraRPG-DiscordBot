@@ -27,14 +27,14 @@ async function trade(message, stat, args) {
             qtyTo = 1
             amount = qty * qtyFrom
             nameFrom = '<:Wood:804704694420766721>\`wood\`'
-            nameTo = '<:Copper_Ore:803930190266630144>\`copper ore\`'
+            nameTo = '<:copper_ore:835767578021462078>\`copper ore\`'
         } else if (args[0] === 'b') {
             itemIDFrom = variable.copperOreId;
             itemIDTo = variable.woodId
             qtyFrom = maxZone <= 3 ? maxZone : maxZone == 4 ? 2 : 3;
             qtyTo = 1
             amount = qty * qtyFrom;
-            nameFrom = '<:Copper_Ore:803930190266630144>\`copper ore\`'
+            nameFrom = '<:copper_ore:835767578021462078>\`copper ore\`'
             nameTo =  '<:Wood:804704694420766721>\`wood\`'
         } else if (args[0] === 'c') {
             itemIDFrom = variable.copperOreId;
@@ -42,80 +42,80 @@ async function trade(message, stat, args) {
             qtyFrom = maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5;
             qtyTo = 1
             amount = qty * qtyFrom;
-            nameFrom = '<:Copper_Ore:803930190266630144>\`copper ore\`'
-            nameTo = '<:Iron_Ore:803930082782609439>\`iron ore\`'
+            nameFrom = '<:copper_ore:835767578021462078>\`copper ore\`'
+            nameTo = '<:iron_ore:835768116927135744>\`iron ore\`'
         } else if (args[0] === 'd') {
             itemIDFrom = variable.ironOreId;
             itemIDTo = variable.copperOreId
             qtyFrom = 1
             qtyTo = maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5;
             amount = qty * qtyFrom;
-            nameFrom = '<:Iron_Ore:803930082782609439>\`iron ore\`'
-            nameTo = '<:Copper_Ore:803930190266630144>\`copper ore\`'
+            nameFrom = '<:iron_ore:835768116927135744>\`iron ore\`'
+            nameTo = '<:copper_ore:835767578021462078>\`copper ore\`'
         } else if (args[0] === 'e') {
             itemIDFrom = variable.ironOreId;
             itemIDTo = variable.silverOreId
             qtyFrom = maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5;
             qtyTo = 1
             amount = qty * qtyFrom;
-            nameFrom = '<:Iron_Ore:803930082782609439>\`iron ore\`'
-            nameTo = '<:Silver_Ore:803930635613372416>\`silver ore\`'
+            nameFrom = '<:iron_ore:835768116927135744>\`iron ore\`'
+            nameTo = '<:silver_ore:835764438991765524>\`silver ore\`'
         } else if (args[0] === 'f') {
             itemIDFrom = variable.silverOreId;
             itemIDTo = variable.ironOreId
             qtyFrom = 1
             qtyTo = maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5;
             amount = qty * qtyFrom;
-            nameFrom = '<:Silver_Ore:803930635613372416>\`silver ore\`'
-            nameTo = '<:Iron_Ore:803930082782609439>\`iron ore\`'
+            nameFrom = '<:silver_ore:835764438991765524>\`silver ore\`'
+            nameTo = '<:iron_ore:835768116927135744>\`iron ore\`'
         } else if (args[0] === 'g') {
             itemIDFrom = variable.silverOreId
             itemIDTo = variable.tungstenOreId
             qtyFrom = maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5;
             qtyTo = 1
             amount = qty * qtyFrom;
-            nameFrom = '<:Silver_Ore:803930635613372416>\`silver ore\`'
-            nameTo = '<:Tungsten_Ore:803930285187006495>\`tungsten ore\`'
+            nameFrom = '<:silver_ore:835764438991765524>\`silver ore\`'
+            nameTo = '<:tungsten_ore:835768117132001301>\`tungsten ore\`'
         } else if (args[0] === 'h') {
             itemIDFrom = variable.tungstenOreId;
             itemIDTo = variable.silverOreId
             qtyFrom = 1
             qtyTo = maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5;
             amount = qty * qtyFrom;
-            nameFrom = '<:Tungsten_Ore:803930285187006495>\`tungsten ore\`'
-            nameTo = '<:Silver_Ore:803930635613372416>\`silver ore\`'
+            nameFrom = '<:tungsten_ore:835768117132001301>\`tungsten ore\`'
+            nameTo = '<:silver_ore:835764438991765524>\`silver ore\`'
         } else if (args[0] === 'i') {
             itemIDFrom = variable.tungstenOreId;
             itemIDTo = variable.goldOreId
             qtyFrom = maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5;
             qtyTo = 1
             amount = qty * qtyFrom;
-            nameFrom = '<:Tungsten_Ore:803930285187006495>\`tungsten ore\`'
-            nameTo = '<:Gold_Ore:803930116270587914>\`gold ore\`'
+            nameFrom = '<:tungsten_ore:835768117132001301>\`tungsten ore\`'
+            nameTo = '<:gold_ore:835767578621247488>\`gold ore\`'
         } else if (args[0] === 'j') {
             itemIDFrom = variable.goldOreId;
             itemIDTo = variable.tungstenOreId
             qtyFrom = 1
             qtyTo = maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5;
             amount = qty * qtyFrom;
-            nameFrom = '<:Gold_Ore:803930116270587914>\`gold ore\`'
-            nameTo = '<:Tungsten_Ore:803930285187006495>\`tungsten ore\`'
+            nameFrom = '<:gold_ore:835767578621247488>\`gold ore\`'
+            nameTo = '<:tungsten_ore:835768117132001301>\`tungsten ore\`'
         } else if (args[0] === 'k') {
             itemIDFrom = variable.goldOreId;
             itemIDTo = variable.platinumOreId
             qtyFrom = maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5;
             qtyTo = 1
             amount = qty * qtyFrom;
-            nameFrom = '<:Gold_Ore:803930116270587914>\`gold ore\`'
-            nameTo = '<:Platinum_Ore:803930281547399229>\`platinum ore\`'
+            nameFrom = '<:gold_ore:835767578621247488>\`gold ore\`'
+            nameTo = '<:platinum_ore:835768116889124905>\`platinum ore\`'
         } else if (args[0] === 'l') {
             itemIDFrom = variable.platinumOreId;
             itemIDTo = variable.goldOreId
             qtyFrom = 1
             qtyTo = maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5;
             amount = qty * qtyFrom;
-            nameFrom = '<:Platinum_Ore:803930281547399229>\`platinum ore\`'
-            nameTo = '<:Gold_Ore:803930116270587914>\`gold ore\`'
+            nameFrom = '<:platinum_ore:835768116889124905>\`platinum ore\`'
+            nameTo = '<:gold_ore:835767578621247488>\`gold ore\`'
         }
 
         let item = await queryData(`SELECT quantity FROM backpack WHERE item_id="${itemIDFrom}" AND quantity>=${amount} AND player_id="${message.author.id}" LIMIT 1`);
@@ -136,22 +136,22 @@ async function trade(message, stat, args) {
             fields: [
 //                 {
 //                     name: `__\`ID                   TRADE                  ID\`__`,
-//                     value: `__a__ ⇢ \`2\` <:Wood:804704694420766721>\`wood         \`⇄ 1 <:Copper_Ore:803930190266630144>\`copper ore   \` ⇠ __b__
-// ${maxZone >= 2 ? `__c__ ⇢ \`5\` <:Copper_Ore:803930190266630144>\`copper ore   \`⇄ 1 <:Iron_Ore:803930082782609439>\`iron ore     \` ⇠ __d__` : ''}
-// ${maxZone >= 3 ? `__e__ ⇢ \`5\` <:Iron_Ore:803930082782609439>\`iron ore     \`⇄ 1 <:Silver_Ore:803930635613372416>\`silver ore   \` ⇠ __f__` : ''}
-// ${maxZone >= 4 ? `__g__ ⇢ \`5\` <:Silver_Ore:803930635613372416>\`silver ore   \`⇄ 1 <:Tungsten_Ore:803930285187006495>\`tungsten ore \` ⇠ __h__` : ''}
-// ${maxZone >= 5 ? `__i__ ⇢ \`5\` <:Tungsten_Ore:803930285187006495>\`tungsten ore \`⇄ 1 <:Gold_Ore:803930116270587914>\`gold ore      \` ⇠ __j__` : ''}
-// ${maxZone >= 6 ? `__k__ ⇢ \`5\` <:Gold_Ore:803930116270587914>\`gold ore     \`⇄ 1 <:Platinum_Ore:803930281547399229>\`platinum ore \` ⇠ __l__` : ''}`,
+//                     value: `__a__ ⇢ \`2\` <:Wood:804704694420766721>\`wood         \`⇄ 1 <:copper_ore:835767578021462078>\`copper ore   \` ⇠ __b__
+// ${maxZone >= 2 ? `__c__ ⇢ \`5\` <:copper_ore:835767578021462078>\`copper ore   \`⇄ 1 <:iron_ore:835768116927135744>\`iron ore     \` ⇠ __d__` : ''}
+// ${maxZone >= 3 ? `__e__ ⇢ \`5\` <:iron_ore:835768116927135744>\`iron ore     \`⇄ 1 <:silver_ore:835764438991765524>\`silver ore   \` ⇠ __f__` : ''}
+// ${maxZone >= 4 ? `__g__ ⇢ \`5\` <:silver_ore:835764438991765524>\`silver ore   \`⇄ 1 <:tungsten_ore:835768117132001301>\`tungsten ore \` ⇠ __h__` : ''}
+// ${maxZone >= 5 ? `__i__ ⇢ \`5\` <:tungsten_ore:835768117132001301>\`tungsten ore \`⇄ 1 <:gold_ore:835767578621247488>\`gold ore      \` ⇠ __j__` : ''}
+// ${maxZone >= 6 ? `__k__ ⇢ \`5\` <:gold_ore:835767578621247488>\`gold ore     \`⇄ 1 <:platinum_ore:835768116889124905>\`platinum ore \` ⇠ __l__` : ''}`,
 //                     inline: true
 //                 },
             {
 name: `__\`ID      TRADE      ID\`__`,
-value: `__a__ ⇢ \`${maxZone <= 3 ? maxZone : maxZone == 4 ? 2 : 3}\` <:Wood:804704694420766721> ⇄ <:Copper_Ore:803930190266630144> \`1\` ⇠ __b__
-${maxZone >= 1 ? `__c__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Copper_Ore:803930190266630144> ⇄ <:Iron_Ore:803930082782609439> \`1\` ⇠ __d__` : ''}
-${maxZone >= 2 ? `__e__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Iron_Ore:803930082782609439> ⇄ <:Silver_Ore:803930635613372416> \`1\` ⇠ __f__` : ''}
-${maxZone >= 3 ? `__g__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Silver_Ore:803930635613372416> ⇄ <:Tungsten_Ore:803930285187006495> \`1\` ⇠ __h__` : ''}
-${maxZone >= 4 ? `__i__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Tungsten_Ore:803930285187006495> ⇄ <:Gold_Ore:803930116270587914> \`1\` ⇠ __j__` : ''}
-${maxZone >= 5 ? `__k__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:Gold_Ore:803930116270587914> ⇄ <:Platinum_Ore:803930281547399229> \`1\` ⇠ __l__` : ''}`,
+value: `__a__ ⇢ \`${maxZone <= 3 ? maxZone : maxZone == 4 ? 2 : 3}\` <:Wood:804704694420766721> ⇄ <:copper_ore:835767578021462078> \`1\` ⇠ __b__
+${maxZone >= 1 ? `__c__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:copper_ore:835767578021462078> ⇄ <:iron_ore:835768116927135744> \`1\` ⇠ __d__` : ''}
+${maxZone >= 2 ? `__e__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:iron_ore:835768116927135744> ⇄ <:silver_ore:835764438991765524> \`1\` ⇠ __f__` : ''}
+${maxZone >= 3 ? `__g__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:silver_ore:835764438991765524> ⇄ <:tungsten_ore:835768117132001301> \`1\` ⇠ __h__` : ''}
+${maxZone >= 4 ? `__i__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:tungsten_ore:835768117132001301> ⇄ <:gold_ore:835767578621247488> \`1\` ⇠ __j__` : ''}
+${maxZone >= 5 ? `__k__ ⇢ \`${maxZone <= 3 ? 5 : maxZone == 4 ? 3 : 5}\` <:gold_ore:835767578621247488> ⇄ <:platinum_ore:835768116889124905> \`1\` ⇠ __l__` : ''}`,
 inline: true
 },
                 {

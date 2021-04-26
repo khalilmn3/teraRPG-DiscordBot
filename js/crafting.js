@@ -320,17 +320,17 @@ async function crafting(message, commandsBody, args1, args2, args3) {
                         inline: false
                     },
                     {
-                        value: `<:Work_Bench:804145756918775828>__work bench__ : 10 <:Wood:804704694420766721> ➜ hand\n<:Furnace:804145327513796688> __furnace__ : 7 <:Wood:804704694420766721> + 15 <:Copper_Ore:803930190266630144> ➜ <:Work_Bench:804145756918775828>\n<:Iron_Anvil:804145327435284500>__anvil__ : 5 <:Iron_Bar:803907956528906241> ➜ <:Furnace:804145327513796688>\n`,
+                        value: `<:Work_Bench:804145756918775828>__work bench__ : 10 <:Wood:804704694420766721> ➜ hand\n<:Furnace:804145327513796688> __furnace__ : 7 <:Wood:804704694420766721> + 15 <:copper_ore:835767578021462078> ➜ <:Work_Bench:804145756918775828>\n<:Iron_Anvil:804145327435284500>__anvil__ : 5 <:Iron_Bar:803907956528906241> ➜ <:Furnace:804145327513796688>\n`,
                         name: "Tools",
                         inline: false
                     },
                     {
-                        value: '<:Copper_Bar:803907956478836817>__copper bar__ : 10 <:Copper_Ore:803930190266630144> ➜ <:Furnace:804145327513796688>' +
-                            '\n<:Iron_Bar:803907956528906241>__iron bar__ : 10 <:Iron_Ore:803930082782609439> ➜ <:Furnace:804145327513796688>' +
-                            '\n<:Silver_Bar:803907956663910410>__silver bar__ : 10 <:Silver_Ore:803930635613372416> ➜ <:Furnace:804145327513796688>' +
-                            '\n<:Tungsten_Bar:803907956252344331>__tungsten bar__ : 10 <:Tungsten_Ore:803930285187006495> ➜ <:Furnace:804145327513796688>' +
-                            '\n<:Gold_Bar:803907956424441856>__gold bar bar__ : 10 <:Gold_Ore:803930116270587914> ➜ <:Furnace:804145327513796688>' +
-                            '\n<:Platinum_Bar:803907956327317524>__platinum bar__ : 10 <:Platinum_Ore:803930281547399229> ➜ <:Furnace:804145327513796688>',
+                        value: '<:Copper_Bar:803907956478836817>__copper bar__ : 10 <:copper_ore:835767578021462078> ➜ <:Furnace:804145327513796688>' +
+                            '\n<:Iron_Bar:803907956528906241>__iron bar__ : 10 <:iron_ore:835768116927135744> ➜ <:Furnace:804145327513796688>' +
+                            '\n<:Silver_Bar:803907956663910410>__silver bar__ : 10 <:silver_ore:835764438991765524> ➜ <:Furnace:804145327513796688>' +
+                            '\n<:Tungsten_Bar:803907956252344331>__tungsten bar__ : 10 <:tungsten_ore:835768117132001301> ➜ <:Furnace:804145327513796688>' +
+                            '\n<:Gold_Bar:803907956424441856>__gold bar bar__ : 10 <:gold_ore:835767578621247488> ➜ <:Furnace:804145327513796688>' +
+                            '\n<:Platinum_Bar:803907956327317524>__platinum bar__ : 10 <:platinum_ore:835768116889124905> ➜ <:Furnace:804145327513796688>',
                         name: "Bars",
                         inline: false
                     }],
