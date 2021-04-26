@@ -362,10 +362,10 @@ client.on("message", async function (message) {
                         junken(message, stat);
                     } else if (command === 'report') {
                         log(message, commandBody);
-                        report(message, client, body);
+                        report(message, client, args, body);
                     } else if (command === 'suggest') {
                         log(message, commandBody);
-                        suggest(message, client, body);
+                        suggest(message, client, args, body);
                     } else if (command === 'upgrade') {
                         log(message, commandBody);
                         upgrade(message, args[0]);

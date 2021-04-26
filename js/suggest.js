@@ -1,6 +1,9 @@
 import Discord from 'discord.js';
-function suggest(message, client, body) {
+import queryData from './helper/query.js';
+function suggest(message, client, args, body) {
     let id = 0;
+    if(!args[0]){ return message.channel.send('Usage \`tera suggest [suggestion]\`.')}
+    queryData(`INSERT suggest SET player_id=${message.author.id}, suggest="${body}"`);
     client.channels.cache.get('818360315493613580').send(new Discord.MessageEmbed({
         type: "rich",
         description: null,
@@ -29,7 +32,7 @@ function suggest(message, client, body) {
         },
         timestamp: new Date()
     }));
-    message.reply('Your suggeest has been submitted!')
+    message.reply('Your suggest has been submitted!')
 }
 
 export default suggest;

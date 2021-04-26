@@ -1,6 +1,9 @@
 import Discord from 'discord.js';
-function report(message, client, body) {
+import queryData from './helper/query.js';
+function report(message, client, args, body) {
     let id = 0;
+    if (!args[0]) { return message.channel.send('Usage \`tera report [report]\`.') }
+    queryData(`INSERT report SET player_id=${message.author.id}, report="${body}"`);
     client.channels.cache.get('818360338063163402').send(new Discord.MessageEmbed({
         type: "rich",
         description: null,
