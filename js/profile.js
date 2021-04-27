@@ -23,10 +23,10 @@ async function profile(message, client, id, avatar, args1) {
         IFNULL(itemArmor1.emoji, '') as helmetEmoji, CONCAT(IFNULL(helmet_modifier.name,"")," ",itemArmor1.name) as helmet, IFNULL(armor1.def,0) as helmetDef,
         IFNULL(itemArmor2.emoji, '') as shirtEmoji, CONCAT(IFNULL(shirt_modifier.name,"")," ",itemArmor2.name) as shirt, IFNULL(armor2.def,0) as shirtDef,
         IFNULL(itemArmor3.emoji, '') as pantsEmoji, CONCAT(IFNULL(pants_modifier.name,"")," ",itemArmor3.name) as pants, IFNULL(armor3.def,0) as pantsDef,
-        IFNULL(itemWeapon.emoji, '') as wEmoji, CONCAT(IFNULL(modifier_weapon.name,"")," ",itemWeapon.name) as weaponName,
+        IFNULL(itemWeapon.emoji, '') as wEmoji, CONCAT(IFNULL(weapon_modifier.name,"")," ",itemWeapon.name) as weaponName,
         IF(armor1.armor_set_id=armor2.armor_set_id AND armor2.armor_set_id=armor3.armor_set_id, armor_set.bonus_set, 0) as bonus_armor_set,
         utility.piggy_bank as Bank, utility.bug_net as BugNet, utility.mining_helmet as MiningHelmet, utility.ring as Ring, utility.pylon as Pylon,
-        IFNULL(modifier_weapon.stat_change,0) as weapon_modifier,
+        IFNULL(weapon_modifier.stat_change,0) as weapon_modifier,
         IFNULL(helmet_modifier.stat_change,0) as helmet_modifier,
         IFNULL(shirt_modifier.stat_change,0) as shirt_modifier,
         IFNULL(pants_modifier.stat_change,0) as pants_modifier
@@ -40,10 +40,10 @@ async function profile(message, client, id, avatar, args1) {
         LEFT JOIN item as itemArmor2 ON (armor2.item_id = itemArmor2.id)
         LEFT JOIN item as itemArmor3 ON (armor3.item_id = itemArmor3.id)
         LEFT JOIN item as itemWeapon ON (weapon.item_id = itemWeapon.id)
-        LEFT JOIN modifier_weapon ON (equipment.weapon_modifier_id=modifier_weapon.id)
-        LEFT JOIN modifier_armor as helmet_modifier ON (equipment.helmet_modifier_id=helmet_modifier.id)
-        LEFT JOIN modifier_armor as shirt_modifier ON (equipment.shirt_modifier_id=shirt_modifier.id)
-        LEFT JOIN modifier_armor as pants_modifier ON (equipment.pants_modifier_id=pants_modifier.id)
+        LEFT JOIN modifier as weapon_modifier ON (equipment.weapon_modifier_id=weapon_modifier.id)
+        LEFT JOIN modifier as helmet_modifier ON (equipment.helmet_modifier_id=helmet_modifier.id)
+        LEFT JOIN modifier as shirt_modifier ON (equipment.shirt_modifier_id=shirt_modifier.id)
+        LEFT JOIN modifier as pants_modifier ON (equipment.pants_modifier_id=pants_modifier.id)
         LEFT JOIN zone ON (stat.zone_id = zone.id)
         LEFT JOIN armor_set ON (armor1.armor_set_id=armor_set.id)
         LEFT JOIN utility ON (stat.player_id=utility.player_id)
@@ -58,6 +58,7 @@ async function profile(message, client, id, avatar, args1) {
             return;
         }
         data = await result[0];
+        console.log(data)
         let maxExp = getMaxExp(data.level);
         let level = data.level;
         let persentExp = ((data.current_experience / maxExp) * 100).toFixed(2); 

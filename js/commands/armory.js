@@ -5,8 +5,8 @@ import emojiCharacter from '../utils/emojiCharacter.js';
 
 async function armory(message) {
     let armory = await queryData(`SELECT
-        armory2.id, item.emoji,
-        ROUND(IF(item.type_id=9,IFNULL(weapon.attack,0), IFNULL(armor.def,0)) + (IF(item.type_id=9,IFNULL(weapon.attack,0), IFNULL(armor.def,0)) * IFNULL(modifier.stat_change,0))) as stat,
+        armory2.id, item.emoji,IF(item.type_id=9,IFNULL(weapon.attack,0), IFNULL(armor.def,0)) as atdef, IFNULL(modifier.stat_change,0) as statChange,
+        ROUND(IF(item.type_id=9,IFNULL(weapon.attack,0), IFNULL(armor.def,0))  +  IF(item.type_id=9,(IFNULL(weapon.attack,0) * IFNULL(modifier.stat_change,0)), IFNULL(modifier.stat_change,0))) as stat,
         TRIM(CONCAT(IFNULL(modifier.name,"")," ",item.name)) as name, item_types.id as type_id
         FROM armory2
         LEFT JOIN item ON (armory2.item_id=item.id)
@@ -29,6 +29,7 @@ async function armory(message) {
             weapon += `\`${element.id}\` ${element.emoji} \`[+${element.stat}] ${element.name}\`\n`
         }
     })
+    console.log(armory)
     let helmetCount = 0
     armory.forEach(element => { 
         // Helmet
