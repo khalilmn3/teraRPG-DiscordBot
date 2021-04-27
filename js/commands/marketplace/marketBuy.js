@@ -45,6 +45,7 @@ async function marketBuy(message, args, stat) {
                         }
                         // Update sold status item from list
                         queryData(`UPDATE marketplace SET is_sold=1 WHERE id="${id}" LIMIT 1`);
+                        // reduce gold from player
                         queryData(`UPDATE stat SET gold=gold-${marketItem.price} WHERE player_id=${message.author.id} LIMIT 1`);
                         
                         message.channel.send(`**${message.author.username}** has bought **${marketItem.emoji}${marketItem.name}**!`);

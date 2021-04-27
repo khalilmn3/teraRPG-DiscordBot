@@ -24,7 +24,7 @@ async function marketplace(message, args, stat) {
     let orderQuery = 'ORDER BY marketplace.id DESC';
     let playerMarketQuery = '';
     let soldStatusQuery = 'WHERE is_sold=0';
-    let footer = `Balance: ${currencyFormat(stat.gold)}`
+    var footer = `Balance: ${currencyFormat(stat.gold)}`
     let profit = 0;
     let fee = 0;
     if (args[0] == 'list') {
@@ -47,7 +47,7 @@ async function marketplace(message, args, stat) {
             }
             searchItem += element;
         });
-        searchQuery = `${soldStatusQuery ? 'AND' : 'WHERE'} item.name LIKE "%${searchItem}%" `;
+        searchQuery = `${soldStatusQuery ? 'AND' : 'WHERE'} TRIM(CONCAT(IFNULL(modifier.name,'')," ",item.name)) LIKE "%${searchItem}%" `;
         orderQuery = `ORDER BY marketplace.price ASC`
     } else {
         //player market
@@ -59,6 +59,7 @@ async function marketplace(message, args, stat) {
         let totalPage = await queryData(`SELECT COUNT(*) as total FROM marketplace 
             LEFT JOIN item ON (marketplace.item_id=item.id)
             LEFT JOIN item_types ON (item.type_id=item_types.id)
+            LEFT JOIN modifier ON (marketplace.modifier_id=modifier.id)
             ${soldStatusQuery}
             ${searchQuery}
             ${playerMarketQuery}
@@ -124,7 +125,7 @@ async function marketplace(message, args, stat) {
             .then(() => {
                 let filter = false;
                 if (args[0] == 'list') {
-                    filter = m => m.author.id === message.author.id && (m.content.toLowerCase() == 'claim');
+                    filter = m => m.author.id === message.author.id && (m.content.toLowerCase() == 'claim' || m.content.toLowerCase() == 'mn' || m.content.toLowerCase() == 'mb');
                 } else {
                     filter = m => m.author.id === message.author.id && (m.content.toLowerCase() == 'mn' || m.content.toLowerCase() == 'mb');        
                 }

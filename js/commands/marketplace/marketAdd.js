@@ -59,7 +59,8 @@ async function marketAdd(message, args, commandBody, stat) {
             
             // Listing the item on market
             queryData(`INSERT marketplace SET guild_id=${message.guild.id}, player_id=${message.author.id}, item_id=${armory.item_id}, modifier_id=${armory.modifier_id}, price=${price}`)
-            queryData(`DELETE armory2 WHERE player_id=${message.author.id} AND id=${armory.id}`);
+           // remove item from armory
+            queryData(`DELETE FROM armory2 WHERE player_id=${message.author.id} AND id=${armory.id}`);
             
             message.channel.send(`**${message.author.username}** has listing ${armory.emoji}**${armory.name}** •${emojiCharacter.gold2}__${currencyFormat(price)}__ into the marketplace.`);
         }

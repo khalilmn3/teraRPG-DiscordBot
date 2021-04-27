@@ -451,7 +451,7 @@ client.on("message", async function (message) {
                     }  else if (command === 'marketplace' && args[0] == 'buy') {
                         log(message, commandBody);
                         marketBuy(message, args, stat);
-                    } else if (command === 'marketplace') {
+                    } else if (command === 'marketplace' || command === 'mp') {
                         log(message, commandBody);
                         marketplace(message, args, stat);
                     }
