@@ -18,7 +18,7 @@ async function voteRewardsSend(client, player_id, isWeekend) {
         let gold = (1352 * parseInt(userExist[0].level)) * multiplyWeekend;
         let diamond = 1 * multiplyWeekend;
         let ironCrate = 1 * multiplyWeekend;
-        let potion = ((parseInt(userExist[0].level) / 2 ) + 2) * multiplyWeekend;
+        let potion = Math.floor(((parseInt(userExist[0].level) / 2 ) + 2) * multiplyWeekend);
         potion = potion > 100 ? 100 : potion;
         gold = gold > 200000 ? 200000 : gold;
         queryData(`CALL insert_item_backpack_procedure("${player_id}", "266", ${potion})`);
