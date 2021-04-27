@@ -28,7 +28,14 @@ var variable =
         bladeGrassId: '307',
         nightEdgeId: '308',
         bloodButchererId: '309',
-        fieryGreatswordId: '310'
+        fieryGreatswordId: '310',
+        woodenSwordId: '201',
+        copperSwordId: '202',
+        ironSwordId: '203',
+        silverSwordId: '204',
+        tungstenSwordId: '205',
+        goldSwordId: '206',
+        platinumSwordId: '207',
 }
 var  materialList = {
         woodenSword:[

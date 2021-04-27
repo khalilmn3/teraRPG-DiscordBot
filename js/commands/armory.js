@@ -79,12 +79,12 @@ async function armory(message) {
             "fields": [
                 {
                     "value": weapon ? weapon : `◽ \`empty slot\``,
-                    "name": `__ID__ ${emojiCharacter.blank} __[att] Weapon__`,
+                    "name": `__ID__ ${emojiCharacter.blank} __[att] Weapon__ [max 5]`,
                     "inline": false
                 },
                 {
                     "value": helmet ? helmet : `◽ \`empty slot\``,
-                    "name": `__ID__ ${emojiCharacter.blank} __[def] Helmet__`,
+                    "name": `__ID__ ${emojiCharacter.blank} __[def] Helmet__ [max 5]`,
                     "inline": false
                 },
                 // {
@@ -93,12 +93,12 @@ async function armory(message) {
                 // },
                 {
                     "value": shirt ? shirt : `◽ \`empty slot\``,
-                    "name": `__ID__ ${emojiCharacter.blank} __[def] Shirt__`,
+                    "name": `__ID__ ${emojiCharacter.blank} __[def] Shirt__ [max 5]`,
                     "inline": false
                 },
                 {
                     "value": pants ? pants : `◽ \`empty slot\``,
-                    "name": `__ID__ ${emojiCharacter.blank} __[def] Pants__`,
+                    "name": `__ID__ ${emojiCharacter.blank} __[def] Pants__ [max 5]`,
                     "inline": false
                 },
             ],
