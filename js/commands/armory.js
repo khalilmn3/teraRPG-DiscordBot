@@ -6,6 +6,7 @@ import emojiCharacter from '../utils/emojiCharacter.js';
 async function armory(message) {
     let armory = await queryData(`SELECT
         armory2.id, item.emoji,IF(item.type_id=9,IFNULL(weapon.attack,0), IFNULL(armor.def,0)) as atdef, IFNULL(modifier.stat_change,0) as statChange,
+        IF(item.type_id=9, IFNULL(weapon.level_required,0), IFNULL(armor.level_required,0)) as level,
         ROUND(IF(item.type_id=9,IFNULL(weapon.attack,0), IFNULL(armor.def,0))  +  IF(item.type_id=9,(IFNULL(weapon.attack,0) * IFNULL(modifier.stat_change,0)), IFNULL(modifier.stat_change,0))) as stat,
         TRIM(CONCAT(IFNULL(modifier.name,"")," ",item.name)) as name, item_types.id as type_id
         FROM armory2
@@ -26,16 +27,15 @@ async function armory(message) {
         // weapon
         if (element.type_id == 9) {
             weaponCount++;
-            weapon += `\`${element.id}\` ${element.emoji} \`[+${element.stat}] ${element.name}\`\n`
+            weapon += `\`${element.id}\` ${element.emoji} \`[+${element.stat}] ${element.name} L${element.level}\`\n`
         }
     })
-    console.log(armory)
     let helmetCount = 0
     armory.forEach(element => { 
         // Helmet
         if (element.type_id == 21) {
             helmetCount++;
-            helmet += `\`${element.id}\` ${element.emoji} \`[+${element.stat}] ${element.name}\`\n`
+            helmet += `\`${element.id}\` ${element.emoji} \`[+${element.stat}] ${element.name} L${element.level}\`\n`
         }
     })
     let shirtCount = 0
@@ -43,7 +43,7 @@ async function armory(message) {
         // shirt
         if (element.type_id == 22) {
             shirtCount++;
-            shirt += `\`${element.id}\` ${element.emoji} \`[+${element.stat}] ${element.name}\`\n`
+            shirt += `\`${element.id}\` ${element.emoji} \`[+${element.stat}] ${element.name} L${element.level}\`\n`
         }
     })
     let pantsCount = 0
@@ -51,7 +51,7 @@ async function armory(message) {
         // pants
         if (element.type_id == 23) {
             pantsCount++;
-            pants += `\`${element.id}\` ${element.emoji} \`[+${element.stat}] ${element.name}\`\n`
+            pants += `\`${element.id}\` ${element.emoji} \`[+${element.stat}] ${element.name} L${element.level}\`\n`
         }
     });
 
