@@ -21,8 +21,7 @@ async function bank(message) {
                 },
                 {
                     name: `Bank commands`,
-                    value: `\`deposit <amount>\`: deposit gold to piggy bank
-            \`withdraw <amount>\`: withdraw gold from piggy bank`,
+                    value: `*\`deposit <amount>\`* deposit gold to piggy bank\n*\`withdraw <amount>\`* withdraw gold from piggy bank`,
                     inline: false,
                 }],
             author: {
@@ -32,7 +31,7 @@ async function bank(message) {
                 "proxyIconURL": `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
             },
             footer: {
-                text: `Benefit will be convert as exp bonus when explore`,
+                text: `Benefits will be converted as exp bonus when explore`,
                 iconURL: null,
                 proxyIconURL: null
             },
