@@ -1,7 +1,8 @@
 import queryData from "../helper/query.js";
+import emojiCharacter from "../utils/emojiCharacter.js";
 import { equipProcedure, unequipProcedure } from "../utils/processQuery.js";
 
-async function unOrEquip(message, command, args1, commandBody) {
+async function unOrEquip(message, command, args1, commandBody, stat) {
     if (command === 'equip'){
         if (args1) {
             let arrayName = commandBody.match(/[a-zA-Z]+/g);
@@ -17,7 +18,7 @@ async function unOrEquip(message, command, args1, commandBody) {
             
             let item = isNaN(parseInt(args1)) ? itemName : args1;
                     
-            queryEquip(message, item);
+            queryEquip(message, item, stat);
         } else {
             message.channel.send(`use \`equip <armory ID>\`, e.g. \`tera equip 3\``);
         }
@@ -36,11 +37,14 @@ async function unOrEquip(message, command, args1, commandBody) {
     }
 }
 
-async function queryEquip(message, args1) {
+async function queryEquip(message, args1, stat) {
     let slotField = '';
     let typeField = '';
     let queryItem = isNaN(parseInt(args1)) ? `TRIM(CONCAT(IFNULL(modifier.name,''),' ',item.name)) LIKE "${args1}%"` : `armory2.id=${args1}`;
-    let cekArmory = await queryData(`SELECT TRIM(CONCAT(IFNULL(modifier.name,''),' ',item.name)) as name, item.emoji, item.type_id, armory2.id, armory2.modifier_id, armory2.item_id, IFNULL(armor.id,weapon.id) as equip_id
+    let cekArmory = await queryData(`SELECT TRIM(CONCAT(IFNULL(modifier.name,''),' ',item.name)) as name,
+         item.emoji, item.type_id, armory2.id,
+         armory2.modifier_id, armory2.item_id, IFNULL(armor.id,weapon.id) as equip_id,
+         IF(item.type_id=9,weapon.level_required, armor.level_required) as level
         FROM armory2
         LEFT JOIN item ON (armory2.item_id=item.id)
         LEFT JOIN armor ON (item.id=armor.item_id)
@@ -66,6 +70,7 @@ async function queryEquip(message, args1) {
             typeField = 'armor';
             slotField = 'pants'
         }
+        if (cekArmory.level > stat.level) { return message.channel.send(`${emojiCharacter.noEntry} | You are not a high enough level to equip this item.`) };
         // Get equipped item
         let cekEquipment = await queryData(`SELECT COUNT(*) as count, item.emoji, IFNULL(item.id,0) as item_id, IFNULL(equipment.${slotField}_modifier_id,0) as modifier_id, CONCAT(IFNULL(modifier_${typeField}.name,"")," ",item.name) as name FROM equipment
             LEFT JOIN ${typeField} ON (equipment.${slotField}_id=${typeField}.id)

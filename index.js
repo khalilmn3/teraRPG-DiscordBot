@@ -403,7 +403,7 @@ client.on("message", async function (message) {
                     }
                     else if (command === 'equip' || command === 'unequip') {
                         log(message, commandBody);
-                        unOrEquip(message, command, args[0], commandBody);
+                        unOrEquip(message, command, args[0], commandBody, stat);
                     } else if (command === 'trade') {
                         log(message, commandBody);
                         trade(message,stat, args);
