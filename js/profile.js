@@ -71,9 +71,9 @@ async function profile(message, client, id, avatar, args1) {
         let maxMp = getMaxMP(data.basic_mp,data.level);
         let hpBar = generateIcon(hp, maxHp, true);
         let mpBar = generateIcon(mp, maxMp, false);
-        let helmet = data.helmet ? `\n${data.helmetEmoji} [+${data.helmetDef + data.helmet_modifier}] **${data.helmet}**` : '\n◽ [no helmet]';
-        let shirt = data.shirt ? `\n${data.shirtEmoji} [+${data.shirtDef + data.shirt_modifier}] **${data.shirt}**` : '\n◽ [no shirt]';
-        let pants = data.pants ? `\n${data.pantsEmoji} [+${data.pantsDef + data.pants_modifier}] **${data.pants}**` : '\n◽ [no pants]';
+        let helmet = data.helmet ? `\n${data.helmetEmoji} [+${Math.round(data.helmetDef + data.helmet_modifier)}] **${data.helmet}**` : '\n◽ [no helmet]';
+        let shirt = data.shirt ? `\n${data.shirtEmoji} [+${Math.round(data.shirtDef + data.shirt_modifier)}] **${data.shirt}**` : '\n◽ [no shirt]';
+        let pants = data.pants ? `\n${data.pantsEmoji} [+${Math.round(data.pantsDef + data.pants_modifier)}] **${data.pants}**` : '\n◽ [no pants]';
         let currentZone = `${data.zone_id}.${data.sub_zone} [${data.zone}]`
         let bonusSetArmorText = data.bonus_armor_set > 0 ? `+ ${data.bonus_armor_set} [Set Bonus]` : '';
         let embedded = new Discord.MessageEmbed({
@@ -106,7 +106,7 @@ async function profile(message, client, id, avatar, args1) {
                     inline: false
                 },
                 {
-                    value: ` <:so_sword:801443762130780170> ** Attack **: ${currencyFormat(Math.round(attack))}\n<:so_shield:801443854254342154> ** Defence **: ${def - data.bonus_armor_set} ${bonusSetArmorText}\n<:Platinum_Pickaxe:803907956675575828> ** Mining depth **: ${currencyFormat(data.depth)}`,
+                    value: ` <:so_sword:801443762130780170> ** Attack **: ${currencyFormat(Math.round(attack))}\n<:so_shield:801443854254342154> ** Defence **: ${Math.round(def - data.bonus_armor_set)} ${bonusSetArmorText}\n<:Platinum_Pickaxe:803907956675575828> ** Mining depth **: ${currencyFormat(data.depth)}`,
                     name: "__STATS__",
                     inline: true
                 },
