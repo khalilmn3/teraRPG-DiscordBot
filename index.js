@@ -453,7 +453,7 @@ client.on("message", async function (message) {
                         marketBuy(message, args, stat);
                     } else if (command === 'marketplace') {
                         log(message, commandBody);
-                        marketplace(message, args, commandBody);
+                        marketplace(message, args, stat);
                     }
                 }
             } else if (command === 'start') {

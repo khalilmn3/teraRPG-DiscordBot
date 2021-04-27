@@ -3,7 +3,7 @@ import Discord from 'discord.js';
 import emojiCharacter from "../../utils/emojiCharacter.js";
 import currencyFormat from "../../helper/currency.js";
 
-async function marketplace(message, args) {
+async function marketplace(message, args, stat) {
     let idMention = message.mentions.users.first();
     let tag = message.author.tag
     let id = '';
@@ -24,9 +24,21 @@ async function marketplace(message, args) {
     let orderQuery = 'ORDER BY marketplace.id DESC';
     let playerMarketQuery = '';
     let soldStatusQuery = 'WHERE is_sold=0';
+    let footer = `Balance: ${currencyFormat(stat.gold)}`
+    let profit = 0;
+    let fee = 0;
     if (args[0] == 'list') {
         playerMarketQuery = `WHERE player_id=${message.author.id}`;
         soldStatusQuery = '';
+
+        // Profit
+        profit = await queryData(`SELECT IFNULL(SUM(price),0) as profit FROM marketplace WHERE player_id=${message.author.id} AND is_sold=1`);
+        profit = profit.length > 0 ? profit[0].profit : 0;
+        fee = 0.02;
+        fee = Math.floor(profit * fee);
+        profit = profit - fee
+        footer = `Profits: ${currencyFormat(profit)} • Fee(2%): ${currencyFormat(fee)}`
+
     } else if (args[0] === 'search') {
         let arrayName = args.slice(1);
         arrayName.forEach(element => {
@@ -69,6 +81,7 @@ async function marketplace(message, args) {
             ${orderQuery}
             LIMIT ${(page * 10) - 10}, 10`);
         let items = 'Type \`tera info marketplace\` for more info\n\n__**\`ID　   Name　                               Price    \`**__';
+        
         if (list.length > 0) {
             list.forEach(element => {
                 let soldStatus = element.is_sold ? '_**sold**_' : '';
@@ -100,14 +113,12 @@ async function marketplace(message, args) {
             //     proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
             // },
             footer: {
-                text: `[Page ${page} - ${totalPage}]\n${args[0] == 'list' ? 'type claim to claim your profits' : 'type mn or mb to navigate'}`,
+                text: `[Page ${page} - ${totalPage}] • ${footer}\n${args[0] == 'list' ? 'type claim to claim your profits' : 'type mn or mb to navigate'}`,
                 iconURL: null,
                 proxyIconURL: null
             },
             timestamp: new Date()
         });
-
-        
 
         message.channel.send(embed)
             .then(() => {
@@ -125,15 +136,15 @@ async function marketplace(message, args) {
                 .then(async message => {
                     message = message.first();
                     if (message.content.toLowerCase() == 'claim') {
-                        let profit = await queryData(`SELECT IFNULL(SUM(price),0) as profit FROM marketplace WHERE player_id=${message.author.id} AND is_sold=1`);
-                        profit = profit[0];
-                        if (profit.profit <= 0) { return message.channel.send(`There is no item sold on your listing!`) };
-                            // ADD GOLD
-                            queryData(`UPDATE stat SET gold=gold+${profit.profit} WHERE player_id=${message.author.id} LIMIT 1`);
-                            // Delete list
-                            queryData(`DELETE FROM marketplace WHERE player_id=${message.author.id} AND is_sold=1`);
-                            
-                            message.channel.send(`Profit profit profit\nYou got total ${emojiCharacter.gold2}**${currencyFormat(profit.profit)}**`);
+                        if (profit <= 0) { return message.channel.send(`There is no item sold on your listing!`) };
+                        // ADD GOLD
+                        queryData(`UPDATE stat SET gold=gold+${profit} WHERE player_id=${message.author.id} LIMIT 1`);
+                        // Delete list
+                        queryData(`DELETE FROM marketplace WHERE player_id=${message.author.id} AND is_sold=1`);
+                        // Fee
+                        queryData(`INSERT marketplace_fee SET player_id=${message.author.id}, total_fee=${fee} ON DUPLICATE KEY UPDATE total_fee=total_fee+${fee}`);
+                        
+                        message.channel.send(`Profit profit profit\nYou got total ${emojiCharacter.gold2}**${currencyFormat(profit)}**`);
                     } else if (message.content.toLowerCase() == 'mn' && page < totalPage) {
                         page += 1;
                         marketplace(page)

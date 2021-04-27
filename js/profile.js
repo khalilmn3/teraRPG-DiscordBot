@@ -58,7 +58,6 @@ async function profile(message, client, id, avatar, args1) {
             return;
         }
         data = await result[0];
-        console.log(data)
         let maxExp = getMaxExp(data.level);
         let level = data.level;
         let persentExp = ((data.current_experience / maxExp) * 100).toFixed(2); 
