@@ -21,29 +21,7 @@ async function marketAdd(message, args, commandBody, stat) {
             itemName += element;
         });
 
-        // Cek item if Equipment
-        let itemEquipment = await queryData(`SELECT TRIM(CONCAT(IFNULL(modifier_weapon.name,''), ' ', item.name)) as weaponName,
-            TRIM(CONCAT(IFNULL(helmet_modifier.name,''), ' ', item.name)) as helmetName,
-            TRIM(CONCAT(IFNULL(shirt_modifier.name,''), ' ', item.name)) as shirtName,
-            TRIM(CONCAT(IFNULL(pants_modifier.name,''), ' ', item.name)) as pantsName
-            FROM item
-                LEFT JOIN armor ON (item.id = armor.item_id)
-                LEFT JOIN weapon ON (item.id = weapon.item_id)
-                LEFT JOIN armory as armoryWeapon ON (weapon.id = armoryWeapon.weapon_id)
-                LEFT JOIN armory as armoryHelmet ON (armor.id = armoryHelmet.helmet_id)
-                LEFT JOIN armory as armoryShirt ON (armor.id = armoryShirt.shirt_id)
-                LEFT JOIN armory as armoryPants ON (armor.id = armoryPants.pants_id)
-                LEFT JOIN modifier_weapon ON (armoryWeapon.weapon_modifier_id=modifier_weapon.id)
-                LEFT JOIN modifier_armor as helmet_modifier ON (armoryHelmet.helmet_modifier_id=helmet_modifier.id)
-                LEFT JOIN modifier_armor as shirt_modifier ON (armoryShirt.shirt_modifier_id=shirt_modifier.id)
-                LEFT JOIN modifier_armor as pants_modifier ON (armoryPants.pants_modifier_id=pants_modifier.id)
-            WHERE armoryWeapon.player_id=${message.author.id} 
-            AND armoryHelmet.player_id=${message.author.id} 
-            AND armoryShirt.player_id=${message.author.id}
-            AND armoryPants.player_id=${message.author.id}`);
-        console.log(itemEquipment);
-        
-        let cekItem = await queryData(`SELECT item.id, item.type_id, item.emoji, item.name, item.is_tradeable, IFNULL(backpack.quantity,0) as quantity FROM item 
+        let cekItem = await queryData(`SELECT item.id, item.item_group_id, item.type_id, item.emoji, item.name, item.is_tradeable, IFNULL(backpack.quantity,0) as quantity FROM item 
             LEFT JOIN backpack ON (item.id = backpack.item_id)
             WHERE backpack.player_id=${message.author.id} AND item.name="${itemName}" LIMIT 1`);
         cekItem = cekItem ? cekItem[0] : undefined;
@@ -61,7 +39,29 @@ async function marketAdd(message, args, commandBody, stat) {
             
             message.channel.send(`**${message.author.username}** has listing ${cekItem.emoji}**${cekItem.name}** •${emojiCharacter.gold2}__${currencyFormat(price)}__ into the marketplace.`);
         } else {
-            message.channel.send(`${emojiCharacter.noEntry} | Cannot recognize the item name!`)
+            // Cek item if Equipment
+            let armory = await queryData(`SELECT
+                armory2.id, item.emoji, armory2.item_id, armory2.modifier_id,
+                IF(item.type_id=9, IFNULL(weapon.level_required,0), IFNULL(armor.level_required,0)) as level,
+                ROUND(IF(item.type_id=9,IFNULL(weapon.attack,0), IFNULL(armor.def,0))  +  IF(item.type_id=9,(IFNULL(weapon.attack,0) * IFNULL(modifier.stat_change,0)), IFNULL(modifier.stat_change,0))) as stat,
+                TRIM(CONCAT(IFNULL(modifier.name,"")," ",item.name)) as name, item_types.id as type_id
+                FROM armory2
+                LEFT JOIN item ON (armory2.item_id=item.id)
+                LEFT JOIN item_types ON (item.type_id=item_types.id)
+                LEFT JOIN weapon ON (armory2.item_id=weapon.item_id)
+                LEFT JOIN armor ON (armory2.item_id=armor.item_id)
+                LEFT JOIN modifier ON (armory2.modifier_id=modifier.id)
+                WHERE player_id=${message.author.id}
+                AND TRIM(CONCAT(IFNULL(modifier.name,"")," ",item.name)) LIKE "${itemName}" LIMIT 1`)
+            armory = armory ? armory[0] : undefined;
+            
+            if (!armory) { return message.channel.send(`${emojiCharacter.noEntry} | You don't have this item!`) };
+            
+            // Listing the item on market
+            queryData(`INSERT marketplace SET guild_id=${message.guild.id}, player_id=${message.author.id}, item_id=${armory.item_id}, modifier_id=${armory.modifier_id}, price=${price}`)
+            queryData(`UPDATE armory2 SET item_id=0, modifier_id=0 WHERE player_id=${message.author.id} AND id=${armory.id}`);
+            
+            message.channel.send(`**${message.author.username}** has listing ${armory.emoji}**${armory.name}** •${emojiCharacter.gold2}__${currencyFormat(price)}__ into the marketplace.`);
         }
     }
 }

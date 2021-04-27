@@ -45,28 +45,44 @@ async function marketplace(message, args) {
     let page = 1;
     var marketplace = async function (page) {
         let totalPage = await queryData(`SELECT COUNT(*) as total FROM marketplace 
-                                LEFT JOIN item ON (marketplace.item_id=item.id)
-                                LEFT JOIN item_types ON (item.type_id=item_types.id)
-                                ${soldStatusQuery}
-                                ${searchQuery}
-                                ${playerMarketQuery}
-                                ${orderQuery}`);
-        totalPage = Math.ceil(totalPage[0]['total'] / 15);
+            LEFT JOIN item ON (marketplace.item_id=item.id)
+            LEFT JOIN item_types ON (item.type_id=item_types.id)
+            ${soldStatusQuery}
+            ${searchQuery}
+            ${playerMarketQuery}
+            ${orderQuery}`);
+        totalPage = Math.ceil(totalPage[0]['total'] / 10);
 
-        let list = await queryData(`SELECT marketplace.player_id, marketplace.is_sold, marketplace.id, IFNULL(item_types.name,"unknown") as type, marketplace.price, item.name, item.emoji FROM marketplace 
-                                LEFT JOIN item ON (marketplace.item_id=item.id)
-                                LEFT JOIN item_types ON (item.type_id=item_types.id)
-                                ${soldStatusQuery}
-                                ${searchQuery}
-                                ${playerMarketQuery}
-                                ${orderQuery}
-                                LIMIT ${(page * 15) - 15}, 15`);
-        let items = 'Type \`tera info marketplace\` for more info\n\n<id>　<name>　<type>　<price>';
+        let list = await queryData(`SELECT marketplace.player_id, marketplace.is_sold, marketplace.id, IFNULL(item_types.name,"unknown") as type, marketplace.price,
+            TRIM(CONCAT(IFNULL(modifier.name,'')," ",item.name)) as name, item.emoji, IF(item.type_id=9,"att","def") as type_id,
+            IFNULL(IF(item.type_id=9,weapon.level_required, armor.level_required),1) as level,
+            ROUND(IF(item.type_id=9,IFNULL(weapon.attack,0), IFNULL(armor.def,0))  +  IF(item.type_id=9,(IFNULL(weapon.attack,0) * IFNULL(modifier.stat_change,0)), IFNULL(modifier.stat_change,0))) as stat
+            FROM marketplace
+            LEFT JOIN item ON (marketplace.item_id=item.id)
+            LEFT JOIN item_types ON (item.type_id=item_types.id)
+            LEFT JOIN weapon ON (item.id=weapon.item_id)
+            LEFT JOIN armor ON (item.id=armor.item_id)
+            LEFT JOIN modifier ON (marketplace.modifier_id=modifier.id)
+            ${soldStatusQuery}
+            ${searchQuery}
+            ${playerMarketQuery}
+            ${orderQuery}
+            LIMIT ${(page * 10) - 10}, 10`);
+        let items = 'Type \`tera info marketplace\` for more info\n\n__**\`ID　   Name　                               Price    \`**__';
         if (list.length > 0) {
             list.forEach(element => {
                 let soldStatus = element.is_sold ? '_**sold**_' : '';
                 items += `\n`
-                items += `\`${element.id}\`　${element.emoji}${element.name}${element.player_id == message.author.id ? '*' : ''}　|　${element.type}　|　${soldStatus ? `${soldStatus}` : `${emojiCharacter.gold2}${currencyFormat(element.price)}`}`
+                
+                let stat = element.stat ? `| *${element.type_id} +${element.stat}*` : '';
+                let gold = soldStatus ? soldStatus : `\`${currencyFormat(element.price)}\``;
+                let name = `${element.name}${element.player_id == message.author.id ? '*' : ''}`
+                let totalLength = 40 - (gold.length + name.length);
+                let space = '';
+                for (let i = 0; i < totalLength; i++) {
+                    space += '-';                    
+                }
+                items += `\`${element.id}\`　${element.emoji}\`${name}${space}\`${emojiCharacter.gold2}${gold}\n　　　➥ *level ${element.level}* | *${element.type.toLowerCase()}* ${stat}`
             });
         } else {
             items = 'Listings not available';
