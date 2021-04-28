@@ -25,7 +25,7 @@ async function marketplace(message, args, stat) {
     let playerMarketQuery = '';
     let soldStatusQuery = 'WHERE is_sold=0';
     var footer = `Balance: ${currencyFormat(stat.gold)}`
-    let profit = 0;
+    var profit = 0;
     let fee = 0;
     if (args[0] == 'list') {
         playerMarketQuery = `WHERE player_id=${message.author.id}`;
