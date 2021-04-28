@@ -81,6 +81,10 @@ function info(message, args, commandBody) {
         name = 'Marketplace';
         info = `a Place to buy and sell items on TeraRPG\n\n**Usage**\n**• tera marketplace\n\` Display list of marketplace\`\n• tera marketplace add [item name] [price]*\n\` List an item to the marketplace\`\n• tera marketplace buy [id]\n\` Buy an item from marketplace\`\n• tera marketplace remove [id]\n\` Remove an item from marketplace\`\n• tera marketplace search [item name]\n\` Search items from marketplace\`\n• tera marketplace list\n\` Display own list on marketplace\`\n• tera marketplace @[user]\n\` Display other user list on marketplace\`**`;
         obtain = '*Level 5';
+    } else if (commandBody === 'armory') {
+        name = 'Armory';
+        info = `Put your equipment here, you can only store max 5 items\nfor each equipment type.\n**Usage**\n**• tera equip [id/name]\n\`equip an item from armory\`\n• tera unequip [equip type]\n**equip type: \`weapon\`,\`helmet\`,\`shirt\`,\`pants\`\n**• tera sell armory [id]\n\`sell an item from armory\`**`;
+        obtain = 'Anywhere';
     } else {
         return message.channel.send(`Cannot found info related!`);
     }

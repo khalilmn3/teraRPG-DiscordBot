@@ -117,7 +117,7 @@ async function armory(message) {
                 "proxyIconURL": `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
             },
             footer: {
-                text: 'Use \'tera equip [id]\' or \'tera equip [item name]\''
+                text: 'Use \'tera info armory\' for more detail'
             }
         }))
         
