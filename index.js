@@ -332,7 +332,7 @@ client.on("message", async function (message) {
                         log(message, commandBody);
                         // let itemName = commandBody.slice(command.length + 1)
                         // console.log(itemName);
-                        sellItem(message, args)
+                        sellItem(message, args, commandBody)
                     } else if (command === `cf`) {
                         // log(message, commandBody);
                         coinFlip(message, args)
