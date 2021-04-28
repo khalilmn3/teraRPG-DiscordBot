@@ -605,8 +605,8 @@ async function queryEquipment(message, playerId, materialList, equipmentSlot, eq
     let existItem = await queryData(`SELECT ${equipmentType} FROM equipment WHERE player_id="${playerId}" AND ${equipmentType}>0 LIMIT 1`);
     let armorySlot = await queryData(`SELECT * FROM armory2 LEFT JOIN item ON (armory2.item_id=item.id) WHERE player_id=${message.author.id} AND item.type_id=${typeId} LIMIT 15`);
     if (armorySlot.length >= 5 && existItem.length > 0) { return message.channel.send(`${emojiCharacter.noEntry} | There is not enough space in your armory!`); };
-    console.log(armorySlot);
-    console.log(typeId);
+    // console.log(armorySlot);
+    // console.log(typeId);
     let exist = 1;
     // else {
         let existMaterials = [];
