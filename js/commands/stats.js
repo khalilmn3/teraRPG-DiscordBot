@@ -1,5 +1,6 @@
 import queryData from "../helper/query.js";
 import Discord from 'discord.js'
+import currencyFormat from "../helper/currency.js";
 
 async function stats(message) {
     let statistic = await queryData(`SELECT stat2.*, IFNULL(votes.vote_count,0) as vote FROM stat2 LEFT JOIN votes ON (stat2.player_id = votes.player_id) WHERE stat2.player_id=${message.author.id} LIMIT 1`);
@@ -13,46 +14,52 @@ async function stats(message) {
         color: 10115509,
         fields: [
             {
-                name: `\\📜Monster Kills`,
-                value: `<:blank:835528030683922472> ${statistic.monster_kills}`,
+                name: `\\🐲Monster Kills`,
+                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.monster_kills)}`,
                 inline: true,
             },
             {
-                name: `\\📜Player Kills`,
-                value: `<:blank:835528030683922472> ${statistic.player_kills}`,
+                name: `\\🕵️Player Kills`,
+                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.player_kills)}`,
                 inline: true,
             },
             {
-                name: `\\📜Boss Kills`,
-                value: `<:blank:835528030683922472> ${statistic.boss_kills}`,
+                name: `\\🏟️Boss Kills`,
+                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.boss_kills)}`,
                 inline: true,
             },
             {
                 name: `\\📜Quest Completed`,
-                value: `<:blank:835528030683922472> ${statistic.quest_completed}`,
+                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.quest_completed)}`,
                 inline: true,
             },
             {
-                name: `\\📜Market Trades`,
-                value: `<:blank:835528030683922472> ${statistic.market_trade}`,
+                name: `\\💰Market Trades`,
+                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.market_trade)}`,
                 inline: true,
             },
             {
-                name: `\\📜Crate Opened`,
-                value: `<:blank:835528030683922472> ${statistic.crate_opened}`,
+                name: `\\📦Crate Opened`,
+                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.crate_opened)}`,
                 inline: true,
             },
             {
-                name: `\\📜Daily Strikes`,
-                value: `<:blank:835528030683922472> ${statistic.daily_strikes}`,
+                name: `\\🗓️Daily Strikes`,
+                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.daily_strikes)}`,
                 inline: true,
             },
             {
-                name: `\\📜Total Vote`,
-                value: `<:blank:835528030683922472> ${statistic.vote}`,
+                name: `\\🔺Total Vote`,
+                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.vote)}`,
                 inline: true,
             },
         ],
+        thumbnail: {
+            url: `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
+            proxyURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`,
+            height: 70,
+            width: 40
+        },
         author: {
             name: `${message.author.username}'s stats`,
             url: null,

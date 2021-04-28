@@ -2,6 +2,7 @@ import queryData from "../../helper/query.js";
 import Discord from 'discord.js';
 import emojiCharacter from "../../utils/emojiCharacter.js";
 import currencyFormat from "../../helper/currency.js";
+import { updateStat2 } from "../../utils/processQuery.js";
 
 async function marketplace(message, args, stat) {
     let idMention = message.mentions.users.first();
@@ -26,18 +27,19 @@ async function marketplace(message, args, stat) {
     let soldStatusQuery = 'WHERE is_sold=0';
     var footer = `Balance: ${currencyFormat(stat.gold)}`
     var profit = 0;
+    var profitList = '';
     let fee = 0;
     if (args[0] == 'list') {
         playerMarketQuery = `WHERE player_id=${message.author.id}`;
         soldStatusQuery = '';
 
         // Profit
-        profit = await queryData(`SELECT IFNULL(SUM(price),0) as profit FROM marketplace WHERE player_id=${message.author.id} AND is_sold=1`);
-        profit = profit.length > 0 ? profit[0].profit : 0;
+        profitList = await queryData(`SELECT COUNT(*) as total_item_sold, IFNULL(SUM(price),0) as profit FROM marketplace WHERE player_id=${message.author.id} AND is_sold=1`);
+        profitList = profitList.length > 0 ? profitList[0] : 0;
         fee = 0.02;
-        fee = Math.floor(profit * fee);
-        profit = profit - fee
-        footer = `Profits: ${currencyFormat(profit)} • Fee(2%): ${currencyFormat(fee)}`
+        fee = Math.floor(profitList.profit * fee);
+        profit = profitList.profit - fee;
+        footer = `Sold: ${profitList.total_item_sold} • Profits: ${currencyFormat(profit)} • Fee(2%): ${currencyFormat(fee)}`
 
     } else if (args[0] === 'search') {
         let arrayName = args.slice(1);
@@ -134,7 +136,7 @@ async function marketplace(message, args, stat) {
                 time: 60000,
                 errors: ['time']
             })
-                .then(async message => {
+                .then( message => {
                     message = message.first();
                     if (message.content.toLowerCase() == 'claim') {
                         if (profit <= 0) { return message.channel.send(`There is no item sold on your listing!`) };
@@ -144,7 +146,8 @@ async function marketplace(message, args, stat) {
                         queryData(`DELETE FROM marketplace WHERE player_id=${message.author.id} AND is_sold=1`);
                         // Fee
                         queryData(`INSERT marketplace_fee SET player_id=${message.author.id}, total_fee=${fee} ON DUPLICATE KEY UPDATE total_fee=total_fee+${fee}`);
-                        
+                        // add to stat
+                        updateStat2(message.author.id, 'market_trade', profitList.total_item_sold);
                         message.channel.send(`Profit profit profit\nYou got total ${emojiCharacter.gold2}**${currencyFormat(profit)}**`);
                     } else if (message.content.toLowerCase() == 'mn' && page < totalPage) {
                         page += 1;

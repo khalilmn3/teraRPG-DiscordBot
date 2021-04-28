@@ -6,7 +6,11 @@ async function marketRemove(message, args) {
     if (args[0] === 'remove') {
         let id = args[1];
         if(!id) { return message.channel.send(`${emojiCharacter.noEntry} | Please provide list id!`) };
-        let itemExist = await queryData(`SELECT marketplace.id, marketplace.is_sold, marketplace.item_id, item.name, item.emoji FROM marketplace LEFT JOIN item ON (marketplace.item_id=item.id) WHERE marketplace.id="${id}" AND player_id=${message.author.id} LIMIT 1`);
+        let itemExist = await queryData(`SELECT marketplace.id, marketplace.is_sold, marketplace.item_id, item.emoji,
+            TRIM(CONCAT(IFNULL(modifier.name,'')," ",item.name)) as name
+            FROM marketplace LEFT JOIN item ON (marketplace.item_id=item.id)
+            LEFT JOIN modifier ON (marketplace.modifier_id=modifier.id)
+            WHERE marketplace.id="${id}" AND player_id=${message.author.id} LIMIT 1`);
         itemExist = itemExist.length > 0 ? itemExist[0] : undefined;
         if (!itemExist) { return message.channel.send(`${emojiCharacter.noEntry} | There is no such id:\`${id}\` on your listing!`) };
         if(itemExist.is_sold) { return message.channel.send(`${emojiCharacter.noEntry} | Cannot remove item that already sold!`) };

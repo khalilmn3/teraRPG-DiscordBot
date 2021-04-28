@@ -119,10 +119,10 @@ async function queryUnequip(message, args1) {
         return message.reply(`⛔ | **${slotField}** armory is full\nyou can only store max 5 items in armory for each type!`);
     }
 
-    let cekEquipment = await queryData(`SELECT item.id as item_id, item.emoji, ${slotField}_id, ${slotField}_modifier_id as modifier_id, CONCAT(IFNULL(modifier_${typeField}.name,"")," ",item.name) as name FROM equipment
+    let cekEquipment = await queryData(`SELECT item.id as item_id, item.emoji, ${slotField}_id, ${slotField}_modifier_id as modifier_id, TRIM(CONCAT(IFNULL(modifier.name,"")," ",item.name)) as name FROM equipment
         LEFT JOIN ${typeField} ON (equipment.${slotField}_id=${typeField}.id)
         LEFT JOIN item ON (${typeField}.item_id=item.id)
-        LEFT JOIN modifier_${typeField} ON (equipment.${slotField}_modifier_id=modifier_${typeField}.id)
+        LEFT JOIN modifier  ON (equipment.${slotField}_modifier_id=modifier.id)
         WHERE player_id="${message.author.id}" AND ${slotField}_id>0 LIMIT 1`);
     cekEquipment = cekEquipment.length > 0 ? cekEquipment[0] : undefined;
     if (!cekEquipment) { return message.channel.send(`\\⛔ | **${message.author.username}**, you are not wearing *${slotField}*!`) };
