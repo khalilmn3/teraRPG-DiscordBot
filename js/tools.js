@@ -1,6 +1,7 @@
 import db from '../db_config.js'
 import Discord from 'discord.js'
 import currencyFormat from './helper/currency.js';
+import queryData from './helper/query.js';
 
 async function tools(message, args1) {
     let avatar = message.author.avatar;
@@ -29,15 +30,19 @@ async function tools(message, args1) {
     fishing.name as fishingName, fishing_pole.level as fishingLevel, fishing_pole.exp as fishingExp, fishing.tier as fishingTier, fishing.emoji as fishingEmoji
         FROM tools
             LEFT JOIN stat ON (tools.player_id = stat.player_id)
-            LEFT JOIN layers ON (stat.depth >= layers.depth)
+            LEFT JOIN (SELECT layers.depth, layers.name FROM layers
+                LEFT JOIN stat ON (layers.depth <= stat.depth)
+                WHERE layers.depth <= stat.depth ORDER BY layers.depth DESC LIMIT 1) as layers ON (stat.depth >= layers.depth)
             LEFT JOIN fishing_pole ON (tools.player_id = fishing_pole.player_id)
             LEFT JOIN item as fishing ON (fishing_pole.item_id = fishing.id)
             LEFT JOIN item as item1 ON (tools.item_id_pickaxe = item1.id)
             LEFT JOIN item as item2 ON (tools.item_id_axe = item2.id)
             LEFT JOIN tool_tier as pickaxeTier ON (item1.tier = pickaxeTier.id)
             LEFT JOIN tool_tier as axeTier ON (item2.tier = axeTier.id)
-        WHERE tools.player_id="${id}"`
+        WHERE tools.player_id="${id}" LIMIT 1`
     let data;
+    let fishingPole = await queryData(`SELECT * FROM fishing_pole WHERE player_id=${message.author.id} LIMIT 1`);
+    fishingPole = fishingPole.length > 0 ? fishingPole[0] : undefined;
     // Get Data
     db.query(query, async function (err, result) {
         if (err) throw err;
@@ -46,7 +51,7 @@ async function tools(message, args1) {
         let craftingStations = "";
         let pickaxeExpNextLevel = parseInt(data.pickaxe_level) * 300;
         let axeExpNextLevel = parseInt(data.axe_level) * 250;
-        // let fishingPoolNextLevel = parseInt(data.fishingLevel) * 250;
+        let fishingPoolExpNextLevel = parseInt(fishingPole.level) * 450;
         // console.log(data)
 
         message.channel.send(new Discord.MessageEmbed({
@@ -69,7 +74,7 @@ async function tools(message, args1) {
                         "inline": false
                     },
                     {
-                        "value":`**Tier** : ${data.fishingTier}\n**Level** : ${1}\n**EXP** : ∞ \n${generateIcon(100,100)}`,
+                        "value":`**Tier** : ${data.fishingTier}\n**Level** : ${currencyFormat(fishingPole.level)}\n**EXP** : ${currencyFormat(fishingPole.exp)} / ${currencyFormat(fishingPoolExpNextLevel)} \n${generateIcon(fishingPole.exp,fishingPoolExpNextLevel)}`,
                         "name": `${data.fishingEmoji} **${data.fishingName}**`,
                         "inline": false
                     },
