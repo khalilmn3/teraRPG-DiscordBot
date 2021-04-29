@@ -441,7 +441,7 @@ client.on("message", async function (message) {
                         notification(message);
                     } else if (command === 'stats' || command === 'stat') {
                         log(message, commandBody);
-                        stats(message);
+                        stats(message, stat);
                     } else if (command === 'marketplace' && args[0] == 'add') {
                         log(message, commandBody);
                         marketAdd(message, args, commandBody, stat);

@@ -2,11 +2,12 @@ import queryData from "../helper/query.js";
 import Discord from 'discord.js'
 import currencyFormat from "../helper/currency.js";
 
-async function stats(message) {
+async function stats(message, stat) {
     let statistic = await queryData(`SELECT stat2.*, IFNULL(votes.vote_count,0) as vote FROM stat2 LEFT JOIN votes ON (stat2.player_id = votes.player_id) WHERE stat2.player_id=${message.author.id} LIMIT 1`);
     statistic = statistic ? statistic[0] : undefined;
     if (!statistic) { return message.channel.send('No data record found') }
-    
+    let totalExp = (50 * (stat.level - 1) ** 3 - 150 * (stat.level - 1) ** 2 + 400 * (stat.level - 1)) / 3;
+    totalExp = totalExp + stat.current_experience;
     let embed = new Discord.MessageEmbed({
         type: "rich",
         description: null,
@@ -15,42 +16,47 @@ async function stats(message) {
         fields: [
             {
                 name: `\\🐲Monster Kills`,
-                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.monster_kills)}`,
+                value: `➥ ${currencyFormat(statistic.monster_kills)}`,
                 inline: true,
             },
             {
                 name: `\\🕵️Player Kills`,
-                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.player_kills)}`,
+                value: `➥ ${currencyFormat(statistic.player_kills)}`,
                 inline: true,
             },
             {
                 name: `\\🏟️Boss Kills`,
-                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.boss_kills)}`,
+                value: `➥ ${currencyFormat(statistic.boss_kills)}`,
                 inline: true,
             },
             {
                 name: `\\📜Quest Completed`,
-                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.quest_completed)}`,
+                value: `➥ ${currencyFormat(statistic.quest_completed)}`,
                 inline: true,
             },
             {
                 name: `\\💰Market Trades`,
-                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.market_trade)}`,
+                value: `➥ ${currencyFormat(statistic.market_trade)}`,
                 inline: true,
             },
             {
                 name: `\\📦Crate Opened`,
-                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.crate_opened)}`,
+                value: `➥ ${currencyFormat(statistic.crate_opened)}`,
                 inline: true,
             },
             {
                 name: `\\🗓️Daily Strikes`,
-                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.daily_strikes)}`,
+                value: `➥ ${currencyFormat(statistic.daily_strikes)}`,
                 inline: true,
             },
             {
                 name: `\\🔺Total Vote`,
-                value: `<:blank:835528030683922472> ➥ ${currencyFormat(statistic.vote)}`,
+                value: `➥ ${currencyFormat(statistic.vote)}`,
+                inline: true,
+            },
+            {
+                name: `<:exp:808837682561548288> Total Exp`,
+                value: `➥ ${currencyFormat(totalExp)}`,
                 inline: true,
             },
         ],
