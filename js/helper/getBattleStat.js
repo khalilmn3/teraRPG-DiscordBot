@@ -28,7 +28,7 @@ function getDefense(basicDef, level, helmetDef, shirtDef, pantsDef, bonusArmorSe
 function getMaxHP(basicHp, level) {
     basicHp = parseInt(basicHp) > 0 ? parseInt(basicHp) : 0;
     level = parseInt(level) > 0 ? parseInt(level) : 0;
-    return 10 * (basicHp + level);
+    return 5 * (basicHp + level) + 50;
 }
 
 function getMaxMP(basicMp, level) {
@@ -40,7 +40,9 @@ function getMaxMP(basicMp, level) {
 function getMaxExp(level) {
     let expNeedToNextLevel = 0;
     if (!isNaN(parseInt(level))) {
-        expNeedToNextLevel = (50 * (level) ** 3 - 150 * (level) ** 2 + 400 * (level)) / 3;   
+        level = level < 2 ? 2 : parseInt(level);
+        expNeedToNextLevel = ((level - 1) * (level - 2) / 2 + 1) * 100;
+        // expNeedToNextLevel = (50 * (level) ** 3 - 150 * (level) ** 2 + 400 * (level)) / 3;   
     }
     return expNeedToNextLevel;
 }
