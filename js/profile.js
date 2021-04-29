@@ -19,7 +19,7 @@ async function profile(message, client, id, avatar, args1) {
             tag = args1;
         }
     }
-    const query = `SELECT stat.*, IFNULL(weapon.attack,0) as attack, zone.name as zone,
+    const query = `SELECT stat.*, IFNULL(weapon.attack,0) as attack, zone.name as zone, zone.emoji as zoneEmoji,
         IFNULL(itemArmor1.emoji, '') as helmetEmoji, CONCAT(IFNULL(helmet_modifier.name,"")," ",itemArmor1.name) as helmet, IFNULL(armor1.def,0) as helmetDef,
         IFNULL(itemArmor2.emoji, '') as shirtEmoji, CONCAT(IFNULL(shirt_modifier.name,"")," ",itemArmor2.name) as shirt, IFNULL(armor2.def,0) as shirtDef,
         IFNULL(itemArmor3.emoji, '') as pantsEmoji, CONCAT(IFNULL(pants_modifier.name,"")," ",itemArmor3.name) as pants, IFNULL(armor3.def,0) as pantsDef,
@@ -91,7 +91,7 @@ async function profile(message, client, id, avatar, args1) {
                 //     inline: false
                 // },
                 {
-                    value: `\n[ HP: ${currencyFormat(hp)} / ${currencyFormat(maxHp)} ] \n${hpBar}\n** Level **: ${level} (${persentExp} %) \n** XP **: ${currencyFormat(cExp)} / ${currencyFormat(maxExp)}\n** Zone **: ${currentZone}`,
+                    value: `\n[ HP: ${currencyFormat(hp)} / ${currencyFormat(maxHp)} ] \n${hpBar}\n** Level **: ${level} (${persentExp} %) \n** XP **: ${currencyFormat(cExp)} / ${currencyFormat(maxExp)}\n** Zone **: ${currentZone} ${data.zoneEmoji}`,
                     name: "__STATUS__",
                     inline: false
                 },

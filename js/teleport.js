@@ -39,9 +39,9 @@ async function teleport(message, stat, args) {
             if (element.id < 8) {
                 count++
                 if (maxZone[0] >= element.id) {
-                    val += `\`${count}.\`\\✅ \`${element.name} Biome\`\n`;
+                    val += `\`${count}.\`\\✅ | ${element.emoji}\`${element.name} Biome\` ${stat.zone_id == element.id ? `<a:run2:837252808726020136>(you're here)` : ''}\n`;
                 } else {
-                    val += `~~\`${count}.\`~~\\⛔ ~~\`${element.name} Biome\`~~\n`;
+                    val += `~~\`${count}.\`~~\\⛔ | ${element.emoji}~~\`${element.name} Biome\`~~\n`;
                 }
             }
         });

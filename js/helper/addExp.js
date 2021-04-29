@@ -17,8 +17,6 @@ async function addExpGold(message, player, stat, expAdd, goldAdd, currentPlayerS
                 totalExp = totalExp - expNeedToNextLevel;
                 nLevel++;
                 expNeedToNextLevel = getMaxExp(nLevel);
-                console.log(expNeedToNextLevel)
-                console.log(totalExp)
             }
         
         let maxHp = getMaxHP(stat.basic_hp, nLevel);
