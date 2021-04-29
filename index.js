@@ -380,7 +380,7 @@ client.on("message", async function (message) {
                         shop(message, stat);
                     } else if (command === 'buy') {
                         log(message, commandBody);
-                        buy(message, args[0], args[1], args[2]);
+                        buy(message, commandBody);
                     } else if (command === 'deposit') {
                         log(message, commandBody);
                         deposit(message, args[0]);
@@ -663,7 +663,7 @@ client.on("message", async function (message) {
 });                                     
 async function lotterySchedule(client) {
     agenda.define(`lotteryWinner`, async job => {
-        job.repeatEvery('24 hours', {
+        job.repeatEvery('1 weeks', {
             skipImmediate: true
         });
         await lotteryWinnerRunSchedule(client);

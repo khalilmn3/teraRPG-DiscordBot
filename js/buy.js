@@ -3,27 +3,43 @@ import queryData from './helper/query.js';
 import { activeCommand, deactiveCommand } from './helper/setActiveCommand.js';
 import { limitedTimeUse } from './helper/variable.js';
 import symbol from './utils/symbol.js';
-function buy(message, args1, args2, args3) {
+function buy(message, commandsBody) {
+    let argument = commandsBody
+    let qty = argument.match(/\d+/g);
+    qty = qty ? qty[0] : 1;
+    let arrayName = argument.match(/[a-zA-Z]+/g);
+    let itemName = '';
+    arrayName = arrayName.splice(1);
+    arrayName.forEach(element => {
+        if (itemName) {
+            itemName += ' ';
+        }
+        if (element != 'all') {
+            itemName += element;
+        } else {
+            qty = 'all';
+        }
+    });
     // MARKET ITEM
-    if (args1 === 'piggy' && args2 === 'bank') {
+    if (itemName == 'piggy bank') {
         queryCheckExistItem(message, message.author.id, 1)
-    } else if (args1 === 'bug' && args2 === 'net') {
+    } else if (itemName == 'bug net') {
         queryCheckExistItem(message, message.author.id, 2)
-    } else if (args1 === 'mining' && args2 === 'helmet') {
+    } else if (itemName == 'mining helmet') {
         queryCheckExistItem(message, message.author.id, 3)
-    } else if (args1 === 'pylon') {
+    } else if (itemName == 'pylon') {
         queryCheckExistItem(message, message.author.id, 5)
     }
     // else if (args1 === 'ring') {
     //     queryCheckExistItem(message, message.author.id, 4)
     // }
     // SHOP ITEM
-    else if (args1 === 'healing' && args2 === 'potion') {
-        queryAddItem(message,message.author.id,1,args3)
-    } else if (args1 === 'apprentice' && args2 === 'bait') {
-        queryAddItem(message,message.author.id,2,args3)
+    else if (itemName == 'healing potion') {
+        queryAddItem(message,message.author.id,1,qty)
+    } else if (itemName == 'apprentice bait') {
+        queryAddItem(message,message.author.id,2,qty)
     } else {
-        message.reply('What are you trying to buy, \nCheck the item name with \`tera market\`!');
+        message.reply('What are you trying to buy, \nCheck the item name with \`tera market\` and \`tera shop\`!');
     }
 }
 

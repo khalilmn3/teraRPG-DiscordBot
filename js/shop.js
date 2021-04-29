@@ -9,7 +9,7 @@ async function shop(message, stat) {
 
     message.channel.send(new Discord.MessageEmbed({
         type: "rich",
-        // description: `*Balance: ${stat.gold}*`,
+        description: 'Use \`tera buy [item] [amount]\` for buying items from shop',
         url: null,
         color: 10115509,
         fields: [

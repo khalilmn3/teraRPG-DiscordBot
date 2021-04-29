@@ -66,7 +66,7 @@ async function processReforge(message, equipmentSlot,  modifierMode) {
                         if (equipmentSlot == 1) {
                             forgeList = myCache.get('forgeWeaponList');
                             if (forgeList == undefined) {
-                                forgeList = await queryData(`SELECT id,name,chance1,chance2,chance3,cost FROM modifier_weapon`);
+                                forgeList = await queryData(`SELECT id,name,chance1,chance2,chance3,cost FROM modifier WHERE modifier_type_id=1`);
                                 myCache.set('forgeWeaponList', forgeList);
                                 // console.log('weponUndef')
                             }
@@ -74,7 +74,7 @@ async function processReforge(message, equipmentSlot,  modifierMode) {
                         } else {
                             forgeList = myCache.get('forgeArmorList');
                             if (forgeList == undefined) {
-                                forgeList = await queryData(`SELECT id,name,chance1,chance2,chance3,cost FROM modifier_armor`);
+                                forgeList = await queryData(`SELECT id,name,chance1,chance2,chance3,cost FROM modifier WHERE modifier_type_id=2`);
                                 myCache.set('forgeArmorList', forgeList);
                                 forgeList = myCache.get('forgeArmorList');
                             }

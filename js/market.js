@@ -2,7 +2,7 @@ import Discord from 'discord.js';
 function market(message) {
     message.channel.send(new Discord.MessageEmbed({
         type: "rich",
-        description: null,
+        description: 'Use \`tera buy [item]\` for buy an item from market',
         url: null,
         color: 10115509,
         fields: [
