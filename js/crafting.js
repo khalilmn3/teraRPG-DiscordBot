@@ -176,7 +176,7 @@ async function crafting(message, commandBody, stat) {
         //console.log(existItem);
         craftArmor(message, id, username, itemName, arrayName[0], arrayName[1], existItem);
     } else if (arrayName[0] === 'list') {
-        if (arrayName[1] === '2') {
+        if (craftQty === '2') {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
                 title: null,
@@ -212,11 +212,11 @@ async function crafting(message, commandBody, stat) {
                 provider: null,
                 // timestamp: new Date(),
             }))
-        } else if (arrayName[1] === '3') {
+        } else if (craftQty === '3') {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
                 title: null,
-                description: 'Craft list 2 [Equipments], \`available list <1,2,3,4,5>\`',
+                description: 'Craft list 3 [Equipments], \`available list <1,2,3,4,5>\`',
                 url: null,
                 color: 10115509,
                 fields: [
@@ -248,11 +248,11 @@ async function crafting(message, commandBody, stat) {
                 provider: null,
                 // timestamp: new Date(),
             }))
-        }  else if (arrayName[1] === '4') {
+        }  else if (craftQty === '4') {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
                 title: null,
-                description: 'Craft list 3 [Equipments], \`available list <1,2,3,4,5>\`',
+                description: 'Craft list 4 [Equipments], \`available list <1,2,3,4,5>\`',
                 url: null,
                 color: 10115509,
                 fields: [
@@ -283,11 +283,11 @@ async function crafting(message, commandBody, stat) {
                 provider: null,
                 // timestamp: new Date(),
             }))
-        }  else if (arrayName[1] === '5') {
+        }  else if (craftQty === '5') {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
                 title: null,
-                description: 'Craft list 3 [Equipments], \`available list <1,2,3,4,5>\`',
+                description: 'Craft list 5 [Equipments], \`available list <1,2,3,4,5>\`',
                 url: null,
                 color: 10115509,
                 fields: [

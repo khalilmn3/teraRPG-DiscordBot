@@ -282,6 +282,12 @@ client.on("message", async function (message) {
                         if (!notifIsRead) {
                             notification(message);
                         }
+                        
+                        let authorTag = message.author.tag;
+                        let isStringByte4 = /[\u{10000}-\u{10FFFF}]/u.test(authorTag);
+                        authorTag = isStringByte4 ? message.author.id : authorTag;
+                        // UPDATE USERNAME
+                        queryData(`UPDATE player SET username="${authorTag}" WHERE id=${message.author.id} LIMIT 1`);
                     }
 
                     if (command === "ping") {
@@ -458,7 +464,12 @@ client.on("message", async function (message) {
                 }
             } else if (command === 'start') {
                 // INSERT USER
-                let log = await queryData(`CALL start_procedure("${message.author.id}","${message.author.tag}")`)
+                let authorTag = message.author.tag;
+                let isStringByte4 = /[\u{10000}-\u{10FFFF}]/u.test(authorTag);
+                authorTag = isStringByte4 ? message.author.id : authorTag;
+                // console.log(cekIfStringByte4);         // true
+                // console.log(authorTag.replace(/[\u{10000}-\u{10FFFF}]/gu, '')); // `hello world!`
+                let log = await queryData(`CALL start_procedure("${message.author.id}","${authorTag}")`) // convert to base64
                 log = log.length > 0 ? log[0][0].log : 0;
                 let m = `Welcome to teraRPG, type \`${teraRPGPrefix}exp\` to begin your journey\nYou can also see other commands with \`${teraRPGPrefix}help\`. Oh almost forgot, \nhere is a present for you, hope it can help you through the cruelty of the world`
                 let embed = new Discord.MessageEmbed({
@@ -495,7 +506,7 @@ client.on("message", async function (message) {
                         color: 10115509,
                         fields: [
                             {
-                                value: `:bust_in_silhouette: ${message.author.tag} | :id: ${message.author.id}`,
+                                value: `:bust_in_silhouette: ${message.author.tag}\n:id: ${message.author.id}`,
                                 name: 'User',
                                 inline: true
                             },
