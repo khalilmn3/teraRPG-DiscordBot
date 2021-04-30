@@ -45,7 +45,9 @@ async function voteRewardsSend(client, player_id, isWeekend) {
                     inline: false,
                 }],
                 timestamp: new Date()
-            }));
+            })).catch((err) => {
+                console.log('(Vote)'+player_id+': '+errorCode[err.code]);
+            });
         });
     }
 }

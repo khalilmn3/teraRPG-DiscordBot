@@ -51,7 +51,9 @@ async function lotteryWinnerRunSchedule(client) {
                 inline: false,
                 }],
             timestamp: new Date()
-        }));
+        })).catch((err) => {
+            console.log('(Lottery)'+winner.player_id+': '+errorCode[err.code]);
+        });
     } else {
         client.channels.cache.get('818359912790229002').send(new Discord.MessageEmbed({
             type: "rich",

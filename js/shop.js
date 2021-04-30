@@ -19,7 +19,10 @@ async function shop(message, stat) {
             },
             {
                 name: `Shop`,
-                value: `<:Healing_Potion:810747622859735100>  \`Healing Potion\` | \`restore heal point-\` ${cekDiscountCard ? `~~*35*~~ 28` : '35'} <:gold_coin:801440909006209025> 
+                value: `<:Apricot:837562146124595222> \`Appricot\` | \`restore +7 HP-\` ${cekDiscountCard ? `~~*75*~~ 60` : '75'} <:gold_coin:801440909006209025>
+                <:Apple:837562146497232906> \`Apple\` | \`restore +10 HP-\` ${cekDiscountCard ? `~~*90*~~ 72` : '90'} <:gold_coin:801440909006209025>
+                <:cookie:837564243695894528> \`Cookie\` | \`restore +30 HP-\` ${cekDiscountCard ? `~~*220*~~ 176` : '220'} <:gold_coin:801440909006209025>
+                <:Apple_Pie:837563511135666227> \`Apple Pie\` | \`restore +100 HP-\` ${cekDiscountCard ? `~~*700*~~ 560` : '700'} <:gold_coin:801440909006209025>
 <:Apprentice_Bait:824271452056059985> \`Apprentice Bait\` | \`15% bait power----\` ${cekDiscountCard ? `~~*75*~~ 60` : '75'} <:gold_coin:801440909006209025>`,
                 
 // <:Mining_Helmet:824176323194650624> \`Mining Helmet\` | \`eliminate rock when mining--------------\` 35 <:diamond:801441006247084042>`,`

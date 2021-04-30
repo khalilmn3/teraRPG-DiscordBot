@@ -11,6 +11,7 @@ import { getAttack, getDefense, getMaxExp, getMaxHP } from "../helper/getBattleS
 import randomNumber from "../helper/randomNumberWithMinMax.js";
 import generateHPEmoji from "../helper/emojiGenerate.js";
 import questProgress from "../utils/questProgress.js";
+import errorCode from "../utils/errorCode.js";
 
 async function duel(message,stat) {
     let player2 = message.mentions.users.first();
@@ -58,8 +59,6 @@ async function duel(message,stat) {
                                     message2.delete();
                                     // Load player data from DB
                                     let playerData = await getPlayerData(player1, player2);
-                                    setCooldowns(player1.id, 'junken');
-                                    setCooldowns(player2.id, 'junken');
                                     let player1Stat = {
                                         id: player1,
                                         level: playerData[0].level,
@@ -112,26 +111,38 @@ async function duel(message,stat) {
                                     var repeat = async function () {
                                         setTimeout(async () => {
                                             let dm1 = new Promise(async (resolve, reject) => {
-                                                junkenResult.player1 = await play(player1);
+                                                junkenResult.player1 = await play(player1, message);
                                                 resolve();
                                             })
                                             let dm2 = new Promise(async (resolve, reject) => {
-                                                junkenResult.player2 = await play(player2);
+                                                junkenResult.player2 = await play(player2, message);
                                                 resolve();
                                             })
-                                                
-                                            await Promise.all([dm1, dm2]); // wait result
-                                            if (junkenResult.player1 == 0) {
-                                                console.log('player1 not responding')
-                                            }
-                                            if (junkenResult.player2 == 0) {
-                                                console.log('player2 not responding')
-                                            }
                                             
                                             let combat1Title = '';
                                             let combat1Detail = '';
                                             let combat2Title = '';
                                             let combat2Detail = '';
+                                                
+                                            await Promise.all([dm1, dm2]); // wait result
+                                            if (junkenResult.player1 == 1 || junkenResult.player2 == 1) {
+                                                deactiveCommand([player1.id, player2.id])
+                                                return;
+                                            }
+                                            
+                                            setCooldowns(player1.id, 'junken');
+                                            setCooldowns(player2.id, 'junken');
+                                            if (junkenResult.player1 == 0) {
+                                                console.log('player1 not responding')
+                                                junkenResult.player1 === '♿'
+                                                combat1Title = `${player1.username} is not responding and flee from the battle`;
+                                                combat1Detail = `Lost`;
+                                            }
+                                            if (junkenResult.player2 == 0) {
+                                                console.log('player2 not responding')
+                                                combat2Title = `${player2.username} is not responding and flee from the battle`;
+                                                combat2Detail = `Lost`;
+                                            }
 
                                             // '🗡️','🛡️','🤺','🆓','♿'
                                             // Plyaer 1 Combat detail
@@ -273,7 +284,7 @@ async function duel(message,stat) {
                                                     let pointsWin = 0;
                                                     let rewards = '';
                                                     let exp = 0;
-                                                    if (player1Stat.hp <= 0 || junkenResult.player1 === '♿') {
+                                                    if (player1Stat.hp <= 0 || junkenResult.player1 === '♿' || junkenResult.player1 === 0) {
                                                         combat1Title = junkenResult.player1 === '♿' ? `🪦 ${player1.username} has flee away` : `🪦 ${player1.username} has knock down`
                                                         combat1Detail = `and cannot continue the battle`
                                                         status1 = '🪦 '
@@ -292,7 +303,7 @@ async function duel(message,stat) {
                                                         addExpGold(message, player2, playerData[1], exp, 0, null);
                                                         queryData(`INSERT duel SET player_id=${player1.id}, points=${rating1}, battles=1 ON DUPLICATE KEY UPDATE points=${rating1}, battles=battles+1`);
                                                         queryData(`INSERT duel SET player_id=${player2.id}, points=${rating2}, battles=1 ON DUPLICATE KEY UPDATE points=${rating2}, battles=battles+1`);
-                                                    } else if (player2Stat.hp <= 0 ||  junkenResult.player2 === '♿') {
+                                                    } else if (player2Stat.hp <= 0 ||  junkenResult.player2 === '♿' || junkenResult.player2 === 0) {
                                                         
                                                         combat2Title = junkenResult.player2 === '♿' ? `🪦 ${player2.username} has flee away` : `🪦 ${player2.username} has knock down`
                                                         combat2Detail = `and cannot continue the battle`
@@ -379,7 +390,7 @@ async function duel(message,stat) {
     }
 }
 
-async function play(player, stat, result) {    
+async function play(player, message, stat, result) {    
     let choose = new Discord.MessageEmbed({
         type: "rich",
         description: null,
@@ -412,8 +423,10 @@ async function play(player, stat, result) {
                     return 0;
                 });
     
-        }).catch(function () {
-            //Something
+        }).catch(function (err) {
+            console.log('(Duel)'+player.id+': '+errorCode[err.code]);
+            message.channel.send(`${emojiCharacter.noEntry} | Duel cancelled,cannot send DM to user <@${player.id}>\n **Make sure to not:** \n- Blocked the bot.\n- Disabled dms in the privacy settings. `)
+            return 1;
         });
 }
 
