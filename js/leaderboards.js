@@ -2,6 +2,7 @@ import Discord from 'discord.js';
 import myCache from './cache/leaderboardChace.js';
 import currencyFormat from './helper/currency.js';
 import queryData from './helper/query.js';
+import errorCode from './utils/errorCode.js';
 async function ranks(message, args1) {
     let orderBy = '';
     let topTitle = '';
@@ -20,7 +21,7 @@ async function ranks(message, args1) {
             
             data = myCache.get('rank_gold');
             if (data == undefined) {
-                ranks = await queryData(`SELECT username, SUM(gold+bank) as gold FROM player LEFT JOIN stat ON (player.id=stat.player_id) GROUP BY player_id ORDER BY ${orderBy} DESC LIMIT 10`);
+                ranks = await queryData(`SELECT username, SUM(gold+bank) as gold FROM message.author LEFT JOIN stat ON (message.author.id=stat.player_id) GROUP BY player_id ORDER BY ${orderBy} DESC LIMIT 10`);
                 myCache.set('rank_gold', ranks, 3600);
                 data = myCache.get('rank_gold');
             }
@@ -33,7 +34,7 @@ async function ranks(message, args1) {
             
             data = myCache.get('rank_level');
             if (data == undefined) {
-                ranks = await queryData(`SELECT username, level FROM player LEFT JOIN stat ON (player.id=stat.player_id) ORDER BY ${orderBy} DESC LIMIT 10`);
+                ranks = await queryData(`SELECT username, level FROM message.author LEFT JOIN stat ON (message.author.id=stat.player_id) ORDER BY ${orderBy} DESC LIMIT 10`);
                 myCache.set('rank_level', ranks, 3600);
                 data = myCache.get('rank_level');
             }
@@ -46,7 +47,7 @@ async function ranks(message, args1) {
             
             data = myCache.get('rank_depth');
             if (data == undefined) {
-                ranks = await queryData(`SELECT username, depth FROM player LEFT JOIN stat ON (player.id=stat.player_id) ORDER BY ${orderBy} DESC LIMIT 10`);
+                ranks = await queryData(`SELECT username, depth FROM message.author LEFT JOIN stat ON (message.author.id=stat.player_id) ORDER BY ${orderBy} DESC LIMIT 10`);
                 myCache.set('rank_depth', ranks, 3600);
                 data = myCache.get('rank_depth');
             }
@@ -88,7 +89,9 @@ async function ranks(message, args1) {
                     proxyIconURL: null
                 },
                 timestamp: new Date()
-            }));
+            })).catch((err) => {
+                console.log('(leaderboard)' + message.author.id + ': ' + errorCode[err.code]);
+            });
         }
     } else {
         message.channel.send('Available ranks: \`level\`, \`depth\`, \`gold\`')

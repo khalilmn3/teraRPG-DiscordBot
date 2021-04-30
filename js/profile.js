@@ -4,6 +4,7 @@ import Discord from 'discord.js';
 import currencyFormat from './helper/currency.js';
 import { getAttack, getDefense, getMaxExp, getMaxHP, getMaxMP } from './helper/getBattleStat.js';
 import queryData from './helper/query.js';
+import errorCode from './utils/errorCode.js';
 
 async function profile(message, client, id, avatar, args1) {
     let idMention = message.mentions.users.first();
@@ -145,6 +146,9 @@ async function profile(message, client, id, avatar, args1) {
             files: []
         });
         message.channel.send(`> **Displaying [ ${tag} ] profile...**`, embedded)
+            .catch((err) => {
+                console.log('(profile)' + message.author.id + ': ' + errorCode[err.code]);
+            });
     });
 }
 

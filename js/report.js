@@ -1,5 +1,6 @@
 import Discord from 'discord.js';
 import queryData from './helper/query.js';
+import errorCode from './utils/errorCode.js';
 function report(message, client, args, body) {
     let id = 0;
     if (!args[0]) { return message.channel.send('Usage \`tera report [report]\`.') }
@@ -31,7 +32,9 @@ function report(message, client, args, body) {
             proxyIconURL: null
         },
         timestamp: new Date()
-    }));
+    })).catch((err) => {
+        console.log('(report)' + message.author.id + ': ' + errorCode[err.code]);
+    });
     message.reply('Your report has been submitted!')
 }
 

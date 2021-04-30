@@ -2,6 +2,7 @@ import queryData from "./helper/query.js";
 import Discord from 'discord.js';
 import currencyFormat from "./helper/currency.js";
 import secondsToDHms from "./helper/secondsToDHms.js";
+import errorCode from "./utils/errorCode.js";
 
 async function lottery(message, client, args, stat) {
     if (args.length > 0 && args[0] === 'buy') {
@@ -42,7 +43,9 @@ async function lottery(message, client, args, stat) {
                         iconURL: null,
                         proxyIconURL: null
                     },
-                }));
+                })).catch((err) => {
+                    console.log('(lottery)' + message.author.id + ': ' + errorCode[err.code]);
+                });
             } else {
                 message.reply(`:no_entry_sign: | You don't have enough gold, 1 lottery ticket costs **100** gold`)
             }
@@ -95,7 +98,9 @@ async function lottery(message, client, args, stat) {
                 iconURL: null,
                 proxyIconURL: null
             },
-        }));
+        })).catch((err) => {
+            console.log('(lottery)' + message.author.id + ': ' + errorCode[err.code]);
+        });
     }
 }
 

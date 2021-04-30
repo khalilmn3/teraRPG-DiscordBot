@@ -6,6 +6,7 @@ import queryData from "./helper/query.js";
 import currencyFormat from "./helper/currency.js";
 import addExpGold from "./helper/addExp.js";
 import { updateStat2 } from "./utils/processQuery.js";
+import errorCode from "./utils/errorCode.js";
 
 async function rewards(message,command, stat) {
     if (command == 'vote') {
@@ -50,7 +51,9 @@ async function rewards(message,command, stat) {
                 footer: {
                     text: 'Rewards doubled on weekends'
                 }
-            }));
+            })).catch((err) => {
+                console.log('(vote)' + message.author.id + ': ' + errorCode[err.code]);
+            });
             // message.channel.send('Vote cooming soon!!!');
         // } else {
             // message.channel.send(cooldownMessage(message.author.id, message.author.username, message.author.avatar, 'Vote', cooldowns.waitingTime));
@@ -123,7 +126,9 @@ async function rewards(message,command, stat) {
                     proxyIconURL: null
                 },
                 files: []
-            }));
+            })).catch((err) => {
+                console.log('(daily)' + message.author.id + ': ' + errorCode[err.code]);
+            });
         } else {
             message.channel.send(cooldownMessage(message.author.id, message.author.username, message.author.avatar, 'Daily', cooldowns.waitingTime));
         }
@@ -168,7 +173,9 @@ async function rewards(message,command, stat) {
             },
             timestamp: new Date(),
             files: []
-        }));
+        })).catch((err) => {
+            console.log('(weekly)' + message.author.id + ': ' + errorCode[err.code]);
+        });
         addExpGold(message, message.author, stat, exp, gold, null );
         // message.channel.send(levelUPmessage);
         } else {

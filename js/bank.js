@@ -2,6 +2,7 @@ import Discord from 'discord.js';
 import calculateBonusExpBank from './helper/calculateBonusExpBank.js';
 import currencyFormat from './helper/currency.js';
 import queryData from './helper/query.js';
+import errorCode from './utils/errorCode.js';
 async function bank(message) {
     let bank = await queryData(`SELECT bank, gold, IFNULL(utility.piggy_bank,false) as piggy_bank FROM stat LEFT JOIN utility ON (stat.player_id=utility.player_id) WHERE stat.player_id="${message.author.id}" LIMIT 1`);
     bank = bank.length > 0 ? bank[0] : 0;
@@ -35,7 +36,9 @@ async function bank(message) {
                 iconURL: null,
                 proxyIconURL: null
             },
-        }));
+        })).catch((err) => {
+            console.log('(bank)'+message.author.id+': '+errorCode[err.code]);
+        });
     } else {
         message.reply(`you don't have <:piggy_bank:801444684194906142> **piggy bank**,\nbuy one with \`buy piggy bank\``)
     }

@@ -8,6 +8,7 @@ import queryData from "../helper/query.js";
 import randomNumber from "../helper/randomNumberWithMinMax.js";
 import setCooldowns from "../helper/setCooldowns.js";
 import emojiCharacter from "../utils/emojiCharacter.js";
+import errorCode from "../utils/errorCode.js";
 import { updateStat2 } from "../utils/processQuery.js";
 
 async function quest(message, stat) {
@@ -81,7 +82,10 @@ async function quest(message, stat) {
         }
     });
 
-    message.channel.send(embed);
+    message.channel.send(embed)
+    .catch((err) => {
+        console.log('(quest)' + message.author.id + ': ' + errorCode[err.code]);
+    });
 }
 
 export default quest;

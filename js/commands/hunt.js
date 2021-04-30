@@ -13,6 +13,7 @@ import myCache from '../cache/leaderboardChace.js';
 import { getAttack, getDefense, getMaxHP, getMaxMP } from '../helper/getBattleStat.js';
 import questProgress from "../utils/questProgress.js";
 import { updateStat2 } from "../utils/processQuery.js";
+import errorCode from "../utils/errorCode.js";
 
 async function hunt(message) {
     let cooldowns = await isCommandsReady(message.author.id, 'explore');
@@ -127,6 +128,8 @@ function messageSend(message, stat, battleLog, reward, booster) {
         footer: {
             text: booster.length > 0 ? `Booster is active cek with [tera booster]` : null
         }
-    }))
+    })).catch((err) => {
+        console.log('(hunt)' + message.author.id + ': ' + errorCode[err.code]);
+    });
 }
 export default hunt;

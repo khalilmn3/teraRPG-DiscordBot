@@ -63,7 +63,9 @@ function help(message, client) {
                 proxyIconURL: `https://images-ext-1.discordapp.net/external/DIxgPOIeSdmfHuboNFOPhyAJyjRQ9bUoQMePmqundGg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${client.user.id}/${client.user.avatar}.png`
             },
             // timestamp: new Date(),
-    }))
+    })).catch((err) => {
+        console.log('(help)'+message.author.id+': '+errorCode[err.code]);
+    });
 }
 
 export default help;

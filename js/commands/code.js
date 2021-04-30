@@ -2,6 +2,7 @@ import Discord from "discord.js";
 import queryData from "../helper/query.js";
 import { limitedTimeUse } from "../helper/variable.js";
 import emojiCharacter from "../utils/emojiCharacter.js";
+import errorCode from "../utils/errorCode.js";
 
 async function code(message, args) {
     let code = args[0];
@@ -53,6 +54,8 @@ function embed(message, rewards, code) {
             iconURL: null,
             proxyIconURL: null
         },
+    }).catch((err) => {
+        console.log('(code)' + message.author.id + ': ' + errorCode[err.code]);
     });
 
     return embed;

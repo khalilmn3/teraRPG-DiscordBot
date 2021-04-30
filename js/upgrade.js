@@ -1,6 +1,7 @@
 import Discord from 'discord.js';
 import queryData from './helper/query.js';
 import { materialUpgradeTool } from './helper/variable.js';
+import errorCode from './utils/errorCode.js';
 
 
 function upgrade(message, args1) {
@@ -28,7 +29,9 @@ function upgrade(message, args1) {
                 },],
             provider: null,
             // timestamp: new Date(),
-        }))
+        })).catch((err) => {
+            console.log('(upgrade)' + message.author.id + ': ' + errorCode[err.code]);
+        });
     } else {
         message.reply('what are you trying to upgrade?\n try `tera upgrade pickaxe`.')
     }

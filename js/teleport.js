@@ -80,7 +80,9 @@ async function teleport(message, stat, args) {
             //     iconURL: null,
             //     proxyIconURL: null
             // },
-        }));
+        })).catch((err) => {
+            console.log('(teleport)' + message.author.id + ': ' + errorCode[err.code]);
+        });
     }
 }
 

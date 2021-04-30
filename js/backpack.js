@@ -1,6 +1,7 @@
 
 import Discord from 'discord.js';
 import queryData from './helper/query.js';
+import errorCode from './utils/errorCode.js';
 
 async function backpack(message, args1) {
     let items = "";
@@ -125,7 +126,9 @@ async function backpack(message, args1) {
         "provider": null,
         "footer": null,
         "files": []
-    }))
+    })).catch((err) => {
+        console.log('(Backpack)'+message.author.id+': '+errorCode[err.code]);
+    });
 }
 
 export default backpack;

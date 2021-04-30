@@ -3,6 +3,7 @@ import myCache from './cache/leaderboardChace.js';
 import currencyFormat from './helper/currency.js';
 import queryData from './helper/query.js';
 import randomizeModifier from './helper/randomizeModifier.js';
+import errorCode from './utils/errorCode.js';
 async function reforge(message, args1, args2) {
     if (args1 === 'weapon') {
         processReforge(message, 1,1);
@@ -108,7 +109,9 @@ async function processReforge(message, equipmentSlot,  modifierMode) {
                                 "iconURL": `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
                                 "proxyIconURL": `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
                             }
-                        }));
+                        })).catch((err) => {
+                            console.log('(reforge)' + message.author.id + ': ' + errorCode[err.code]);
+                        });
                     } else {
                         message.reply(`Check your wallet, your gold may run out elsewhere`)
                     }

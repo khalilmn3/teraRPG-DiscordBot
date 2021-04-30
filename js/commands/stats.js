@@ -1,6 +1,7 @@
 import queryData from "../helper/query.js";
 import Discord from 'discord.js'
 import currencyFormat from "../helper/currency.js";
+import errorCode from "../utils/errorCode.js";
 
 async function stats(message, stat) {
     let statistic = await queryData(`SELECT stat2.*, IFNULL(votes.vote_count,0) as vote FROM stat2 LEFT JOIN votes ON (stat2.player_id = votes.player_id) WHERE stat2.player_id=${message.author.id} LIMIT 1`);
@@ -76,6 +77,9 @@ async function stats(message, stat) {
     });
 
     message.channel.send(embed)
+    .catch((err) => {
+        console.log('(stats)' + message.author.id + ': ' + errorCode[err.code]);
+    });
 }
 
 export default stats;

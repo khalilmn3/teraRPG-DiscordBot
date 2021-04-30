@@ -1,5 +1,6 @@
 import db from '../db_config.js'
 import Discord from 'discord.js'
+import errorCode from './utils/errorCode.js';
 
 async function workspace(message, args1) {
     let avatar = message.author.avatar;
@@ -87,7 +88,9 @@ async function workspace(message, args1) {
                 "provider": null,
                 "footer": null,
                 "files": []
-        }))
+        })).catch((err) => {
+            console.log('(workspace)' + message.author.id + ': ' + errorCode[err.code]);
+        });
     });
 }
 

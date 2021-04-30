@@ -1,4 +1,5 @@
 import Discord from 'discord.js';
+import errorCode from './utils/errorCode.js';
 function market(message) {
     message.channel.send(new Discord.MessageEmbed({
         type: "rich",
@@ -32,7 +33,9 @@ function market(message) {
             iconURL: null,
             proxyIconURL: null
         },
-    }));
+    })).catch((err) => {
+        console.log('(market)' + message.author.id + ': ' + errorCode[err.code]);
+    });
 }
 
 export default market;

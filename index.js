@@ -2,11 +2,19 @@ import Discord from 'discord.js';
 import config from './config.js';
 // Agenda 
 import Agenda from 'agenda'
-import mongoClient from 'mongodb';
+// import mongoClient from 'mongodb';
 // const dbRPG = 'mongodb://127.0.0.1:27017';
 const mongoConnectionString = 'mongodb://127.0.0.1/agenda';
 // const MongoClient = new mongoClient.MongoClient;
-const agenda = new Agenda({ db: { address: mongoConnectionString } });
+const agenda = new Agenda({
+    db: {
+        address: mongoConnectionString,
+        options: {
+            
+            useUnifiedTopology: true
+        }
+    }
+});
 
 //TOP GG
 import Topgg  from "@top-gg/sdk";
@@ -91,6 +99,7 @@ import marketAdd from './js/commands/marketplace/marketAdd.js';
 import marketplace from './js/commands/marketplace/marketplace.js';
 import marketRemove from './js/commands/marketplace/marketRemove.js';
 import marketBuy from './js/commands/marketplace/marketBuy.js';
+import errorCode from './js/utils/errorCode.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -494,7 +503,10 @@ client.on("message", async function (message) {
                         text: '\`tera invite\` to get help on support server'
                     },
                 })
-                message.reply(m,embed)
+                message.reply(m, embed)
+                .catch((err) => {
+                    console.log('(Start)'+message.author.id+': '+errorCode[err.code]);
+                });
                 
                 if (log <= 0) return;
                 client.channels.cache.get('818360247647076382').send(

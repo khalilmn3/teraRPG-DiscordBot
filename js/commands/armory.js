@@ -2,6 +2,7 @@
 import Discord from 'discord.js';
 import queryData from '../helper/query.js';
 import emojiCharacter from '../utils/emojiCharacter.js';
+import errorCode from '../utils/errorCode.js';
 
 async function armory(message) {
     let armory = await queryData(`SELECT
@@ -119,7 +120,9 @@ async function armory(message) {
             footer: {
                 text: 'Use \'tera info armory\' for more detail'
             }
-        }))
+        })).catch((err) => {
+            console.log('(armory)' + message.author.id + ': ' + errorCode[err.code]);
+        });
         
     }, 500);
 }

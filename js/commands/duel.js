@@ -382,7 +382,6 @@ async function duel(message,stat) {
                     }).catch(function () {
                         deactiveCommand([message.author.id, player2.id])
                         //Something
-                    
             })
         }
     } else {

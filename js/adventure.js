@@ -14,6 +14,7 @@ import { getAttack, getDefense, getMaxHP, getMaxMP } from './helper/getBattleSta
 import currencyFormat from './helper/currency.js';
 import questProgress from './utils/questProgress.js';
 import { updateStat2 } from './utils/processQuery.js';
+import errorCode from './utils/errorCode.js';
 
 async function adventure(message) {
     let cooldowns = await isCommandsReady(message.author.id, 'expedition');
@@ -111,7 +112,9 @@ async function adventure(message) {
                         msg.embeds[0].fields[1].value = `HP: ${playerCurrentHP}/${playerMaxHP}\nAttack: ${Math.round(playerAtt)}`;
                         msg.embeds[0].fields[2].value = logMsg;
                         msg.embeds[0].footer.text = `Turn: ${turn}\nNote: rewards based on your mining depth and zone`;
-                        msg.edit(msg.embeds[0])
+                        msg.edit(msg.embeds[0]).catch((err) => {
+                            console.log('(Adv)'+message.author.id+': '+errorCode[err.code]);
+                        });
                     }, 1000);
                 } else {
                     queryData(`UPDATE stat SET hp=1, current_experience=0 WHERE player_id="${message.author.id}"`);
@@ -122,7 +125,9 @@ async function adventure(message) {
                         msg.embeds[0].fields[1].value = `HP: ${playerCurrentHP}/${playerMaxHP}\nAttack: ${Math.round(playerAtt)}`;
                         msg.embeds[0].fields[2].value = logMsg;
                         msg.embeds[0].footer.text = `Turn: ${turn}\nNote: rewards based on your mining depth and zone`;
-                        msg.edit(msg.embeds[0])
+                        msg.edit(msg.embeds[0]).catch((err) => {
+                            console.log('(Adv)'+message.author.id+': '+errorCode[err.code]);
+                        });
                     }, 1000);
                 }
                 return;
@@ -143,6 +148,8 @@ async function adventure(message) {
                 // UPDATE STAT
                 updateStat2(message.author.id, 'monster_kills', '1');
             }, 1500);
+        }).catch((err) => {
+            console.log('(Adv)'+message.author.id+': '+errorCode[err.code]);
         });        
     } else {
         message.channel.send(cooldownMessage(message.author.id, message.author.username, message.author.avatar, 'expedition', cooldowns.waitingTime));

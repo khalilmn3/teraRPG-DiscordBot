@@ -11,6 +11,8 @@ function invite(message) {
             value: `Do you want to invite me to your guild? [Bot link](https://discord.com/oauth2/authorize?client_id=804295231838355466&permissions=537192512&scope=bot) \nJoin the Support server and get more reward [Support link!](https://discord.gg/bTAV8HMuxf) `,
             inline: false,
         }]
-    }))
+    })).catch((err) => {
+        console.log('(invite)'+message.author.id+': '+errorCode[err.code]);
+    });
 }
 export default invite

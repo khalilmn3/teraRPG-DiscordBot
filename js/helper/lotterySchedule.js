@@ -1,6 +1,7 @@
 import queryData from "./query.js";
 import Discord from 'discord.js';
 import currencyFormat from "./currency.js";
+import errorCode from "../utils/errorCode.js";
 
 async function lotteryWinnerRunSchedule(client) {
     let lottery = await queryData(`SELECT player_id, ticket, username FROM lottery`);

@@ -9,6 +9,7 @@ import isCommandsReady from "./helper/isCommandsReady.js";
 import queryData from "./helper/query.js";
 import { activeCommand, deactiveCommand } from "./helper/setActiveCommand.js";
 import setCooldowns from "./helper/setCooldowns.js";
+import errorCode from "./utils/errorCode.js";
 import { updateStat2 } from "./utils/processQuery.js";
 
 var greatHealUsed = 10;
@@ -109,6 +110,8 @@ async function dungeon(message, stat) {
                 width: 0
             },
             // files: ['https://cdn.discordapp.com/attachments/811586577612275732/811586719198871572/King_Slime_1.png']
+        }).catch((err) => {
+            console.log('(dungeon)'+message.author.id+': '+errorCode[err.code]);
         });
         message.channel.send(bossEmbed)
             .then(function (message2) {
@@ -139,8 +142,8 @@ async function dungeon(message, stat) {
                         deactiveCommand([player1.id, player2.id])
                     });
         
-            }).catch(function () {
-                //Something
+            }).catch((err) => {
+                console.log('(dungeon)'+message.author.id+': '+errorCode[err.code]);
             });
     } else {
         message.channel.send(`You have to team up with other player to do dungeon\nex.\`tera dungeon @sim\``);
@@ -203,7 +206,10 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         }],
         // files: ['https://cdn.discordapp.com/attachments/811586577612275732/811586719198871572/King_Slime_1.png']
     });
-    await message.channel.send(startMessage, embed);
+    await message.channel.send(startMessage, embed)
+        .catch((err) => {
+            console.log('(dungeon)'+message.author.id+': '+errorCode[err.code]);
+        });
     let st = 1;
     let i = 0;
     do {
@@ -242,7 +248,9 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
                 iconURL: `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
                 proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
             },
-        }))
+        })).catch((err) => {
+            console.log('(dungeon)'+message.author.id+': '+errorCode[err.code]);
+        });
         addExpGold(message, player1, playerList[0], expReward, goldReward, player1Stat);
         addExpGold(message, player2, playerList[1], expReward, goldReward, player2Stat);
         // UPDATE STAT
@@ -270,7 +278,9 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
                 value: `${message.author.username}'s party has wipeout\nbetter luck next time`,
                 inline: false,
             }],
-        }));
+        })).catch((err) => {
+            console.log('(dungeon)'+message.author.id+': '+errorCode[err.code]);
+        });
     } else {
         message.channel.send(new Discord.MessageEmbed({
             type: "rich",
@@ -286,7 +296,9 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
                 iconURL: `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
                 proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
             },
-        }))
+        })).catch((err) => {
+            console.log('(dungeon)'+message.author.id+': '+errorCode[err.code]);
+        });
     }
 }
 async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2Stat, bossStat, maxBossStat, player, turnX) {
@@ -425,8 +437,8 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                 message.channel.send(statusMessage)
                 return 1;
             })
-            .catch(errors => {
-                
+            .catch((err) => {
+                console.log('(dungeon)' + message.author.id + ': ' + errorCode[err.code]);
                 return 0;
             });
     })

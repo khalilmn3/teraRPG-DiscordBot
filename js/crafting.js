@@ -211,7 +211,9 @@ async function crafting(message, commandBody, stat) {
                 ],
                 provider: null,
                 // timestamp: new Date(),
-            }))
+            })).catch((err) => {
+                console.log('(craft2)'+message.author.id+': '+errorCode[err.code]);
+            });
         } else if (craftQty === '3') {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
@@ -247,7 +249,9 @@ async function crafting(message, commandBody, stat) {
                 ],
                 provider: null,
                 // timestamp: new Date(),
-            }))
+            })).catch((err) => {
+                console.log('(craft3)'+message.author.id+': '+errorCode[err.code]);
+            });
         }  else if (craftQty === '4') {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
@@ -282,7 +286,9 @@ async function crafting(message, commandBody, stat) {
                     },],
                 provider: null,
                 // timestamp: new Date(),
-            }))
+            })).catch((err) => {
+                console.log('(craft3)'+message.author.id+': '+errorCode[err.code]);
+            });
         }  else if (craftQty === '5') {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
@@ -321,7 +327,9 @@ async function crafting(message, commandBody, stat) {
                     }],
                 provider: null,
                 // timestamp: new Date(),
-            }))
+            })).catch((err) => {
+                console.log('(craft4)'+message.author.id+': '+errorCode[err.code]);
+            });
         }  else {
             message.channel.send(new Discord.MessageEmbed({
                 type: "rich",
@@ -355,7 +363,9 @@ async function crafting(message, commandBody, stat) {
                     }],
                 provider: null,
                 // timestamp: new Date(),
-            }))
+            })).catch((err) => {
+                console.log('(craft1)'+message.author.id+': '+errorCode[err.code]);
+            });
         }
     } else {
         message.channel.send(`What are you trying to craft,\nUse \`tera craft list\` to see craftable item`)

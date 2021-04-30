@@ -1,6 +1,7 @@
 import Discord from 'discord.js';
 import queryData from './helper/query.js';
 import { limitedTimeUse } from './helper/variable.js';
+import errorCode from './utils/errorCode.js';
 import { getTimeNow,secondsToDHms } from "./utils/utils.js";
 async function bonus(message) {
     let bonus = await queryData(`SELECT * FROM configuration WHERE type="2"`);
@@ -73,7 +74,9 @@ ${globalExp > 0 ? '🌏Global: __\`+' + globalExp+'%\`__' : ''}`
         //     proxyIconURL: null
         // },
         // timestamp: new Date()
-    }));
+    })).catch((err) => {
+        console.log('(Booster)'+message.author.id+': '+errorCode[err.code]);
+    });
 }
 
 export default bonus;

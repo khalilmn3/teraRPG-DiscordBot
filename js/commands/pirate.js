@@ -3,6 +3,7 @@ import currencyFormat from "../helper/currency.js";
 import queryData from "../helper/query.js";
 import randomNumber from "../helper/randomNumberWithMinMax.js";
 import emojiCharacter from "../utils/emojiCharacter.js";
+import errorCode from "../utils/errorCode.js";
 
 async function pirate(message, stat) {
     let embed = new Discord.MessageEmbed({
@@ -59,6 +60,7 @@ async function pirate(message, stat) {
     });
         message.channel.send(embedNotif1)
     setTimeout(() => {
+        console.log(`pirate has landing on: ${message.guild.id}`)
         message.channel.send(embed).then(async (msg) => {
             const filter = (response) => {
                 return response.content.toLowerCase() === `fight`
@@ -169,14 +171,25 @@ async function pirate(message, stat) {
             if (playerGold || luckyCoinWin || discountCardWin || cutlassWin) {
                 let winRandom = randomNumber(1, 100);
                 if (winRandom <= winChance) {
-                    message.channel.send(embed2);
+                    message.channel.send(embed2)
+                    .catch((err) => {
+                        console.log('(pirate2)' + message.author.id + ': ' + errorCode[err.code]);
+                    });
                 } else {
-                    message.channel.send(embed3);
+                    message.channel.send(embed3)
+                    .catch((err) => {
+                        console.log('(pirate3)' + message.author.id + ': ' + errorCode[err.code]);
+                    });
                 }
             } else {
-                message.channel.send(embed3);
+                message.channel.send(embed3)
+                .catch((err) => {
+                    console.log('(pirate4)' + message.author.id + ': ' + errorCode[err.code]);
+                });
             }
-        })
+        }).catch((err) => {
+            console.log('(pirate)' + message.author.id + ': ' + errorCode[err.code]);
+        });
     }, 10000)
 }
 

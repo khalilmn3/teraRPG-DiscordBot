@@ -1,6 +1,7 @@
 // import { Message } from "discord.js";
 import queryData from "./helper/query.js";
 import Discord from 'discord.js';
+import errorCode from "./utils/errorCode.js";
 
 async function cooldowns(message, command, args1) {
     let mentions = message.mentions.users.first();
@@ -103,7 +104,9 @@ async function cooldowns(message, command, args1) {
                 proxyIconURL: null
             },
             files: []
-        }));
+        })).catch((err) => {
+            console.log('(Cooldowns)'+message.author.id+': '+errorCode[err.code]);
+        });
     } else {
         let grindings = (explore === 0 ? `**Explore** \n:white_check_mark: | READY \n` : '') + 
                 (expedition === 0 ? `**Mine Expedition** \n:white_check_mark: | READY \n` : '') +
@@ -158,7 +161,9 @@ async function cooldowns(message, command, args1) {
                 proxyIconURL: null
             },
             files: []
-        }));
+        })).catch((err) => {
+            console.log('(cooldowns)'+message.author.id+': '+errorCode[err.code]);
+        });
     }
 }
 

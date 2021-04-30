@@ -4,6 +4,7 @@ import Discord from 'discord.js';
 import randomNumber from "./helper/randomNumberWithMinMax.js";
 import currencyFormat from "./helper/currency.js";
 import { updateStat2 } from "./utils/processQuery.js";
+import errorCode from "./utils/errorCode.js";
 
 async function openCrate(client, message, args, stat) {
     if (args.length > 0) {
@@ -139,6 +140,9 @@ async function openCrate(client, message, args, stat) {
                         updateStat2(message.author.id, 'crate_opened', qty);
 
                         message.channel.send(`${crate[0].emoji} | **${message.author.username}** is opening ${qty} **${crate[0].name}**...`, itemMessage)
+                        .catch((err) => {
+                            console.log('(openCrate)' + message.author.id + ': ' + errorCode[err.code]);
+                        });
                     } else {
                         message.reply('no data found')
                     }
@@ -183,8 +187,13 @@ async function openCrate(client, message, args, stat) {
                 let helmetID = 'helmet_id="22"';
                 let shirtID = 'shirt_id="23"';
                 let pantsID = 'pants_id="24"';
-                queryData(`INSERT equipment SET ${weaponID}, ${helmetID}, ${shirtID}, ${pantsID}, player_id="${message.author.id}"
-                    ON DUPLICATE KEY UPDATE ${weaponID}, ${helmetID}, ${shirtID}, ${pantsID}`);
+                // queryData(`INSERT equipment SET ${weaponID}, ${helmetID}, ${shirtID}, ${pantsID}, player_id="${message.author.id}"
+                //     ON DUPLICATE KEY UPDATE ${weaponID}, ${helmetID}, ${shirtID}, ${pantsID}`);
+                queryData(`INSERT armory2 SET itemid='16' WHERE player_id=${message.author.id} LIMIT 1`);
+                queryData(`INSERT armory2 SET itemid='22' WHERE player_id=${message.author.id} LIMIT 1`);
+                queryData(`INSERT armory2 SET itemid='23' WHERE player_id=${message.author.id} LIMIT 1`);
+                queryData(`INSERT armory2 SET itemid='24' WHERE player_id=${message.author.id} LIMIT 1`);
+                
                 queryData(`UPDATE backpack SET quantity=0 WHERE player_id="${message.author.id}" AND item_id="282" LIMIT 1`);
                 queryData(`CALL insert_item_backpack_procedure(${message.author.id}, 266, 10)`);
                 queryData(`CALL insert_item_backpack_procedure(${message.author.id}, 271, 10)`);

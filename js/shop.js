@@ -3,6 +3,7 @@ import currencyFormat from './helper/currency.js';
 import queryData from './helper/query.js';
 import { limitedTimeUse } from './helper/variable.js';
 import emojiCharacter from './utils/emojiCharacter.js';
+import errorCode from './utils/errorCode.js';
 async function shop(message, stat) {
     let cekDiscountCard = await queryData(`SELECT * FROM backpack WHERE player_id=${message.author.id} AND item_id=${limitedTimeUse.dicountCardId} AND quantity>0 LIMIT 1`);
     cekDiscountCard = cekDiscountCard.length > 0 ? 20 : 0;
@@ -47,7 +48,9 @@ async function shop(message, stat) {
             iconURL: null,
             proxyIconURL: null
         },
-    }));
+    })).catch((err) => {
+        console.log('(shop)' + message.author.id + ': ' + errorCode[err.code]);
+    });
 }
 
 export default shop;

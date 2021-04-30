@@ -46,7 +46,7 @@ async function voteRewardsSend(client, player_id, isWeekend) {
                 }],
                 timestamp: new Date()
             })).catch((err) => {
-                console.log('(Vote)'+player_id+': '+errorCode[err.code]);
+                console.log('(VoteSend)'+player_id+': '+errorCode[err.code]);
             });
         });
     }

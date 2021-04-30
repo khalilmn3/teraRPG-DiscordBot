@@ -7,6 +7,7 @@ import isCommandsReady from "./helper/isCommandsReady.js";
 import { cooldownMessage } from "./embeddedMessage.js";
 import setCooldowns from "./helper/setCooldowns.js";
 import emojiCharacter from "./utils/emojiCharacter.js";
+import errorCode from "./utils/errorCode.js";
 
 async function junken(message,stat) {
     let player2 = message.mentions.users.first();
@@ -91,8 +92,6 @@ async function junken(message,stat) {
                                 } else {
                                     message2.delete();
                                     message2.channel.send(embed)
-                                    setCooldowns(player1.id, 'junken');
-                                    setCooldowns(player2.id, 'junken');
                                     
                                     let winner;
                                     let player1winCount = 0;
@@ -110,6 +109,15 @@ async function junken(message,stat) {
                                             })
                                                 
                                             await Promise.all([dm1, dm2]); // wait result
+                                            
+                                            if (junkenResult.player1 == 1 || junkenResult.player2 == 1) {
+                                                deactiveCommand([player1.id, player2.id])
+                                                return;
+                                            }
+                                            if (count == 1) {
+                                                setCooldowns(player1.id, 'junken');
+                                                setCooldowns(player2.id, 'junken');
+                                            }
                                             if (junkenResult.player1 == 0) {
                                                 console.log('player1 not responding')
                                             }
@@ -241,7 +249,9 @@ async function junken(message,stat) {
                         //Something
                     });
                 })
-            })
+            }).catch((err) => {
+                console.log('(junken)'+message.author.id+': '+errorCode[err.code]);
+            });
         }
     } else {
         message.channel.send(`Correct use \`tera junken @user`);
@@ -275,8 +285,10 @@ async function play(player, result) {
                     return 0;
                 });
     
-        }).catch(function () {
-            //Something
+        }).catch((err) => {
+            console.log('(junken)' + player.id + ': ' + errorCode[err.code]);
+            message.channel.send(`${emojiCharacter.noEntry} | Duel cancelled,cannot send DM to user <@${player.id}>\n **Make sure to not:** \n- Blocked the bot.\n- Disabled dms in the privacy settings. `)
+            return 1;
         });
 }
 export default junken;

@@ -6,6 +6,7 @@ import isCommandsReady from "../helper/isCommandsReady.js";
 import queryData from "../helper/query.js";
 import randomNumber from "../helper/randomNumberWithMinMax.js";
 import setCooldowns from "../helper/setCooldowns.js";
+import errorCode from "../utils/errorCode.js";
 import questProgress from "../utils/questProgress.js";
 
 async function servant(message) {
@@ -115,6 +116,9 @@ async function servant(message) {
             .catch(collected => {
                 return 0;
             });
+    })
+    .catch((err) => {
+        console.log('(servant)' + message.author.id + ': ' + errorCode[err.code]);
     });
     let slayers = playerJoin ? `\n\n**Slayer/s**: ${playerJoin}\n**Rewards**\n\`+${currencyFormat(randomSlayerGold)} gold\`` : '';
     let embedWin = new Discord.MessageEmbed({

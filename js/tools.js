@@ -91,7 +91,9 @@ async function tools(message, args1) {
                 "provider": null,
                 "footer": null,
                 "files": []
-        }))
+        })).catch((err) => {
+            console.log('(tools)' + message.author.id + ': ' + errorCode[err.code]);
+        });
     });
 }
 function generateIcon(current, max) {

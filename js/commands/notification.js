@@ -1,5 +1,6 @@
 import Discord from 'discord.js';
 import queryData from '../helper/query.js';
+import errorCode from '../utils/errorCode.js';
 async function notification(message) {
     let notifUrl = await queryData(`SELECT value FROM configuration WHERE id=7 LIMIT 1`);
     let url = notifUrl[0].value
@@ -18,6 +19,8 @@ async function notification(message) {
             url: url,
             proxyURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/${url}`
         },
+    }).catch((err) => {
+        console.log('(notif)' + message.author.id + ': ' + errorCode[err.code]);
     });
 
     message.channel.send(embed);

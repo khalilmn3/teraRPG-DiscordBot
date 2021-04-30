@@ -3,6 +3,7 @@ import Discord from 'discord.js';
 import emojiCharacter from "../../utils/emojiCharacter.js";
 import currencyFormat from "../../helper/currency.js";
 import { updateStat2 } from "../../utils/processQuery.js";
+import errorCode from "../../utils/errorCode.js";
 
 async function marketplace(message, args, stat) {
     let idMention = message.mentions.users.first();
@@ -164,6 +165,9 @@ async function marketplace(message, args, stat) {
                     // deactiveCommand(message.author.id)
                     // message.channel.send('Timeout, transaction cancelled');
                 });
+        })
+        .catch((err) => {
+            console.log('(marketplace)' + message.author.id + ': ' + errorCode[err.code]);
         });
     }
     await marketplace(page);

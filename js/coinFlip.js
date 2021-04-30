@@ -1,6 +1,7 @@
 import currencyFormat from "./helper/currency.js";
 import queryData from "./helper/query.js";
 import Discord from 'discord.js';
+import errorCode from "./utils/errorCode.js";
 
 async function coinFlip(message, args) {
     if (args.length > 0) {
@@ -67,7 +68,9 @@ function messageEmbed(message, bet, playerSide, gotSide, isWin) {
         "provider": null,
         "files": []
 
-    }))
+    })).catch((err) => {
+        console.log('(CF)'+message.author.id+': '+errorCode[err.code]);
+    });
 }
 
 export default coinFlip;

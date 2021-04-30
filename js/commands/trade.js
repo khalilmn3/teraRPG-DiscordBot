@@ -1,6 +1,7 @@
 import Discord from "discord.js";
 import queryData from "../helper/query.js";
 import { variable } from "../helper/variable.js";
+import errorCode from "../utils/errorCode.js";
 
 async function trade(message, stat, args) {
     let maxZone = stat.max_zone.split('|');
@@ -171,7 +172,10 @@ inline: true
                 height: 0,
                 width: 0
             }
-        }));
+        }))
+        .catch((err) => {
+            console.log('(trade)' + message.author.id + ': ' + errorCode[err.code]);
+        });
     }
 }
 

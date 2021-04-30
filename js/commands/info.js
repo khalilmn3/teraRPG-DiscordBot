@@ -1,6 +1,7 @@
 import { limitedTimeUse } from "../helper/variable.js";
 import Discord from 'discord.js';
 import emojiCharacter from "../utils/emojiCharacter.js";
+import errorCode from "../utils/errorCode.js";
 
 function info(message, args, commandBody) {
     commandBody = commandBody.slice(5);
@@ -89,7 +90,10 @@ function info(message, args, commandBody) {
         return message.channel.send(`Cannot found info related!`);
     }
     
-    message.channel.send(embed(message, name, info, obtain));
+    message.channel.send(embed(message, name, info, obtain))
+        .catch((err) => {
+            console.log('(info)' + message.author.id + ': ' + errorCode[err.code]);
+        });
 }
 
 function embed(message, name, info, obtain) {
