@@ -9,6 +9,8 @@ import errorCode from './utils/errorCode.js';
 async function profile(message, client, id, avatar, args1) {
     let idMention = message.mentions.users.first();
     let tag = message.author.tag
+    let extFormatAvatar = avatar[1].match(/([_])/g);
+    extFormatAvatar = extFormatAvatar ? 'gif' : 'png';
     if (idMention) {
         id = idMention.id;
         avatar = idMention.avatar;
@@ -117,8 +119,8 @@ async function profile(message, client, id, avatar, args1) {
                     inline: true
                 }],
             thumbnail: {
-                url: `https://cdn.discordapp.com/avatars/${id}/${avatar}.png?size=512`,
-                proxyURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${id}/${avatar}.png`,
+                url: `https://cdn.discordapp.com/avatars/${id}/${avatar}.${extFormatAvatar}?size=512`,
+                proxyURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${id}/${avatar}.${extFormatAvatar}`,
                 height: 70,
                 width: 40
             },
