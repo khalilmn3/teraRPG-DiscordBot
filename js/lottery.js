@@ -10,13 +10,17 @@ async function lottery(message, client, args, stat) {
         if (args.length > 1 && parseInt(args[1]) > 0) {
             qty = args[1];
         }
+        let authorTag = message.author.tag;
+        let isStringByte4 = /[\u{10000}-\u{10FFFF}]/u.test(authorTag);
+        authorTag = isStringByte4 ? message.author.id : authorTag;
+        
         let totalTicketPrice = 100 * qty;
         let ticketHold = await queryData(`SELECT ticket FROM lottery WHERE player_id="${message.author.id}" LIMIT 1`);
         ticketHold = ticketHold.length > 0 ? ticketHold[0].ticket : 0;
         if ((parseInt(ticketHold) + parseInt(qty)) <= 10) {
             if (stat.gold >= totalTicketPrice) {
+                await queryData(`INSERT INTO lottery SET player_id="${message.author.id}", username="${authorTag}", ticket=${qty} ON DUPLICATE KEY UPDATE username="${authorTag}", ticket=ticket + ${qty}`)
                 queryData(`UPDATE stat SET gold=gold - ${totalTicketPrice} WHERE player_id="${message.author.id}" LIMIT 1`)
-                await queryData(`INSERT INTO lottery SET player_id="${message.author.id}", username="${message.author.tag}", ticket=${qty} ON DUPLICATE KEY UPDATE username="${message.author.tag}", ticket=ticket + ${qty}`)
                 let lotteryList = await queryData(`SELECT SUM(ticket) as totalTicketSold, COUNT(player_id) as totalParticipant FROM lottery`);
                 let totalPrice = lotteryList.length > 0 ? lotteryList[0].totalTicketSold * 500 : 0;
                 let ticketHold = await queryData(`SELECT ticket FROM lottery WHERE player_id="${message.author.id}" LIMIT 1`);
@@ -50,7 +54,7 @@ async function lottery(message, client, args, stat) {
                 message.reply(`:no_entry_sign: | You don't have enough gold, 1 lottery ticket costs **100** gold`)
             }
         } else {
-            message.reply(`:no_entry_sign: | You can only have maks. 10 Lottery ticket!`)   
+            message.reply(`:no_entry_sign: | You can only have max 10 Lottery ticket!`)   
         }
     } else {
         let lotteryList = await queryData(`SELECT SUM(ticket) as totalTicketSold, COUNT(player_id) as totalParticipant FROM lottery`);
