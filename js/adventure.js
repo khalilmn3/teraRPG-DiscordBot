@@ -20,9 +20,9 @@ async function adventure(message) {
     let cooldowns = await isCommandsReady(message.author.id, 'expedition');
     if (cooldowns.isReady) {
         setCooldowns(message.author.id, 'expedition');
-        let stat = await queryData(`SELECT stat.*, zone.name as biome, IFNULL(itemWeapon.emoji, '') as wEmoji, CONCAT(IFNULL(modifier_weapon.name,"")," ",itemWeapon.name) as weaponName,
+        let stat = await queryData(`SELECT stat.*, zone.name as biome, IFNULL(itemWeapon.emoji, '') as wEmoji, CONCAT(IFNULL(weapon_modifier.name,"")," ",itemWeapon.name) as weaponName,
         weapon.attack,armor1.def as helmetDef,armor2.def as chestDef,armor3.def as pantsDef, utility.bug_net,
-        IFNULL(modifier_weapon.stat_change,0) as weapon_modifier,
+        IFNULL(weapon_modifier.stat_change,0) as weapon_modifier,
         IFNULL(helmet_modifier.stat_change,0) as helmet_modifier,
         IFNULL(shirt_modifier.stat_change,0) as shirt_modifier,
         IFNULL(pants_modifier.stat_change,0) as pants_modifier
@@ -36,10 +36,10 @@ async function adventure(message) {
         LEFT JOIN item as itemArmor2 ON (armor2.item_id = itemArmor2.id)
         LEFT JOIN item as itemArmor3 ON (armor3.item_id = itemArmor3.id)
         LEFT JOIN item as itemWeapon ON (weapon.item_id = itemWeapon.id)
-        LEFT JOIN modifier_weapon ON (equipment.weapon_modifier_id=modifier_weapon.id)
-        LEFT JOIN modifier_armor as helmet_modifier ON (equipment.helmet_modifier_id=helmet_modifier.id)
-        LEFT JOIN modifier_armor as shirt_modifier ON (equipment.shirt_modifier_id=shirt_modifier.id)
-        LEFT JOIN modifier_armor as pants_modifier ON (equipment.pants_modifier_id=pants_modifier.id) 
+        LEFT JOIN modifier as weapon_modifier ON (equipment.weapon_modifier_id=weapon_modifier.id)
+        LEFT JOIN modifier as helmet_modifier ON (equipment.helmet_modifier_id=helmet_modifier.id)
+        LEFT JOIN modifier as shirt_modifier ON (equipment.shirt_modifier_id=shirt_modifier.id)
+        LEFT JOIN modifier as pants_modifier ON (equipment.pants_modifier_id=pants_modifier.id) 
         LEFT JOIN armor_set ON (armor1.armor_set_id=armor_set.id)
         LEFT JOIN utility ON (stat.player_id=utility.player_id)
         LEFT JOIN zone ON (stat.zone_id=zone.id)
