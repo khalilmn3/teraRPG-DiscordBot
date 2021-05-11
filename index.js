@@ -100,6 +100,8 @@ import marketplace from './js/commands/marketplace/marketplace.js';
 import marketRemove from './js/commands/marketplace/marketRemove.js';
 import marketBuy from './js/commands/marketplace/marketBuy.js';
 import errorCode from './js/utils/errorCode.js';
+import food from './js/commands/food.js';
+import prefix from './js/commands/prefix.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -119,7 +121,7 @@ dbl.webhook.on('vote', (vote)=>{
     webhook.send(`${vote.user} has voted`)
 })
 // Command Prefix
-const teraRPGPrefix = config.PREFIX;
+let teraRPGPrefix = config.PREFIX;
 client.on('ready', () => {
     console.log('Ready');
     if (config.SHOW_ACTIVITY) {
@@ -138,18 +140,33 @@ client.on("message", async function (message) {
         // console.log(message.embeds)
         return;
     }
+
+    // Set prefix
+    let modifierPrefix = myCache.get(`prefix${message.guild.id}`);
+    if (!modifierPrefix) {
+        console.log('get')
+        let data = await queryData(`SELECT prefix FROM prefix WHERE guild_id=${message.guild.id} LIMIT 1`);
+        if (data.length > 0) {
+            teraRPGPrefix = data[0].prefix;
+        } else {
+            teraRPGPrefix = config.PREFIX;
+        }
+        myCache.set(`prefix${message.guild.id}`, teraRPGPrefix);
+    } else {
+        teraRPGPrefix = modifierPrefix;
+    }
     // ================================================================================================================================
     // CO COMMAND
     
     if (content.startsWith(teraRPGPrefix)) {
-        const commandBody = message.content.slice(teraRPGPrefix.length).toLowerCase();
+        let commandBody = message.content.slice(teraRPGPrefix.length).toLowerCase();
         let rawArgs = message.content.slice(teraRPGPrefix.length);
         rawArgs = rawArgs.trim().split(/ +/);
         rawArgs.shift();
         const args = commandBody.trim().split(/ +/);
         const command = args.shift().toLowerCase();
         // const command2 = args.shift().toLowerCase();
-        const prefixCommand = teraRPGPrefix + command;
+        const prefixCommand = (content.startsWith(teraRPGPrefix) ? teraRPGPrefix : modifierPrefix) + command;
         const body = message.content.replace(prefixCommand, '');
         if (message.author.id === '668740503075815424') {
             if (command === "repost") {
@@ -278,7 +295,7 @@ client.on("message", async function (message) {
                     if (command == 'exp' || command == 'me' || command == 'chop' || command == 'mine' || command == 'fish' || command == 'mine expedition' || command == 'explore') {
                         
                         // RANDOM INVASION PIRATE
-                        let randomize = randomNumber(1, 100);
+                        let randomize = randomNumber(1, 1000);
                         if (randomize <= 1) {
                             pirate(message,stat);
                         }
@@ -469,6 +486,12 @@ client.on("message", async function (message) {
                     } else if (command === 'marketplace' || command === 'mp') {
                         log(message, commandBody);
                         marketplace(message, args, stat);
+                    } else if (command === 'food' || command === 'fd') {
+                        log(message, commandBody);
+                        food(message, args);
+                    } else if (command === 'prefix') {
+                        log(message, commandBody);
+                        prefix(message, args);
                     }
                 }
             } else if (command === 'start') {
