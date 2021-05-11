@@ -55,6 +55,7 @@ async function duel(message,stat) {
                                 if ( reaction.emoji.name == '❎') {
                                     message2.delete();
                                     message2.channel.send('Challenge, declined')
+                                    deactiveCommand([player1.id, player2.id])
                                 } else {
                                     message2.delete();
                                     // Load player data from DB
