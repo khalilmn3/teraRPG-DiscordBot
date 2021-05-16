@@ -45,7 +45,7 @@ async function fishing(message, stat) {
                         totalExp = parseInt(expNextLevel) - parseInt(totalExp);
                         level = fishingPole.level + 1;
                     }
-                    queryData(`UPDATE fishing_pole SET exp=exp+${totalExp}, level=${level} WHERE player_id="${message.author.id}" LIMIT 1`)
+                    queryData(`UPDATE fishing_pole SET exp=${totalExp}, level=${level} WHERE player_id="${message.author.id}" LIMIT 1`)
                     message.channel.send(`${fishingPole.emoji} | **${message.author.username}** Cast **${fishingPole.name}** and caught a ${junk[randomJunk]['emoji']} **${junk[randomJunk]['name']}**. \na junk? you just trow it away...`)
                 } else {
                     let expGain = itemCatch.exp;
@@ -54,7 +54,7 @@ async function fishing(message, stat) {
                         totalExp = parseInt(expNextLevel) - parseInt(totalExp);
                         level = fishingPole.level + 1;
                     }
-                    queryData(`UPDATE fishing_pole SET exp=exp+${totalExp}, level=${level} WHERE player_id="${message.author.id}" LIMIT 1`)
+                    queryData(`UPDATE fishing_pole SET exp=${totalExp}, level=${level} WHERE player_id="${message.author.id}" LIMIT 1`)
                     queryData(`CALL insert_item_backpack_procedure("${message.author.id}", "${itemCatch.id}", "1")`);
                     message.channel.send(`${fishingPole.emoji} | **${message.author.username}** Cast **${fishingPole.name}** and caught a ${itemCatch.emoji} **${itemCatch.name}**.`)
                 }
