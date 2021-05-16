@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 import currencyFormat from './helper/currency.js';
 import queryData from './helper/query.js';
-import { limitedTimeUse } from './helper/variable.js';
+import { limitedTimeUse, priceList } from './helper/variable.js';
 import emojiCharacter from './utils/emojiCharacter.js';
 import errorCode from './utils/errorCode.js';
 async function shop(message, stat) {
@@ -20,11 +20,11 @@ async function shop(message, stat) {
             },
             {
                 name: `Shop`,
-                value: `<:Apricot:837562146124595222> \`Appricot\` | \`restore +7 HP-\` ${cekDiscountCard ? `~~*75*~~ 60` : '75'} <:gold_coin:801440909006209025>
-                <:Apple:837562146497232906> \`Apple\` | \`restore +10 HP-\` ${cekDiscountCard ? `~~*90*~~ 72` : '90'} <:gold_coin:801440909006209025>
-                <:cookie:837564243695894528> \`Cookie\` | \`restore +30 HP-\` ${cekDiscountCard ? `~~*220*~~ 176` : '220'} <:gold_coin:801440909006209025>
-                <:Apple_Pie:837563511135666227> \`Apple Pie\` | \`restore +100 HP-\` ${cekDiscountCard ? `~~*700*~~ 560` : '700'} <:gold_coin:801440909006209025>
-<:Apprentice_Bait:824271452056059985> \`Apprentice Bait\` | \`15% bait power----\` ${cekDiscountCard ? `~~*75*~~ 60` : '75'} <:gold_coin:801440909006209025>`,
+                value: `<:Apricot:837562146124595222> \`Apricot\` | \`restore +7 HP ----------\` <:gold_coin:801440909006209025>${cekDiscountCard ? `~~*${priceList.apricot.price}*~~ ${priceList.apricot.price - (priceList.apricot.price * 20 / 100)}` : priceList.apricot.price}
+<:Apple:837562146497232906> \`Apple\` | \`restore +10 HP-------------\` <:gold_coin:801440909006209025>${cekDiscountCard ? `~~*${priceList.apple.price}*~~ ${priceList.apple.price - (priceList.apple.price * 20 / 100)}` : priceList.apple.price}
+<:cookie:837564243695894528> \`Cookie\` | \`restore +30 HP------------\` <:gold_coin:801440909006209025>${cekDiscountCard ? `~~*${priceList.cookie.price}*~~ ${priceList.cookie.price - (priceList.cookie.price * 20 / 100)}` : priceList.cookie.price}
+<:Apple_Pie:837563511135666227> \`Apple Pie\` | \`restore +100 HP--------\` <:gold_coin:801440909006209025>${cekDiscountCard ? `~~*${priceList.applePie.price}*~~ ${priceList.applePie.price - (priceList.applePie.price * 20 / 100)}` : priceList.applePie.price}
+<:Apprentice_Bait:824271452056059985> \`Apprentice Bait\` | \`15% bait power---\` <:gold_coin:801440909006209025>${cekDiscountCard ? `~~*${priceList.apprenticeBait.price}*~~ ${priceList.apprenticeBait.price - (priceList.apprenticeBait.price * 20 / 100)}` : priceList.apprenticeBait.price}`,
                 
 // <:Mining_Helmet:824176323194650624> \`Mining Helmet\` | \`eliminate rock when mining--------------\` 35 <:diamond:801441006247084042>`,`
 // <:Ring:824176323219292220> \`Ring\` | \`Marrie me!!!-----------------------------------\` 175 <:diamond:801441006247084042>`,

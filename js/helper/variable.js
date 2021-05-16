@@ -269,7 +269,33 @@ var limitedTimeUse = {
         luckyCoinId: '319',
         dicountCardId: '320'
 }
-                
+
+var priceList = {
+        apricot : {
+                id: '323',
+                price: 30
+        },
+        apple : {
+                id: '322',
+                price: 40
+        },
+        applePie : {
+                id: '339',
+                price: 400
+        },
+        cookie : {
+                id: '341',
+                price: 150
+        },
+        apprenticeBait : {
+                id: '271',
+                price: 75
+        },
+        healingPotion : {
+                id: '266',
+                price: 3000
+        }
+}
 
 
 export {
@@ -277,5 +303,6 @@ export {
         materialList,
         materialUpgradeTool,
         emojiName,
-        limitedTimeUse
+        limitedTimeUse,
+        priceList
 }

@@ -1,7 +1,7 @@
 import currencyFormat from './helper/currency.js';
 import queryData from './helper/query.js';
 import { activeCommand, deactiveCommand } from './helper/setActiveCommand.js';
-import { limitedTimeUse } from './helper/variable.js';
+import { limitedTimeUse, priceList } from './helper/variable.js';
 import symbol from './utils/symbol.js';
 function buy(message, commandsBody) {
     let argument = commandsBody
@@ -35,9 +35,17 @@ function buy(message, commandsBody) {
     // }
     // SHOP ITEM
     else if (itemName == 'healing potion') {
-        queryAddItem(message,message.author.id,1,qty)
+        queryAddItem(message,message.author.id,itemName,priceList.healingPotion.id,priceList.healingPotion.price,qty)
+    } else if (itemName == 'apricot') {
+        queryAddItem(message,message.author.id,itemName,priceList.apricot.id,priceList.apricot.price, qty)
+    } else if (itemName == 'apple') {
+        queryAddItem(message,message.author.id,itemName,priceList.apple.id,priceList.apple.price, qty)
+    } else if (itemName == 'cookie') {
+        queryAddItem(message,message.author.id,itemName,priceList.cookie.id,priceList.cookie.price,qty)
+    } else if (itemName == 'apple pie') {
+        queryAddItem(message,message.author.id,itemName,priceList.applePie.id,priceList.applePie.price,qty)
     } else if (itemName == 'apprentice bait') {
-        queryAddItem(message,message.author.id,2,qty)
+        queryAddItem(message,message.author.id,itemName,priceList.apprenticeBait.id,priceList.apprenticeBait.price,qty)
     } else {
         message.reply('What are you trying to buy, \nCheck the item name with \`tera market\` and \`tera shop\`!');
     }
@@ -90,28 +98,14 @@ async function queryCheckExistItem(message, playerId, toBuyId){
 }
 
 
-async function queryAddItem(message, playerId, toBuyId, amount) {
+async function queryAddItem(message, playerId, itemName, itemId, price, amount) {
     let discountCard = await queryData(`SELECT * FROM backpack WHERE player_id=${message.author.id} AND item_id=${limitedTimeUse.dicountCardId} AND quantity>0 LIMIT 1`);
     discountCard = discountCard.length > 0 ? 20 : 0;
     let gold = await queryData(`SELECT gold FROM stat WHERE player_id="${playerId}" LIMIT 1`);
     gold = gold.length > 0 ? gold[0].gold : 0;
     amount = isNaN(amount) || amount == '0' ? 1 : parseInt(amount);
     if (amount > 0) {
-        let itemId = '';
-        let itemName = '';
-        let price = 0
-        let discPrice = 0;
-        if (toBuyId == 1) {
-            price = 35;
-            discPrice = discountCard ? 35 - (35 * 20 / 100) : 35;
-            itemId = 266 // healing potion
-            itemName = 'healing potion';
-        } else if (toBuyId == 2) {
-            price = 75;
-            discPrice = discountCard ? 75 - (75 * 20 / 100) : 75;
-            itemId = 271 // apprentice bait
-            itemName = 'apprentice bait';
-        }
+        let discPrice = discountCard ? price - (price * 20 / 100) : price;
         price = price * amount;
         discPrice = discPrice * amount;
         let msgDiscountCard = '';

@@ -97,11 +97,11 @@ async function backpack(message, args1) {
             "value": ore ? ore : 'Empty',
             "name": "__ORES__",
             "inline": true
-        },{
+        }, {
             "value": bar ? bar : 'Empty',
             "name": "__BARS__",
             "inline": true
-        },{
+        }, {
             "value": items ? items : 'Empty',
             "name": "__MATERIALS__",
             "inline": true
@@ -127,7 +127,9 @@ async function backpack(message, args1) {
             "proxyIconURL": `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${id}/${avatar}.png`
         },
         "provider": null,
-        "footer": null,
+        "footer": {
+            text: 'use food for displaying food items'
+        },
         "files": []
     })).catch((err) => {
         console.log('(Backpack)'+message.author.id+': '+errorCode[err.code]);

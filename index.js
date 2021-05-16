@@ -487,8 +487,8 @@ client.on("message", async function (message) {
                         log(message, commandBody);
                         marketplace(message, args, stat);
                     } else if (command === 'food' || command === 'fd') {
-                        // log(message, commandBody);
-                        // food(message, args);
+                        log(message, commandBody);
+                        food(message, args);
                     } else if (command === 'prefix') {
                         log(message, commandBody);
                         prefix(message, args);
