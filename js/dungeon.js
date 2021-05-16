@@ -51,10 +51,10 @@ async function dungeon(message, stat) {
             LEFT JOIN item as itemArmor2 ON (armor2.item_id = itemArmor2.id)
             LEFT JOIN item as itemArmor3 ON (armor3.item_id = itemArmor3.id)
             LEFT JOIN item as itemWeapon ON (weapon.item_id = itemWeapon.id)
-            LEFT JOIN modifier_weapon ON (equipment.weapon_modifier_id=modifier_weapon.id)
-            LEFT JOIN modifier_armor as helmet_modifier ON (equipment.helmet_modifier_id=helmet_modifier.id)
-            LEFT JOIN modifier_armor as shirt_modifier ON (equipment.shirt_modifier_id=shirt_modifier.id)
-            LEFT JOIN modifier_armor as pants_modifier ON (equipment.pants_modifier_id=pants_modifier.id) 
+            LEFT JOIN modifier as modifier_weapon ON (equipment.weapon_modifier_id=modifier_weapon.id)
+            LEFT JOIN modifier as helmet_modifier ON (equipment.helmet_modifier_id=helmet_modifier.id)
+            LEFT JOIN modifier as shirt_modifier ON (equipment.shirt_modifier_id=shirt_modifier.id)
+            LEFT JOIN modifier as pants_modifier ON (equipment.pants_modifier_id=pants_modifier.id) 
             LEFT JOIN armor_set ON (armor1.armor_set_id=armor_set.id)
             LEFT JOIN utility ON (stat.player_id=utility.player_id)
             LEFT JOIN zone ON (stat.zone_id=zone.id)
@@ -77,6 +77,14 @@ async function dungeon(message, stat) {
 
         if (playerList[0].sub_zone !== playerList[1].sub_zone) {
             message.channel.send(`All team member must be in the same zone`);
+            return
+        }
+        let p1MaxHp = getMaxHP(playerList[0].basic_hp, playerList[0].level);
+        let percentHp1 = playerList[0].hp / p1MaxHp * 100;
+        let p2MaxHp = getMaxHP(playerList[1].basic_hp, playerList[1].level);
+        let percentHp2 = playerList[1].hp / p2MaxHp * 100;
+        if (percentHp1 <= 50 || percentHp2 <= 50){
+            message.channel.send(`All team member HP must be above 50% to do a dungeon`);
             return
         }
         activeCommand([player1.id, player2.id]);
@@ -110,13 +118,20 @@ async function dungeon(message, stat) {
                 width: 0
             },
             // files: ['https://cdn.discordapp.com/attachments/811586577612275732/811586719198871572/King_Slime_1.png']
-        }).catch((err) => {
-            console.log('(dungeon)'+message.author.id+': '+errorCode[err.code]);
-        });
+        })
         message.channel.send(bossEmbed)
             .then(function (message2) {
                 message2.react('✅').then(() => message2.react('❎'));
-                const filter = (reaction, user) => { return ['✅', '❎'].includes(reaction.emoji.name) && [player1.id, player2.id].includes(user.id) }
+                let userExist = [];
+                const filter = (reaction, user) => {
+                    if (!userExist.includes(user.id)) {
+                        userExist.push(user.id); // Prevent user reaction twice
+                        return ['✅', '❎'].includes(reaction.emoji.name) && [player1.id, player2.id].includes(user.id)
+                    } else {
+                        return false;
+                    }
+                    
+                }
                 message2.awaitReactions(filter, { max: 2, time: 60000, errors: ['time'] })
                     .then(collected => {
                         const reaction = collected.first();
@@ -198,10 +213,8 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
             --------------------------------------------------------
             **${player1Stat.id.username}** [lvl.${player1Stat.level}]
             ${generateIcon(player1Stat.hp, maxPlayer1Stat.hp, true)}  HP ${player1Stat.hp}/${maxPlayer1Stat.hp} 💗 
-            ${generateIcon(player1Stat.mp, maxPlayer1Stat.mp, false)} MP ${player1Stat.mp}/${maxPlayer1Stat.mp} 
             **${player2Stat.id.username}** [lvl.${player2Stat.level}]
-            ${generateIcon(player2Stat.hp, maxPlayer2Stat.hp, true)}  HP ${player2Stat.hp}/${maxPlayer2Stat.hp} 💗
-            ${generateIcon(player2Stat.mp, maxPlayer2Stat.mp, false)} MP ${player2Stat.mp}/${maxPlayer2Stat.mp}`,
+            ${generateIcon(player2Stat.hp, maxPlayer2Stat.hp, true)}  HP ${player2Stat.hp}/${maxPlayer2Stat.hp} 💗`,
             inline: false,
         }],
         // files: ['https://cdn.discordapp.com/attachments/811586577612275732/811586719198871572/King_Slime_1.png']
@@ -286,7 +299,7 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
             type: "rich",
             color: 10115509,
             fields: [{
-                name: `Battle cancelled`,
+                name: `Failed`,
                 value: `You are standing too long, \n**${bossStat.name}** has running away`,
                 inline: false,
             }],
@@ -341,8 +354,7 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
             max: 1,
             time: 60000,
             errors: ['time']
-        })
-            .then(message => {
+        }).then(message => {
                 message = message.first();
                 let dmgToBoss = 0;
                 let commandMessageLog = ``;
@@ -425,9 +437,14 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                     color: 10115509,
                     fields: [{
                         name: `${bossStat.emoji} ${bossStat.name} ${player1Stat.sub_zone == 2 ? `[Hard]` : `[Normal]`}`,
-                        value: `${generateIcon(bossStat.hp,maxBossStat.hp, true)} ${bossStat.hp}/${maxBossStat.hp} 💗\n--------------------------------------------------------\n**${player1Stat.id.username}** [lvl.${player1Stat.level}]\n${generateIcon(player1Stat.hp,maxPlayer1Stat.hp, true)}  HP ${player1Stat.hp}/${maxPlayer1Stat.hp} 💗 \n${generateIcon(player1Stat.mp,maxPlayer1Stat.mp, false)} MP ${player1Stat.mp}/${maxPlayer1Stat.mp} \n**${player2Stat.id.username}** [lvl.${player2Stat.level}]\n${generateIcon(player2Stat.hp,maxPlayer2Stat.hp, true)}  HP ${player2Stat.hp}/${maxPlayer2Stat.hp} 💗\n${generateIcon(player2Stat.mp,maxPlayer2Stat.mp, false)} MP ${player2Stat.mp}/${maxPlayer2Stat.mp}\n--------------------------------------------------------\n${commandMessageLog}`,
+                        value: `${generateIcon(bossStat.hp,maxBossStat.hp, true)} ${Math.floor(bossStat.hp)}/${Math.floor(maxBossStat.hp)} 💗\n--------------------------------------------------------\n**${player1Stat.id.username}** [lvl.${player1Stat.level}]\n${generateIcon(player1Stat.hp,maxPlayer1Stat.hp, true)}  HP ${Math.floor(player1Stat.hp)}/${Math.floor(maxPlayer1Stat.hp)} 💗\n**${player2Stat.id.username}** [lvl.${player2Stat.level}]\n${generateIcon(player2Stat.hp,maxPlayer2Stat.hp, true)}  HP ${Math.floor(player2Stat.hp)}/${Math.floor(maxPlayer2Stat.hp)} 💗`,
                         inline: false,
-                    }],
+                    },
+                        {
+                            name: '--------------------------------------------------------',
+                            value: `${commandMessageLog}`,
+                        }
+                    ],
                     footer: {
                         text: `Turn ${turnX}`,
                         iconURL: null,
@@ -435,10 +452,15 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                     },
                 })
                 message.channel.send(statusMessage)
+                    .catch((err) => {
+                        console.log('(dungeon)' + message.author.id + ': ' + errorCode[err.code]);
+                        return 0;
+                    });
                 return 1;
             })
             .catch((err) => {
-                console.log('(dungeon)' + message.author.id + ': ' + errorCode[err.code]);
+                // console.log('timeout')
+                // console.log('(dungeon)' + msg.author.id + ': ' + errorCode[err.code]);
                 return 0;
             });
     })
