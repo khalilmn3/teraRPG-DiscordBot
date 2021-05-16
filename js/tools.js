@@ -2,6 +2,7 @@ import db from '../db_config.js'
 import Discord from 'discord.js'
 import currencyFormat from './helper/currency.js';
 import queryData from './helper/query.js';
+import errorCode from './utils/errorCode.js';
 
 async function tools(message, args1) {
     let avatar = message.author.avatar;
@@ -41,7 +42,7 @@ async function tools(message, args1) {
             LEFT JOIN tool_tier as axeTier ON (item2.tier = axeTier.id)
         WHERE tools.player_id="${id}" LIMIT 1`
     let data;
-    let fishingPole = await queryData(`SELECT * FROM fishing_pole WHERE player_id=${message.author.id} LIMIT 1`);
+    let fishingPole = await queryData(`SELECT * FROM fishing_pole WHERE player_id=${id} LIMIT 1`);
     fishingPole = fishingPole.length > 0 ? fishingPole[0] : undefined;
     // Get Data
     db.query(query, async function (err, result) {
@@ -99,7 +100,9 @@ async function tools(message, args1) {
 function generateIcon(current, max) {
     let point = Math.round((current / max) * 10);
     point = point < 1 && point > 0 ? 1 : point;
+    point = point > 10 ? 10 : point;
     let lost = 10 - point;
+    lost = lost > 10 ? 10 : lost;
     let pointEmoji = ''
     let lostEmoji = ''
     for (let index = 0; index < point; index++) {

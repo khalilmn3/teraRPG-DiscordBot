@@ -95,9 +95,15 @@ async function servant(message) {
     let randomBattleResult = randomNumber(1, 100);
     let embedResult = '';
 
+    let usersExist = [];
     await message.channel.send(embed).then(async (msg) => {
         const filter = (response) => {
-            return response.content.toLowerCase() === `join ${randomNumberParty}`
+            if (!usersExist.includes(response.author)) {
+                usersExist.push(response.author); // Prevent multiple join
+                return response.content.toLowerCase() === `join ${randomNumberParty}`
+            } else {
+                return false;
+            }
         };
         
          return await msg.channel.awaitMessages(filter, { max:9, time: 20000 })
@@ -160,6 +166,8 @@ async function servant(message) {
         provider: null
     });
     
+    console.log(chance)
+    console.log(randomBattleResult)
     if (randomBattleResult <= chance) {
         embedResult = embedWin;
         // QUEST PROGRESS

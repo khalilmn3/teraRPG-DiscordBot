@@ -65,7 +65,7 @@ async function pirate(message, stat) {
         let userExist = [];
         message.channel.send(embed).then(async (msg) => {
             const filter = (response) => {
-                console.log('filter');
+                // console.log('filter');
                 if (!userExist.includes(response.author)) {
                     userExist.push(response.author);
                     return response.content.toLowerCase() === `fight`    
