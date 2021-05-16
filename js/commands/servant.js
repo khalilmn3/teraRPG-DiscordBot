@@ -62,7 +62,7 @@ async function servant(message) {
         color: 10115509,
         fields: [
             {
-                value: `__Att : ${attack + 3}__\n\nType \`join ${randomNumberParty}\` to help **${message.author.username}**, \nthe more player join in, the higher the chance of winning`,
+                value: `__Att : ${Math.floor(attack + 3)}__\n\nType \`join ${randomNumberParty}\` to help **${message.author.username}**, \nthe more player join in, the higher the chance of winning`,
                 name: `${servants.emoji} ${servants.name} has spawned`
             },
         ],
