@@ -33,8 +33,11 @@ async function suggest(message, client, args, body) {
             proxyIconURL: null
         },
         timestamp: new Date()
-    })).catch((err) => {
-        console.log('(leaderboard)' + message.author.id + ': ' + errorCode[err.code]);
+    })).then(function (message2) {
+        message2.react('<:vote:842559523692216320>')
+        message2.react('<:downvote:842559523372924949>')
+    }).catch((err) => {
+        console.log('(suggest)' + message.author.id + ': ' + errorCode[err.code]);
     });
 
     message.reply('Your suggest has been submitted!')

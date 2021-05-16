@@ -39,7 +39,7 @@ var variable =
 }
 var  materialList = {
         woodenSword:[
-                { id: variable.woodId, name: 'platinum bar', quantity: 25 }
+                { id: variable.woodId, name: 'platinum bar', quantity: 20 }
         ],
         woodenHelmet:[
                 { id: variable.woodId, name: 'platinum bar', quantity: 15 }

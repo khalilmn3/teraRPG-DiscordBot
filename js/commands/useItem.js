@@ -4,8 +4,15 @@ import emojiCharacter from "../utils/emojiCharacter.js";
 import { getTimeNow } from "../utils/utils.js";
 
 async function use(message, commandBody) {
-    commandBody = commandBody.slice(4);
-    if (commandBody == 'lucky coin') {
+    let arrayName = commandBody.match(/[a-zA-Z]+/g);
+    let itemName = '';
+    arrayName = arrayName.splice(1);
+    arrayName.forEach(element => {
+        if (element) {
+            itemName += element;
+        }
+    });
+    if (itemName == 'lucky coin') {
         let cekItem = await queryData(`SELECT * FROM backpack WHERE player_id=${message.author.id} AND item_id=${limitedTimeUse.luckyCoinId} AND quantity>0 LIMIT 1`);
         cekItem = cekItem.length > 0 ? cekItem[0] : undefined;
         if (cekItem) {

@@ -102,6 +102,7 @@ import marketBuy from './js/commands/marketplace/marketBuy.js';
 import errorCode from './js/utils/errorCode.js';
 import food from './js/commands/food.js';
 import prefix from './js/commands/prefix.js';
+import reply from './js/adminCommands/reply.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -144,7 +145,6 @@ client.on("message", async function (message) {
     // Set prefix
     let modifierPrefix = myCache.get(`prefix${message.guild.id}`);
     if (!modifierPrefix) {
-        console.log('get')
         let data = await queryData(`SELECT prefix FROM prefix WHERE guild_id=${message.guild.id} LIMIT 1`);
         if (data.length > 0) {
             teraRPGPrefix = data[0].prefix;
@@ -295,7 +295,7 @@ client.on("message", async function (message) {
                     if (command == 'exp' || command == 'me' || command == 'chop' || command == 'mine' || command == 'fish' || command == 'mine expedition' || command == 'explore') {
                         
                         // RANDOM INVASION PIRATE
-                        let randomize = randomNumber(1, 1000);
+                        let randomize = randomNumber(1, 500);
                         if (randomize <= 1) {
                             pirate(message,stat);
                         }
@@ -487,11 +487,14 @@ client.on("message", async function (message) {
                         log(message, commandBody);
                         marketplace(message, args, stat);
                     } else if (command === 'food' || command === 'fd') {
-                        log(message, commandBody);
-                        food(message, args);
+                        // log(message, commandBody);
+                        // food(message, args);
                     } else if (command === 'prefix') {
                         log(message, commandBody);
                         prefix(message, args);
+                    } else if (command === 'reply') {
+                        log(message, commandBody);
+                        reply(client, message, args, body);
                     }
                 }
             } else if (command === 'start') {
