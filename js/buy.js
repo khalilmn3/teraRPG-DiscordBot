@@ -35,8 +35,10 @@ function buy(message, commandsBody) {
     // }
     // SHOP ITEM
     else if (itemName == 'healing potion') {
-        queryAddItem(message,message.author.id,itemName,priceList.healingPotion.id,priceList.healingPotion.price,qty)
-    } else if (itemName == 'apricot') {
+        // queryAddItem(message,message.author.id,itemName,priceList.healingPotion.id,priceList.healingPotion.price,qty)
+        message.channel.send('This item is currently out of stock');
+    }
+    else if (itemName == 'apricot') {
         queryAddItem(message,message.author.id,itemName,priceList.apricot.id,priceList.apricot.price, qty)
     } else if (itemName == 'apple') {
         queryAddItem(message,message.author.id,itemName,priceList.apple.id,priceList.apple.price, qty)

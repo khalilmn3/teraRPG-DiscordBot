@@ -89,7 +89,7 @@ async function food(message, args1) {
     message.channel.send(new Discord.MessageEmbed({
         "type": "rich",
         "title": null,
-        "description": null,
+        "description": 'Use \`tera eat [item] [qty]\`\nto restore some hp',
         "url": null,
         "color": 10115509,
         "timestamp": null,
@@ -105,14 +105,11 @@ async function food(message, args1) {
             width: 0,
         },
         "author": {
-            "name": `${username}'s backpack`,
+            "name": `${username}'s food`,
             "url": null,
             "iconURL": `https://cdn.discordapp.com/avatars/${id}/${avatar}.png?size=512`,
             "proxyIconURL": `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${id}/${avatar}.png`
-        },
-        "provider": null,
-        "footer": null,
-        "files": []
+        }
     })).catch((err) => {
         console.log('(food)'+message.author.id+': '+errorCode[err.code]);
     });
