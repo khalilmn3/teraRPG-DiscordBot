@@ -88,10 +88,10 @@ async function junken(message,stat) {
                                 const reaction = collected.first();
                                 if ( reaction.emoji.name == '❎') {
                                     message2.delete();
-                                    message2.channel.send('declined')
+                                    message.channel.send('declined')
                                 } else {
                                     message2.delete();
-                                    message2.channel.send(embed)
+                                    message.channel.send(embed)
                                     
                                     let winner;
                                     let player1winCount = 0;
@@ -100,11 +100,11 @@ async function junken(message,stat) {
                                     var myFunc01 = async function () {
                                         setTimeout(async function () {
                                             let dm1 = new Promise(async (resolve, reject) => {
-                                                junkenResult.player1 = await play(message.author);
+                                                junkenResult.player1 = await play(message,player1);
                                                 resolve();
                                             })
                                             let dm2 = new Promise(async (resolve, reject) => {
-                                                junkenResult.player2 = await play(player2);
+                                                junkenResult.player2 = await play(message, player2);
                                                 resolve();
                                             })
                                                 
@@ -182,22 +182,22 @@ async function junken(message,stat) {
                                                 } else {
                                                     let finalWinner = player1winCount > player2winCount ? player1 : player1winCount < player2winCount ? player2 : lowLevelPlayer;
                                                     let finalLooser = finalWinner == player1 ? player2 : player1;
-                                                    console.log(lowLevelPlayer);
+                                                    // console.log(lowLevelPlayer);
                                                     let data = await queryData(`SELECT level, basic_hp, basic_mp, hp, mp, current_experience FROM stat WHERE player_id="${finalWinner.id}" LIMIT 1`);
                                                     data = data[0]
-                                                    let exp = (50 * Math.pow(data.level, 3) - 150 * Math.pow(data.level, 2) + 400 * (data.level)) / 3 / 20
+                                                    let exp = (((data.level - 1) * (data.level - 2) / 2 + 1) * 100) / 100;
                                                     let winnerTag = `\`${finalWinner.tag}\``;
                                                     let rewards = `\`+${currencyFormat(exp)} exp\``;
                                                     // DRAW RESULT
                                                     if (player1winCount == player2winCount) {
-                                                        exp = exp / 2;
+                                                        exp = Math.floor(exp / 2);
                                                         winnerTag = '\`Draw\`'
                                                         rewards = `\`+${currencyFormat(exp)} exp each player\``;
                                                         let data1 = await queryData(`SELECT level, basic_hp, basic_mp, hp, mp, current_experience FROM stat WHERE player_id="${player1.id}" LIMIT 1`);
                                                         let data2 = await queryData(`SELECT level, basic_hp, basic_mp, hp, mp, current_experience FROM stat WHERE player_id="${player2.id}" LIMIT 1`);
                                                         
-                                                        addExpGold(message, player1, data1, exp, 0, data1)
-                                                        addExpGold(message, player2, data2, exp, 0, data2)
+                                                        addExpGold(message, player1, data1[0], exp, 0, data1[0])
+                                                        addExpGold(message, player2, data2[0], exp, 0, data2[0])
                                                     } else { 
                                                         addExpGold(message, finalWinner, data, exp, 0, data)
                                                         
@@ -258,7 +258,7 @@ async function junken(message,stat) {
     }
 }
 
-async function play(player, result) {    
+async function play(message, player, result) {    
     let choose = new Discord.MessageEmbed({
         type: "rich",
         description: null,
