@@ -1,10 +1,11 @@
 import Discord from 'discord.js';
 import queryData from './helper/query.js';
 import errorCode from './utils/errorCode.js';
-function report(message, client, args, body) {
-    let id = 0;
+async function report(message, client, args, body) {
     if (!args[0]) { return message.channel.send('Usage \`tera report [report]\`.') }
     queryData(`INSERT report SET player_id=${message.author.id}, report="${body}"`);
+    let id = await queryData(`SELECT * FROM report WHERE player_id=${message.author.id} ORDER BY id DESC LIMIT 1`);
+    id = id.length > 0 ? id[0].id : 0;
     client.channels.cache.get('818360338063163402').send(new Discord.MessageEmbed({
         type: "rich",
         description: null,

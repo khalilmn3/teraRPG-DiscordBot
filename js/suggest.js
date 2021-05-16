@@ -1,10 +1,11 @@
 import Discord from 'discord.js';
 import queryData from './helper/query.js';
 import errorCode from './utils/errorCode.js';
-function suggest(message, client, args, body) {
-    let id = 0;
+async function suggest(message, client, args, body) {
     if(!args[0]){ return message.channel.send('Usage \`tera suggest [suggestion]\`.')}
     queryData(`INSERT suggest SET player_id=${message.author.id}, suggest="${body}"`);
+    let id = await queryData(`SELECT * FROM suggest WHERE player_id=${message.author.id} ORDER BY id DESC LIMIT 1`);
+    id = id.length > 0 ? id[0].id : 0;
     client.channels.cache.get('818360315493613580').send(new Discord.MessageEmbed({
         type: "rich",
         description: null,
@@ -16,7 +17,7 @@ function suggest(message, client, args, body) {
             inline: false,
         },
         {
-            name: `Suggesttion`,
+            name: `Suggestion`,
             value: `${body}`,
             inline: false,
         }],
