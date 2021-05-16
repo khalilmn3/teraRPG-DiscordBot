@@ -61,26 +61,37 @@ async function pirate(message, stat) {
         message.channel.send(embedNotif1)
     setTimeout(() => {
         console.log(`pirate has landing on: ${message.guild.id}`)
+        let users = [];
+        let userExist = [];
         message.channel.send(embed).then(async (msg) => {
             const filter = (response) => {
-                return response.content.toLowerCase() === `fight`
+                console.log('filter');
+                if (!userExist.includes(response.author)) {
+                    userExist.push(response.author);
+                    return response.content.toLowerCase() === `fight`    
+                } else {
+                    return false;
+                }
             };
             
             let usersJoin = 0;
-            let users = [];
             let winChance = 60;
             let randomGold = randomNumber(500, 1000);
             let goldWin = (randomGold * stat.level) / 10;
-            await msg.channel.awaitMessages(filter, { max: 10, time: 20000 })
+            await msg.channel.awaitMessages(filter, { max: 5, time: 20000 })
                 .then(collected => {
+                    let message = collected.first();
                     collected.forEach((element) => { 
                         let player = element.author;
-                        usersJoin++;
-                        winChance += 5;
-                        users.push(player);
+                        if (!users.includes(player)) {
+                            usersJoin++;
+                            winChance += 5;
+                            users.push(player);
+                        }
                     })
                 })
             winChance = winChance > 100 ? 100 : winChance;
+            // console.log(winChance);
             goldWin = Math.floor(goldWin * usersJoin);
             let luckyCoinWin = '';
             let discountCardWin = '';
@@ -91,38 +102,42 @@ async function pirate(message, stat) {
                     let random1 = '';
                     let random2 = '';
                     let random3 = randomNumber(0, usersJoin - 1);
-                    // drop chance lucky coin
-                    if (uniqueDropChance <= 25) {
-                        random1 = randomNumber(0, usersJoin - 1);
-                        luckyCoinWin = users[random1];
-                        queryData(`CALL insert_item_backpack_procedure(${luckyCoinWin.id}, 319, 1)`)
-                    }
+                    // console.log(uniqueDropChance);
                     // drop chance discount card
-                    if (uniqueDropChance <= 15) {
+                    if (uniqueDropChance <= 10) {
                         random2 = randomNumber(0, usersJoin - 1);
                         if (random2 != random1) {
                             discountCardWin = users[random2];
                             queryData(`CALL insert_item_backpack_procedure(${discountCardWin.id}, 320, 1)`)
                         }
                     }
+
+                    // drop chance lucky coin
+                    if (uniqueDropChance <= 15) {
+                        random1 = randomNumber(0, usersJoin - 1);
+                        luckyCoinWin = users[random1];
+                        queryData(`CALL insert_item_backpack_procedure(${luckyCoinWin.id}, 319, 1)`)
+                    }
+                    
                     // drop chance cutlass
+                    if(uniqueDropChance <= 16)
                     if (random3 != random2 && random3 != random1) {
                         cutlassWin = users[random3];
-                        let armorySlot = await queryData(`SELECT * FROM armory WHERE player_id=${cutlassWin.id} limit 5`);
+                        let armorySlot = await queryData(`SELECT * FROM armory2 LEFT JOIN item ON (armory2.item_id=item.id) WHERE player_id=${cutlassWin.id} AND item.type_id=9 limit 5`);
                         if (armorySlot.length > 0) {
                             let freeSlot = 0;
                             armorySlot.forEach(element => {
-                                if (element.weapon_id == 0) {
+                                if (element.item_id == 0) {
                                     freeSlot = 1;
                                 }
                             })
                             if (freeSlot > 0) {
-                                queryData(`UPDATE armory SET weapon_id=24 WHERE player_id=${cutlassWin.id} AND weapon_id=FALSE LIMIT 1`);
+                                queryData(`UPDATE armory2 SET item_id=321 WHERE player_id=${cutlassWin.id} AND item_id=0 LIMIT 1`);
                             } else if (armorySlot.length < 5) {
-                                queryData(`INSERT armory SET player_id=${cutlassWin.id}, weapon_id=24`);    
+                                queryData(`INSERT armory2 SET player_id=${cutlassWin.id}, item_id=321`);    
                             }
                         } else {
-                            queryData(`INSERT armory SET player_id=${cutlassWin.id}, weapon_id=24`);
+                            queryData(`INSERT armory2 SET player_id=${cutlassWin.id}, item_id=321`);
                         }
                     }
                 }
@@ -170,6 +185,7 @@ async function pirate(message, stat) {
             });
             if (playerGold || luckyCoinWin || discountCardWin || cutlassWin) {
                 let winRandom = randomNumber(1, 100);
+                // console.log(winRandom)
                 if (winRandom <= winChance) {
                     message.channel.send(embed2)
                     .catch((err) => {
@@ -187,9 +203,10 @@ async function pirate(message, stat) {
                     console.log('(pirate4)' + message.author.id + ': ' + errorCode[err.code]);
                 });
             }
-        }).catch((err) => {
-            console.log('(pirate)' + message.author.id + ': ' + errorCode[err.code]);
-        });
+        })
+        //     .catch((err) => {
+        //     // console.log('(pirate)' + message.author.id + ': ' + errorCode[err.code]);
+        // });
     }, 10000)
 }
 
