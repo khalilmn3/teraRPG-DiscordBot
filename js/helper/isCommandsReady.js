@@ -7,10 +7,10 @@ async function isCommandsReady(playerId, commands, zone) {
     let currentTime = new Date().getTime() / 1000;
     if (commands === 'explore') {
         field = 'explore'
-        timeLimit = 60
+        timeLimit = 60/2
     } else if (commands === 'work') {
         field = 'work'
-        timeLimit = 300
+        timeLimit = 300/2
     } else if (commands === 'vote') {
         field = 'vote'
         timeLimit = 43200
@@ -25,16 +25,16 @@ async function isCommandsReady(playerId, commands, zone) {
         timeLimit = 604800
     } else if (commands === 'fish') {
         field = 'fish'
-        timeLimit = 5400
+        timeLimit = 5400/2
     } else if (commands === 'junken') {
         field = 'junken'
-        timeLimit = 3600
+        timeLimit = 3600/2
     } else if (commands === 'dungeon') {
         field = 'dungeon'
-        timeLimit = 43200
+        timeLimit = 43200/2
     } else if (commands === 'expedition') {
         field = 'expedition'
-        timeLimit = 1800
+        timeLimit = 1800/2
     } else if (commands === 'quest') {
         field = 'quest'
         timeLimit = 10800

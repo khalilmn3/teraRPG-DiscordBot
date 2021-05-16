@@ -17,15 +17,15 @@ async function cooldowns(message, command, args1) {
     let cooldowns = await queryData(`SELECT * FROM cooldowns WHERE player_id="${id}" LIMIT 1`);
     let currentTime = Math.round(new Date().getTime() / 1000);
     cooldowns = cooldowns.length > 0 ? cooldowns[0] : 0;
-    let explore = (currentTime - cooldowns.explore) > 60 ? 0 : 60 - (currentTime - cooldowns.explore);
-    let expedition = (currentTime - cooldowns.expedition) > 1800 ? 0 : 1800 - (currentTime - cooldowns.expedition);
-    let work = (currentTime - cooldowns.work) > 300 ? 0 : 300 - (currentTime - cooldowns.work);
+    let explore = (currentTime - cooldowns.explore) > (60/2) ? 0 : (60/2) - (currentTime - cooldowns.explore);
+    let expedition = (currentTime - cooldowns.expedition) > (1800/2) ? 0 : (1800/2) - (currentTime - cooldowns.expedition);
+    let work = (currentTime - cooldowns.work) > (300/2) ? 0 : (300/2) - (currentTime - cooldowns.work);
     let quest = (currentTime - cooldowns.quest) > 10800 ? 0 : 10800 - (currentTime - cooldowns.quest);
     // TODO hourly reward
         // let hourly = (currentTime - cooldowns.hourly) > 3600 ? 0 : 3600 - (currentTime - cooldowns.hourly);
-        let junken = (currentTime - cooldowns.junken) > 3600 ? 0 : 3600 - (currentTime - cooldowns.junken);
-        let fish = (currentTime - cooldowns.fish) > 5400 ? 0 : 5400 - (currentTime - cooldowns.fish);
-        let dungeon = (currentTime - cooldowns.dungeon) > 43200 ? 0 : 43200 - (currentTime - cooldowns.dungeon);
+        let junken = (currentTime - cooldowns.junken) > (3600/2) ? 0 : (3600/2) - (currentTime - cooldowns.junken);
+        let fish = (currentTime - cooldowns.fish) > (5400/2) ? 0 : (5400/2) - (currentTime - cooldowns.fish);
+        let dungeon = (currentTime - cooldowns.dungeon) > (43200/2) ? 0 : (43200/2) - (currentTime - cooldowns.dungeon);
         let daily = (currentTime - cooldowns.daily) > 86400 ? 0 : 86400 - (currentTime - cooldowns.daily);
         let weekly = (currentTime - cooldowns.weekly) > 604800 ? 0 : 604800 - (currentTime - cooldowns.weekly);
     let vote = (currentTime - cooldowns.vote) > 43200 ? 0 : 43200 - (currentTime - cooldowns.vote);
