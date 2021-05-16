@@ -1,5 +1,6 @@
 import { getMaxHP } from './helper/getBattleStat.js';
 import queryData from './helper/query.js';
+import emojiCharacter from './utils/emojiCharacter.js';
 
 async function healingPotion(message, client, id, username) { 
     
@@ -19,10 +20,10 @@ async function healingPotion(message, client, id, username) {
                 message.channel.send(`**${username}** current HP is maxed out.`)
             }
         } else {
-            message.reply(`you don't have <:Healing_Potion:810747622859735100>**healing potion**\nbuy some on \`shop\``);
+            message.reply(`${emojiCharacter.noEntry} | you don't have <:Healing_Potion:810747622859735100>**healing potion**\nbuy some on \`shop\``);
         }
     } else {
-        message.reply(`you don't have <:Healing_Potion:810747622859735100>**healing potion**\nbuy some on \`shop\``);
+        message.reply(`${emojiCharacter.noEntry} | you don't have <:Healing_Potion:810747622859735100>**healing potion**\nbuy some on \`shop\``);
     }
 }
 

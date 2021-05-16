@@ -20,7 +20,7 @@ async function shop(message, stat) {
             },
             {
                 name: `Shop`,
-                value: `<:Apricot:837562146124595222> \`Apricot\` | \`restore +7 HP ----------\` <:gold_coin:801440909006209025>${cekDiscountCard ? `~~*${priceList.apricot.price}*~~ ${priceList.apricot.price - (priceList.apricot.price * 20 / 100)}` : priceList.apricot.price}
+                value: `<:Apricot:837562146124595222> \`Apricot\` | \`restore +7 HP -----------\` <:gold_coin:801440909006209025>${cekDiscountCard ? `~~*${priceList.apricot.price}*~~ ${priceList.apricot.price - (priceList.apricot.price * 20 / 100)}` : priceList.apricot.price}
 <:Apple:837562146497232906> \`Apple\` | \`restore +10 HP-------------\` <:gold_coin:801440909006209025>${cekDiscountCard ? `~~*${priceList.apple.price}*~~ ${priceList.apple.price - (priceList.apple.price * 20 / 100)}` : priceList.apple.price}
 <:cookie:837564243695894528> \`Cookie\` | \`restore +30 HP------------\` <:gold_coin:801440909006209025>${cekDiscountCard ? `~~*${priceList.cookie.price}*~~ ${priceList.cookie.price - (priceList.cookie.price * 20 / 100)}` : priceList.cookie.price}
 <:Apple_Pie:837563511135666227> \`Apple Pie\` | \`restore +100 HP--------\` <:gold_coin:801440909006209025>${cekDiscountCard ? `~~*${priceList.applePie.price}*~~ ${priceList.applePie.price - (priceList.applePie.price * 20 / 100)}` : priceList.applePie.price}

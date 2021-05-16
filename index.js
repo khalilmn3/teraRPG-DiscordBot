@@ -103,6 +103,7 @@ import errorCode from './js/utils/errorCode.js';
 import food from './js/commands/food.js';
 import prefix from './js/commands/prefix.js';
 import reply from './js/adminCommands/reply.js';
+import eatFood from './js/commands/eat.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -268,7 +269,7 @@ client.on("message", async function (message) {
         }
         if (command != '') {
             // FIND USER REGISTRATION
-            let isUserRegistred = await queryData(`SELECT id, active_command, depth, zone_id, max_zone, sub_zone, is_active, stat.gold, stat.level, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${message.author.id} LIMIT 1`)
+            let isUserRegistred = await queryData(`SELECT id, active_command, depth, zone_id, max_zone, sub_zone, is_active, stat.gold, stat.level, stat.hp, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${message.author.id} LIMIT 1`)
             if (waitingTime.has(message.author.id)) {
                 message.reply("Wait at least 1 second before getting typing this again.");
                 return;
@@ -489,6 +490,9 @@ client.on("message", async function (message) {
                     } else if (command === 'food' || command === 'fd') {
                         log(message, commandBody);
                         food(message, args);
+                    } else if (command === 'eat') {
+                        log(message, commandBody);
+                        eatFood(message, stat, commandBody);
                     } else if (command === 'prefix') {
                         log(message, commandBody);
                         prefix(message, args);
