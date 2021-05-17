@@ -79,6 +79,7 @@ async function dungeon(message, stat) {
             message.channel.send(`All team member must be in the same zone`);
             return
         }
+        
         let p1MaxHp = getMaxHP(playerList[0].basic_hp, playerList[0].level);
         let percentHp1 = playerList[0].hp / p1MaxHp * 100;
         let p2MaxHp = getMaxHP(playerList[1].basic_hp, playerList[1].level);

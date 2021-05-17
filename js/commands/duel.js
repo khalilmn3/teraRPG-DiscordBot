@@ -28,7 +28,9 @@ async function duel(message,stat) {
             return;
         }
 
-        let isPlayer2Registered = await queryData(`SELECT id, level FROM player LEFT JOIN stat ON (player.id = stat.player_id)  WHERE id="${player2.id}" && is_active="1" LIMIT 1`);
+
+
+        let isPlayer2Registered = await queryData(`SELECT id, level, hp, basic_hp FROM player LEFT JOIN stat ON (player.id = stat.player_id)  WHERE id="${player2.id}" && is_active="1" LIMIT 1`);
         
         if (isPlayer2Registered.length > 0) {
             let lowLevelPlayer = stat.level > isPlayer2Registered[0].level ? player2 : player1;
@@ -37,7 +39,18 @@ async function duel(message,stat) {
             //     message.reply('Both user has to be level 5 above to do junken!');
             //     return;
             // }
-
+            
+            let p1MaxHp = getMaxHP(stat.basic_hp, stat.level);
+            let percentHp1 = stat.hp / p1MaxHp * 100;
+            let p2MaxHp = getMaxHP(isPlayer2Registered[0].basic_hp, isPlayer2Registered[0].level);
+            let percentHp2 = isPlayer2Registered[0].hp / p2MaxHp * 100;
+            if (percentHp1 <= 50 || percentHp2 <= 50) {
+                if (percentHp1 <= 50) {
+                    return message.channel.send(`${emojiCharacter.noEntry} | **${player1.username}** has below 50% HP, please heal first!`)
+                } else {
+                    return message.channel.send(`${emojiCharacter.noEntry} | **${player2.username}** has below 50% HP, please heal first!`)
+                }
+            }
             
             let junkenResult = {
                 player1: '',
@@ -53,11 +66,11 @@ async function duel(message,stat) {
                             .then(async collected => {
                                 const reaction = collected.first();
                                 if ( reaction.emoji.name == '❎') {
-                                    message2.delete();
+                                    message.delete();
                                     message2.channel.send('Challenge, declined')
                                     deactiveCommand([player1.id, player2.id])
                                 } else {
-                                    message2.delete();
+                                    message.delete();
                                     // Load player data from DB
                                     let playerData = await getPlayerData(player1, player2);
                                     let player1Stat = {
@@ -172,14 +185,15 @@ async function duel(message,stat) {
                                                     if (chance <= 40) {
                                                         combat2Detail = `Successfully dodge the attack and take no damage`;
                                                         if (chance <= 5) {
-                                                            let damage = Math.floor(calculateDamage(player2Stat.attack, player2Stat.def));
+                                                            let damage = Math.floor(calculateDamage(player1Stat.attack, player1Stat.def));
+                                                            damage = Math.floor(damage / 2);
                                                             player1Stat.hp = player1Stat.hp - damage;
                                                             combat2Detail = `Successfully dodge the attack and using stab deal ${damage} dmg `
                                                         }
                                                         combat1Detail = `Basic attack dealt 0 dmg`;
                                                     } else {
                                                         combat2Detail = `Failed dodge the attack and received ${damage} dmg`;
-                                                        player1Stat.hp = player1Stat.hp - damage;
+                                                        player2Stat.hp = player2Stat.hp - damage;
                                                     }
                                                 } else {
                                                     player2Stat.hp = player2Stat.hp - damage;
@@ -231,13 +245,14 @@ async function duel(message,stat) {
                                                         combat1Detail = `Successfully dodge the attack and take no damage`;
                                                         if (chance <= 5) {
                                                             let damage = Math.floor(calculateDamage(player1Stat.attack, player1Stat.def));
+                                                            damage = Math.floor(damage / 2);
                                                             player2Stat.hp = player2Stat.hp - damage;
                                                             combat1Detail = `Successfully dodge the attack and using stab deal ${damage} dmg `
                                                         }
                                                         combat2Detail = `Basic attack dealt 0 dmg`;
                                                     } else {
                                                         combat1Detail = `Failed to dodge the attack and received ${damage} dmg`;
-                                                        player2Stat.hp = player2Stat.hp - damage;
+                                                        player1Stat.hp = player1Stat.hp - damage;
                                                     }
                                                 } else {
                                                     player1Stat.hp = player1Stat.hp - damage;
