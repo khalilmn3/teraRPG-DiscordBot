@@ -189,10 +189,10 @@ async function openCrate(client, message, args, stat) {
                 let pantsID = 'pants_id="24"';
                 // queryData(`INSERT equipment SET ${weaponID}, ${helmetID}, ${shirtID}, ${pantsID}, player_id="${message.author.id}"
                 //     ON DUPLICATE KEY UPDATE ${weaponID}, ${helmetID}, ${shirtID}, ${pantsID}`);
-                queryData(`INSERT armory2 SET itemid='16' WHERE player_id=${message.author.id} LIMIT 1`);
-                queryData(`INSERT armory2 SET itemid='22' WHERE player_id=${message.author.id} LIMIT 1`);
-                queryData(`INSERT armory2 SET itemid='23' WHERE player_id=${message.author.id} LIMIT 1`);
-                queryData(`INSERT armory2 SET itemid='24' WHERE player_id=${message.author.id} LIMIT 1`);
+                queryData(`INSERT armory2 SET item_id='278', player_id=${message.author.id}`);
+                queryData(`INSERT armory2 SET item_id='279', player_id=${message.author.id}`);
+                queryData(`INSERT armory2 SET item_id='280', player_id=${message.author.id}`);
+                queryData(`INSERT armory2 SET item_id='281', player_id=${message.author.id}`);
                 
                 queryData(`UPDATE backpack SET quantity=0 WHERE player_id="${message.author.id}" AND item_id="282" LIMIT 1`);
                 queryData(`CALL insert_item_backpack_procedure(${message.author.id}, 266, 10)`);

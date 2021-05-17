@@ -44,7 +44,7 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `\`ping\`,\`invite\`,\`report\`,\`suggest\`,\`donate\`, \`notification\``,
+                    value: `\`ping\`,\`invite\`,\`report\`,\`suggest\`,\`donate\`, \`notification\`, \`prefix\``,
                     name: ":gear: __UTILITY__",
                     inline: false
                 }],
