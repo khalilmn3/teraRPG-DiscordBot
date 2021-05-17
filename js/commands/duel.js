@@ -66,11 +66,11 @@ async function duel(message,stat) {
                             .then(async collected => {
                                 const reaction = collected.first();
                                 if ( reaction.emoji.name == '❎') {
-                                    message.delete();
-                                    message2.channel.send('Challenge, declined')
+                                    message2.delete();
+                                    message.channel.send('Challenge, declined')
                                     deactiveCommand([player1.id, player2.id])
                                 } else {
-                                    message.delete();
+                                    message2.delete();
                                     // Load player data from DB
                                     let playerData = await getPlayerData(player1, player2);
                                     let player1Stat = {
@@ -121,7 +121,7 @@ async function duel(message,stat) {
                                             text: `Battle will begins in 5 minutes`
                                         }
                                     });
-                                    message2.channel.send(embed)
+                                    message.channel.send(embed)
                                     var repeat = async function () {
                                         setTimeout(async () => {
                                             let dm1 = new Promise(async (resolve, reject) => {
@@ -282,8 +282,11 @@ async function duel(message,stat) {
                                             player1Stat.hp = player1Stat.hp > 0 ? player1Stat.hp : 0;
                                             player2Stat.hp = player2Stat.hp > 0 ? player2Stat.hp : 0;
                                             if (junkenResult.player1 == 0 && junkenResult.player2 == 0) {
-                                                message.channel.send('Both user not responding the DM, Duel cancelled!');
                                                 deactiveCommand([player1.id, player2.id])
+                                                return message.channel.send('Both user not responding the DM, Duel cancelled!');
+                                            } else if (junkenResult.player1 == '♿' && junkenResult.player2 == '♿' || junkenResult.player1 == 0 && junkenResult.player2 == '♿' || junkenResult.player2 == 0 && junkenResult.player1 == '♿') {
+                                                deactiveCommand([player1.id, player2.id])
+                                                return message.channel.send('Both user has flee away from the battle!');
                                             } else {
                                                 let footerText = '';
                                                 let status1 = '';
@@ -293,7 +296,7 @@ async function duel(message,stat) {
                                                 let rating1 = 0;
                                                 let rating2 = 0;
                                                 let fieldRewards = null;
-                                                if (player2Stat.hp > 0 && player1Stat.hp > 0 && junkenResult.player1 !== '♿' && junkenResult.player2 !== '♿') {
+                                                if (player2Stat.hp > 0 && player1Stat.hp > 0 && junkenResult.player1 !== '♿' && junkenResult.player2 !== '♿' && junkenResult.player2 !== 0 && junkenResult.player1 !== 0) {
                                                     footerText = `Next round will begins in 5 seconds!`;
                                                     repeat();
                                                 } else {
@@ -301,7 +304,7 @@ async function duel(message,stat) {
                                                     let rewards = '';
                                                     let exp = 0;
                                                     if (player1Stat.hp <= 0 || junkenResult.player1 === '♿' || junkenResult.player1 === 0) {
-                                                        combat1Title = junkenResult.player1 === '♿' ? `🪦 ${player1.username} has flee away` : `🪦 ${player1.username} has knock down`
+                                                        combat1Title = junkenResult.player1 === '♿' ? `🪦 ${player1.username} has flee away` : player1Stat.hp <= 0 ? `🪦 ${player1.username} has knock down` : combat1Title;
                                                         combat1Detail = `and cannot continue the battle`
                                                         status1 = '🪦 '
                                                         status2 = '👑 '
@@ -321,7 +324,7 @@ async function duel(message,stat) {
                                                         queryData(`INSERT duel SET player_id=${player2.id}, points=${rating2}, battles=1 ON DUPLICATE KEY UPDATE points=${rating2}, battles=battles+1`);
                                                     } else if (player2Stat.hp <= 0 ||  junkenResult.player2 === '♿' || junkenResult.player2 === 0) {
                                                         
-                                                        combat2Title = junkenResult.player2 === '♿' ? `🪦 ${player2.username} has flee away` : `🪦 ${player2.username} has knock down`
+                                                        combat2Title = junkenResult.player2 === '♿' ? `🪦 ${player2.username} has flee away` : player2Stat.hp <= 0 ? `🪦 ${player2.username} has knock down` : combat2Title;
                                                         combat2Detail = `and cannot continue the battle`
                                                         status1 = '👑 '
                                                         status2 = '🪦 '

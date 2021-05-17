@@ -4,7 +4,25 @@ import queryData from '../helper/query.js';
 import emojiCharacter from '../utils/emojiCharacter.js';
 import errorCode from '../utils/errorCode.js';
 
-async function armory(message) {
+async function armory(message, args1) {
+    let avatar = message.author.avatar;
+    let id = message.author.id;
+    let username = message.author.username;
+    
+    let idMention = message.mentions.users.first();
+    let tag = message.author.tag
+    if (idMention) {
+        id = idMention.id;
+        avatar = idMention.avatar;
+        tag =  idMention.tag;
+        username = idMention.username;
+    }
+    if (message.author.id === '668740503075815424') {
+        if (parseInt(args1) > 0) {
+            id = args1;
+            username = args1;
+        }
+    }
     let armory = await queryData(`SELECT
         armory2.id, item.emoji,IF(item.type_id=9,IFNULL(weapon.attack,0), IFNULL(armor.def,0)) as atdef, IFNULL(modifier.stat_change,0) as statChange,
         IF(item.type_id=9, IFNULL(weapon.level_required,0), IFNULL(armor.level_required,0)) as level,
@@ -16,7 +34,7 @@ async function armory(message) {
         LEFT JOIN weapon ON (armory2.item_id=weapon.item_id)
         LEFT JOIN armor ON (armory2.item_id=armor.item_id)
         LEFT JOIN modifier ON (armory2.modifier_id=modifier.id)
-        WHERE player_id=${message.author.id}
+        WHERE player_id=${id}
         AND armory2.item_id>0
         `)
     let weapon = '';
@@ -112,10 +130,10 @@ async function armory(message) {
             "image": null,
             "video": null,
             "author": {
-                "name": `${message.author.username}'s armory`,
+                "name": `${username}'s armory`,
                 "url": null,
-                "iconURL": `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
-                "proxyIconURL": `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
+                "iconURL": `https://cdn.discordapp.com/avatars/${id}/${avatar}.png?size=512`,
+                "proxyIconURL": `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${id}/${avatar}.png`
             },
             footer: {
                 text: 'Use \'tera info armory\' for more detail'
