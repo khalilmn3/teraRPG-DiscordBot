@@ -26,34 +26,29 @@ async function processReforge(message, equipmentSlot,  modifierMode) {
     let queryCondition = '';
     let eqMsg = '';
     let field = '';
-    let joinField = '';
     if (equipmentSlot == 1) {
         queryCondition = 'LEFT JOIN weapon ON (equipment.weapon_id=weapon.id) LEFT JOIN item ON (weapon.item_id=item.id)';
         eqMsg = 'weapon';
         field = 'weapon_modifier_id';
-        joinField = 'modifier_weapon';
     } else if (equipmentSlot == 2) {
         queryCondition = 'LEFT JOIN armor ON (equipment.helmet_id=armor.id) LEFT JOIN item ON (armor.item_id=item.id)';
         eqMsg = 'helmet armor';
         field = 'helmet_modifier_id';
-        joinField = 'modifier_armor';
     } else if (equipmentSlot == 3) {
         queryCondition = 'LEFT JOIN armor ON (equipment.shirt_id=armor.id) LEFT JOIN item ON (armor.item_id=item.id)';
         eqMsg = 'shirt armor';
         field = 'shirt_modifier_id';
-        joinField = 'modifier_armor';
     } else if (equipmentSlot == 4) {
         queryCondition = 'LEFT JOIN armor ON (equipment.pants_id=armor.id) LEFT JOIN item ON (armor.item_id=item.id)';
         eqMsg = 'pants armor';
         field = 'pants_modifier_id';
-        joinField = 'modifier_armor';
     }
 
     if (equipmentSlot > 0) {
         let item = await queryData(`SELECT stat.level, item.id, item.emoji, item.name, gold, IFNULL(cost,500) as cost FROM stat
                                 LEFT JOIN equipment ON (stat.player_id=equipment.player_id)
                                 ${queryCondition}
-                                LEFT JOIN ${joinField} ON (equipment.${field}=${joinField}.id)
+                                LEFT JOIN modifier ON (equipment.${field}=modifier.id)
                                 WHERE stat.player_id=${message.author.id} LIMIT 1`);
         item = item.length > 0 ? item[0] : 0;
         if (item !== 0) {

@@ -265,6 +265,10 @@ client.on("message", async function (message) {
                 booster(message, args);
             } else if (command === 'updatenotif') {
                 notifUrl(message, rawArgs[0]);
+            } else if (command === 'pirate') {
+                let stat = await queryData(`SELECT id, active_command, depth, zone_id, max_zone, sub_zone, is_active, stat.gold, stat.level, stat.hp, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${message.author.id} LIMIT 1`)
+                stat = stat[0];
+                pirate(message, stat);
             }
         }
         if (command != '') {
