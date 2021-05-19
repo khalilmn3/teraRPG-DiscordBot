@@ -7,6 +7,7 @@ import generateIcon from "./helper/emojiGenerate.js";
 import { getAttack, getDefense, getMaxHP, getMaxMP} from "./helper/getBattleStat.js";
 import isCommandsReady from "./helper/isCommandsReady.js";
 import queryData from "./helper/query.js";
+import randomNumber from "./helper/randomNumberWithMinMax.js";
 import { activeCommand, deactiveCommand } from "./helper/setActiveCommand.js";
 import setCooldowns from "./helper/setCooldowns.js";
 import errorCode from "./utils/errorCode.js";
@@ -366,6 +367,7 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                 let dmgBossMessage = '';
                 if (message.content.toLowerCase() == 'slash' || message.content.toLowerCase() == 'stance') {
                     dmgToBoss = damage(parseInt(player1Stat.attack) + parseInt(player1Stat.buff), bossStat.def);
+                    dmgToBoss = Math.floor(randomNumber(dmgToBoss / 2, dmgToBoss));
                     dmgToBoss = message.content.toLowerCase() == 'stance' ? dmgToBoss - (dmgToBoss * 50 / 100) : dmgToBoss * 350 / 100; // reduce damage to boss
                     bossStat.hp = (bossStat.hp - dmgToBoss) > 0 ? bossStat.hp - dmgToBoss : 0;
                     dgmToPlayer1 = message.content.toLowerCase() == 'stance' ? dgmToPlayer1 - (dgmToPlayer1 * 50 / 100) : dgmToPlayer1;

@@ -4,12 +4,29 @@ import { variable } from "../helper/variable.js";
 import errorCode from "../utils/errorCode.js";
 
 async function trade(message, stat, args) {
+    // let avatar = message.author.avatar;
+    // let id = message.author.id;
+    // let username = message.author.username;
+    
+    // let idMention = message.mentions.users.first();
+    // let tag = message.author.tag
+    // if (idMention) {
+    //     id = idMention.id;
+    //     avatar = idMention.avatar;
+    //     tag =  idMention.tag;
+    //     username = idMention.username;
+
+
+
+    //     return;
+    // }
+
     let maxZone = stat.max_zone.split('|');
     maxZone = parseInt(maxZone[0]);
     if ((args[0] === 'a' || args[0] === 'b')
         || ((args[0] === 'c' || args[0] === 'd') && maxZone >= 1)
         || ((args[0] === 'e' || args[0] === 'f') && maxZone >= 2)
-        || ((args[0] === 'g' || args[0] === 'g') && maxZone >= 3)
+        || ((args[0] === 'g' || args[0] === 'h') && maxZone >= 3)
         || ((args[0] === 'i' || args[0] === 'j') && maxZone >= 4)
         || ((args[0] === 'k' || args[0] === 'l') && maxZone >= 5)) {
         let qty = args[1] > 0 ? parseInt(args[1]) : 1;
