@@ -7,6 +7,7 @@ import currencyFormat from "./helper/currency.js";
 import addExpGold from "./helper/addExp.js";
 import { updateStat2 } from "./utils/processQuery.js";
 import errorCode from "./utils/errorCode.js";
+import { getMaxExp } from "./helper/getBattleStat.js";
 
 async function rewards(message,command, stat) {
     if (command == 'vote') {
@@ -135,13 +136,14 @@ async function rewards(message,command, stat) {
     } else if (command === 'weekly') {
         let cooldowns = await isCommandsReady(message.author.id, 'weekly');
         if (cooldowns.isReady) {
-        setCooldowns(message.author.id, 'weekly');
-        let multiply = 100 * stat.zone_id;
-        let gold = 2500 + multiply;
-        let exp = (50 * Math.pow(stat.level,3) - 150 * Math.pow(stat.level, 2) + 400 * (stat.level)) / 3 / 2
-        let totalExp = parseInt(exp) + parseInt(stat.current_experience);
-        // let levelEXP = await queryData(`SELECT experience, id FROM level WHERE id=${stat.level + 1} LIMIT 1`)
-        let levelUPmessage = '';
+            setCooldowns(message.author.id, 'weekly');
+            let multiply = 100 * stat.zone_id;
+            let gold = 2500 + multiply;
+            let exp = getMaxExp(stat.level);
+            exp = Math.floor(exp / 3);
+            let totalExp = parseInt(exp) + parseInt(stat.current_experience);
+            // let levelEXP = await queryData(`SELECT experience, id FROM level WHERE id=${stat.level + 1} LIMIT 1`)
+            let levelUPmessage = '';
         // if (levelEXP.length > 0 && totalExp >= levelEXP[0].experience) {
         //     // LEVEL UP
         //     let data = await queryData(`SELECT id, experience FROM level WHERE experience<=${totalExp} ORDER BY id DESC LIMIT 1`)
