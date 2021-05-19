@@ -43,7 +43,7 @@ async function processSmelt(message, itemID, itemIDTo, quantity, emojiNames) {
         return message.channel.send(`${emojiCharacter.noEntry} | you need ${emojiName.furnace} to craft this item!`);
     }
     let itemExist = await queryData(`SELECT item.name, item.emoji FROM backpack INNER JOIN item ON (backpack.item_id=item.id)
-                    WHERE player_id="${message.author.id}" AND item_id="${itemID}" AND quantity>${quantity} LIMIT 1`);
+                    WHERE player_id="${message.author.id}" AND item_id="${itemID}" AND quantity>=${quantity} LIMIT 1`);
     itemExist = itemExist.length > 0 ? itemExist[0] : undefined;
     if (itemExist) {
         let qtyAfterSmelt = quantity * 10 * 80 / 100;

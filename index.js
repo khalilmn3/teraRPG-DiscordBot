@@ -167,7 +167,7 @@ client.on("message", async function (message) {
         const args = commandBody.trim().split(/ +/);
         const command = args.shift().toLowerCase();
         // const command2 = args.shift().toLowerCase();
-        const prefixCommand = (content.startsWith(teraRPGPrefix) ? teraRPGPrefix : modifierPrefix) + command;
+        const prefixCommand = teraRPGPrefix + command;
         const body = message.content.replace(prefixCommand, '');
         if (message.author.id === '668740503075815424') {
             if (command === "repost") {

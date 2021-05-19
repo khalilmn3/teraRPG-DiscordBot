@@ -32,8 +32,8 @@ async function trade(message, stat, args) {
         } else if (args[0] === 'b') {
             itemIDFrom = variable.copperOreId;
             itemIDTo = variable.woodId
-            qtyFrom = maxZone <= 3 ? maxZone : maxZone == 4 ? 2 : 3;
-            qtyTo = 1
+            qtyTo = maxZone <= 3 ? maxZone : maxZone == 4 ? 2 : 3;
+            qtyFrom = 1
             amount = qty * qtyFrom;
             nameFrom = '<:copper_ore:835767578021462078>\`copper ore\`'
             nameTo =  '<:Wood:804704694420766721>\`wood\`'
