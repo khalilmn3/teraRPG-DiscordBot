@@ -72,7 +72,7 @@ async function work(message, workingCommand, zone_id) {
                             nextLevel = parseInt(levelPickaxe.pickaxe_level) + 1;
                         }
                         queryData(`UPDATE tools SET pickaxe_exp=${totalExp}, pickaxe_level=${nextLevel} WHERE player_id="${message.author.id}" LIMIT 1`);
-                        message.channel.send(`${data.axeEmoji} | **${message.author.username}** is working with his **${data.axeName}**,\n${itemDrop.emoji} | Found **${itemDrop.name}** but it harder than your tool, lucky you still gaining **${Math.round(itemDrop.exp / 2)}xp**`)
+                        message.channel.send(`${data.pickaxeName} | **${message.author.username}** is working with his **${data.pickaxeName}**,\n${itemDrop.emoji} | Found **${itemDrop.name}** but it harder than your tool, lucky you still gaining **${Math.round(itemDrop.exp / 2)}xp**`)
                     }
                     // QUEST PROGRESS
                     questProgress(message.author.id, 4);
