@@ -303,7 +303,31 @@ async function duel(message,stat) {
                                                     let pointsWin = 0;
                                                     let rewards = '';
                                                     let exp = 0;
-                                                    if (player1Stat.hp <= 0 || junkenResult.player1 === '♿' || junkenResult.player1 === 0) {
+                                                    if (player1Stat.hp <= 0 && player2Stat.hp <= 0) {
+                                                        combat1Title = `🪦 ${player1.username} has knock down`;
+                                                        combat1Detail = `cannot continue the battle`
+                                                        combat1Title = `🪦 ${player2.username} has knock down`;
+                                                        combat1Detail = `cannot continue the battle`
+                                                        status1 = '🪦 '
+                                                        status2 = '🪦 '
+                                                        pointsWin = (player1Stat.level - player2Stat.level) > 5 ? 27 : (player1Stat.level - player2Stat.level) < -5 ? 19 : 25;
+                                                        pointsWin = Math.floor(pointsWin / 3);
+                                                        rating1 = player1Stat.rating + pointsWin;
+                                                        rating2 = player2Stat.rating + pointsWin;
+                                                        rewards1 = `\n\n**Rating**\n\`${rating1} (+${pointsWin})\``;
+                                                        rewards2 = `\n\n**Rating**\n\`${rating2} (+${pointsWin})\``;
+                                                        // calculate exp rewards
+                                                        exp = getMaxExp(player2Stat.level);
+                                                        exp = (exp * 5) / 100;
+                                                        exp = exp < 5 ? 5 : exp;
+                                                        exp = Math.floor(exp / 2);
+                                                        rewards = `\`+${exp} ${emojiCharacter.exp}\``
+                                                        footerText = `The battle result is tied!\nRewards: ${rewards}`
+                                                        addExpGold(message, player1, playerData[0], exp, 0, null);
+                                                        addExpGold(message, player2, playerData[1], exp, 0, null);
+                                                        queryData(`INSERT duel SET player_id=${player1.id}, points=${rating1}, battles=1 ON DUPLICATE KEY UPDATE points=${rating1}, battles=battles+1`);
+                                                        queryData(`INSERT duel SET player_id=${player2.id}, points=${rating2}, battles=1 ON DUPLICATE KEY UPDATE points=${rating2}, battles=battles+1`);
+                                                    } else if (player1Stat.hp <= 0 || junkenResult.player1 === '♿' || junkenResult.player1 === 0) {
                                                         combat1Title = junkenResult.player1 === '♿' ? `🪦 ${player1.username} has flee away` : player1Stat.hp <= 0 ? `🪦 ${player1.username} has knock down` : combat1Title;
                                                         combat1Detail = `and cannot continue the battle`
                                                         status1 = '🪦 '
