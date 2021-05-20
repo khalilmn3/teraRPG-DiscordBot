@@ -33,8 +33,8 @@ async function dungeon(message, stat) {
             message.channel.send('Dungeon 7 is not available right now!');
             return;
         }
-        let playerList = await queryData(`SELECT player.is_active, hp, mp, current_experience, level, basic_hp, basic_mp, basic_attack, basic_def, weapon.attack, zone_id, sub_zone,
-             IF(armor1.armor_set_id=armor2.armor_set_id AND armor2.armor_set_id=armor3.armor_set_id, armor_set.bonus_set, 0) as bonus_armor_set,
+        let playerList = await queryData(`SELECT player.is_active, hp, mp, current_experience, level, basic_hp, basic_mp, basic_attack, basic_def, weapon.attack, zone_id, sub_zone, max_zone,
+            IF(armor1.armor_set_id=armor2.armor_set_id AND armor2.armor_set_id=armor3.armor_set_id, armor_set.bonus_set, 0) as bonus_armor_set,
             IFNULL(armor1.def,0) as helmetDef,
             IFNULL(armor2.def,0) as chestDef,
             IFNULL(armor3.def,0) as pantsDef,
@@ -212,11 +212,11 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         fields: [{
             name: `${bossStat.emoji} ${bossStat.name} ${player1Stat.sub_zone == 2 ? `[Hard]` : `[Normal]`}`,
             value: `${generateIcon(bossStat.hp, maxBossStat.hp, true)} ${bossStat.hp}/${maxBossStat.hp} 💗
-            --------------------------------------------------------
-            **${player1Stat.id.username}** [lvl.${player1Stat.level}]
-            ${generateIcon(player1Stat.hp, maxPlayer1Stat.hp, true)}  HP ${player1Stat.hp}/${maxPlayer1Stat.hp} 💗 
-            **${player2Stat.id.username}** [lvl.${player2Stat.level}]
-            ${generateIcon(player2Stat.hp, maxPlayer2Stat.hp, true)}  HP ${player2Stat.hp}/${maxPlayer2Stat.hp} 💗`,
+--------------------------------------------------------
+**${player1Stat.id.username}** [lvl.${player1Stat.level}]
+${generateIcon(player1Stat.hp, maxPlayer1Stat.hp, true)}  HP ${player1Stat.hp}/${maxPlayer1Stat.hp} 💗 
+**${player2Stat.id.username}** [lvl.${player2Stat.level}]
+${generateIcon(player2Stat.hp, maxPlayer2Stat.hp, true)}  HP ${player2Stat.hp}/${maxPlayer2Stat.hp} 💗`,
             inline: false,
         }],
         // files: ['https://cdn.discordapp.com/attachments/811586577612275732/811586719198871572/King_Slime_1.png']
@@ -276,7 +276,21 @@ async function battleBegun(message, playerList, bossStat, player1, player2) {
         if (playerList[0].zone_id < 7) {
             let newSubZone = playerList[0].sub_zone == 1 ? 2 : 1;
             let newZone = playerList[0].sub_zone > 1 ? parseInt(playerList[0].zone_id) + 1 : playerList[0].zone_id;
-            queryData(`UPDATE stat SET zone_id='${newZone}', sub_zone='${newSubZone}', max_zone="${newZone}|${newSubZone}" WHERE player_id IN(${player1.id}, ${player2.id})`);
+
+            let maxZone1 = playerList[0].max_zone.split('|');
+            maxZone1 = maxZone1[0];
+            let maxSubZone1 = maxZone1[1];
+            maxZone1 = maxZone1 > newZone ? maxZone1 : newZone;
+            maxSubZone1 = maxSubZone1 > newSubZone ? maxSubZone1 : newSubZone;
+
+            let maxZone2 = playerList[1].max_zone.split('|');
+            maxZone2 = maxZone1[1];
+            let maxSubZone2 = maxZone1[1];
+            maxZone2 = maxZone2 > newZone ? maxZone2 : newZone;
+            maxSubZone2 = maxSubZone2 > newSubZone ? maxSubZone2 : newSubZone;
+
+            queryData(`UPDATE stat SET zone_id='${newZone}', sub_zone='${newSubZone}', max_zone="${maxZone1}|${maxSubZone1}" WHERE player_id=${player1.id}`);
+            queryData(`UPDATE stat SET zone_id='${newZone}', sub_zone='${newSubZone}', max_zone="${maxZone2}|${maxSubZone2}" WHERE player_id=${player2.id}`);
         } 
     } else if(player1Stat.hp <= 0 && player2Stat.hp <= 0) {
         message.channel.send(new Discord.MessageEmbed({
@@ -361,7 +375,7 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                 let dmgToBoss = 0;
                 let commandMessageLog = ``;
                 let heal = 0;
-                let attackBossMultiplier = 0.7;
+                let attackBossMultiplier = 1;
                 let dgmToPlayer1 = damage(bossStat.attack * attackBossMultiplier, player1Stat.def);
                 let dgmToPlayer2 = damage(bossStat.attack * attackBossMultiplier, player2Stat.def);
                 let dmgBossMessage = '';
