@@ -519,7 +519,7 @@ client.on("message", async function (message) {
                 // console.log(authorTag.replace(/[\u{10000}-\u{10FFFF}]/gu, '')); // `hello world!`
                 let log = await queryData(`CALL start_procedure("${message.author.id}","${authorTag}")`) // convert to base64
                 log = log.length > 0 ? log[0][0].log : 0;
-                let m = `Welcome to teraRPG, type \`${teraRPGPrefix}exp\` to begin your journey\nYou can also see other commands with \`${teraRPGPrefix}help\`. Oh almost forgot, \nhere is a present for you, hope it can help you through the cruelty of the world`
+                let m = `Welcome to teraRPG, type \`${teraRPGPrefix} exp\` to begin your journey\nYou can also see other commands with \`${teraRPGPrefix} help\`. Oh almost forgot, \nhere is a present for you, hope it can help you through the cruelty of the world`
                 let embed = new Discord.MessageEmbed({
                     type: "rich",
                     title: null,
