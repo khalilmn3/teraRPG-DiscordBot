@@ -108,8 +108,8 @@ async function adventure(message) {
                     queryData(`UPDATE stat SET hp=${playerMaxHP}, mp=${playerMaxMP}, level=level - 1, current_experience=0 WHERE player_id="${message.author.id}"`);
                     logMsg = `${monster.emoji} ** ${monster.name} ** smack you down \nyou just die and lost a level.`;
                     setTimeout(() => {
-                        msg.embeds[0].fields[0].value = `HP: ${monsterCurrentHP}/${monster.hp}\nAttack: ${Math.round((monster.min_damage + monster.max_damage) / 2)}`;
-                        msg.embeds[0].fields[1].value = `HP: ${playerCurrentHP}/${playerMaxHP}\nAttack: ${Math.round(playerAtt)}`;
+                        msg.embeds[0].fields[0].value = `HP: ${Math.floor(monsterCurrentHP)}/${monster.hp}\nAttack: ${Math.round((monster.min_damage + monster.max_damage) / 2)}`;
+                        msg.embeds[0].fields[1].value = `HP: ${Math.floor(playerCurrentHP)}/${playerMaxHP}\nAttack: ${Math.round(playerAtt)}`;
                         msg.embeds[0].fields[2].value = logMsg;
                         msg.embeds[0].footer.text = `Turn: ${turn}\nNote: rewards based on your mining depth and zone`;
                         msg.edit(msg.embeds[0]).catch((err) => {
@@ -121,8 +121,8 @@ async function adventure(message) {
                     logMsg = `:skull_crossbones: | ${monster.emoji} ** ${monster.name} ** smack you down,\n Be carefull next time and make sure \n you already prepared before going to wild.`;
                       
                     setTimeout(() => {
-                        msg.embeds[0].fields[0].value = `HP: ${monsterCurrentHP}/${monster.hp}\nAttack: ${Math.round((monster.min_damage + monster.max_damage) / 2)}`;
-                        msg.embeds[0].fields[1].value = `HP: ${playerCurrentHP}/${playerMaxHP}\nAttack: ${Math.round(playerAtt)}`;
+                        msg.embeds[0].fields[0].value = `HP: ${Math.floor(monsterCurrentHP)}/${monster.hp}\nAttack: ${Math.round((monster.min_damage + monster.max_damage) / 2)}`;
+                        msg.embeds[0].fields[1].value = `HP: ${Math.floor(playerCurrentHP)}/${playerMaxHP}\nAttack: ${Math.round(playerAtt)}`;
                         msg.embeds[0].fields[2].value = logMsg;
                         msg.embeds[0].footer.text = `Turn: ${turn}\nNote: rewards based on your mining depth and zone`;
                         msg.edit(msg.embeds[0]).catch((err) => {
@@ -136,8 +136,8 @@ async function adventure(message) {
             let reward = `\n__**Rewards**__\n\`+${currencyFormat(exp)} 𝑒𝓍𝓅\n+${currencyFormat(gold)} 𝑔𝑜𝓁𝒹\``;
             setTimeout(() => {
                 logMsg = `**${message.author.username}** ${weaponMsg}\n${monster.emoji} **${monster.name}** has knocked down${reward}`;
-                msg.embeds[0].fields[0].value = `HP: ${monsterCurrentHP}/${monster.hp}\nAT: ${Math.round((monster.min_damage + monster.max_damage) / 2)}`;
-                msg.embeds[0].fields[1].value = `HP: ${playerCurrentHP}/${playerMaxHP}\nAT: ${Math.round(playerAtt)}`;
+                msg.embeds[0].fields[0].value = `HP: ${Math.floor(monsterCurrentHP)}/${monster.hp}\nAT: ${Math.round((monster.min_damage + monster.max_damage) / 2)}`;
+                msg.embeds[0].fields[1].value = `HP: ${Math.floor(playerCurrentHP)}/${playerMaxHP}\nAT: ${Math.round(playerAtt)}`;
                 msg.embeds[0].fields[2].value = logMsg;
                 msg.embeds[0].footer.text = `Turn: ${turn}\nNote: rewards based on your mining depth and zone`;
                 msg.edit(msg.embeds[0])
