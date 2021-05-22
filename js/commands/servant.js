@@ -155,7 +155,7 @@ async function servant(message) {
         color: 10185509,
         fields: [
             {
-                value: `You failed to defeat the servant, \ntry again next time with more of people join`,
+                value: `Failed to defeat the servant, \ntry again next time with more of people join`,
                 name: `${servants.emoji}** ${servants.name}** has been running away`
             },
         ],

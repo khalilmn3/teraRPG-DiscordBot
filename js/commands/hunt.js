@@ -82,7 +82,7 @@ async function hunt(message) {
                 let maxHp = getMaxHP(stat.basic_hp, stat.level - 1);
                 let maxMp = getMaxMP(stat.basic_mp, stat.level - 1);
                 queryData(`UPDATE stat SET hp=${maxHp}, mp=${maxMp}, level=level - 1, current_experience=0 WHERE player_id="${message.author.id}"`);
-                battleLog = `\n${monster.emoji}**${monster.name}** beaten **${message.author.username}** down \nyou got nothing but a shameful and your level drop by 1`;
+                battleLog = `\n${monster.emoji}**${monster.name}** beaten **${message.author.username}** down \nyou just die and drop a level.`;
                 // logMsg = `${message.author.sername} Lost in battle with ${monster.emoji} ** ${monster.name} **\nyou got nothig but a shameful and your level drop by 1.`;
                 return messageSend(message, stat, battleLog, reward, activeBooster);
             } else {
