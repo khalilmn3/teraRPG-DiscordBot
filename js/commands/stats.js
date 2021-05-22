@@ -77,6 +77,11 @@ async function stats(message, args1) {
                 inline: true,
             },
             {
+                name: `\\🎲Gambling`,
+                value: `➥ ${currencyFormat(statistic.gambling_win)}`,
+                inline: true,
+            },
+            {
                 name: `<:exp:808837682561548288> Total Exp`,
                 value: `➥ ${currencyFormat(totalExp)}`,
                 inline: true,

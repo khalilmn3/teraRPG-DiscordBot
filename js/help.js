@@ -14,7 +14,7 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `\`explore\`,\`fish\`,\`heal\`,\`dungeon <@player>\`,\`servant\`,\n\`mine expedition [me]\`, \`duel @player\``,
+                    value: `\`explore\`,\`fish\`,\`heal\`,\`dungeon <@player>\`,\`servant\`,\n\`mine expedition [me]\`, \`junken <@player>\`,\`duel @player\``,
                     name: ":crossed_swords: __GRINDING__",
                     inline: false
                 },
@@ -29,12 +29,12 @@ function help(message, client) {
                     inline: false
                 },
                 {
-                    value: `\`market\`, \`marketplace\`, \`shop\`,\`deposit\`,\`withdraw\`,\`bank\`,\`buy <item_name>\`,\n\`sell <item_name>\`,\`open <crate> <amount>\`,\`trade\``,
+                    value: `\`market\`, \`marketplace\`, \`shop\`,\`deposit\`,\`withdraw\`,\`bank\`,\n\`buy <item_name>\`,\`sell <item_name>\`,\`open <crate> <amount>\`,\`trade\``,
                     name: ":moneybag: __ECONOMY__",
                     inline: false
                 },
                 {
-                    value: `\`cf <h/t> <amount>\`,\`lottery\`,\`junken <@player>\``,
+                    value: `\`cf <h/t> <amount>\`, \`blackjack <amount>\`,\`lottery\``,
                     name: ":moneybag: __MINI GAMES__",
                     inline: false
                 },

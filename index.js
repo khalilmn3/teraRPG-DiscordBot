@@ -104,6 +104,8 @@ import food from './js/commands/food.js';
 import prefix from './js/commands/prefix.js';
 import reply from './js/adminCommands/reply.js';
 import eatFood from './js/commands/eat.js';
+import startblackjack from './js/commands/mini-games/blackjack.js';
+import blackjack from './js/commands/mini-games/blackjack.js';
 // Discord
 const client = new Discord.Client();
 const ap = AutoPoster(config.DBL_TOKEN, client) // your discord.js or eris client
@@ -269,6 +271,9 @@ client.on("message", async function (message) {
                 let stat = await queryData(`SELECT id, active_command, depth, zone_id, max_zone, sub_zone, is_active, stat.gold, stat.level, stat.hp, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${message.author.id} LIMIT 1`)
                 stat = stat[0];
                 pirate(message, stat);
+            } else if (command === 'reply') {
+                // log(message, commandBody);
+                reply(client, message, args, body);
             }
         }
         if (command != '') {
@@ -500,9 +505,9 @@ client.on("message", async function (message) {
                     } else if (command === 'prefix') {
                         log(message, commandBody);
                         prefix(message, args);
-                    } else if (command === 'reply') {
+                    } else if (command === 'bj' || command === 'blackjack') {
                         log(message, commandBody);
-                        reply(client, message, args, body);
+                        blackjack( message, args, stat);
                     }
                 }
             } else if (command === 'start') {
