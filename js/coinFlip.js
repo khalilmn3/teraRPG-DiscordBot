@@ -2,6 +2,7 @@ import currencyFormat from "./helper/currency.js";
 import queryData from "./helper/query.js";
 import Discord from 'discord.js';
 import errorCode from "./utils/errorCode.js";
+import randomNumber from "./helper/randomNumberWithMinMax.js";
 
 async function coinFlip(message, args) {
     if (args.length > 0) {
@@ -14,10 +15,10 @@ async function coinFlip(message, args) {
             let currentGold = await queryData(`SELECT gold FROM stat WHERE player_id="${message.author.id}" LIMIT 1`);
             if (!currentGold.length > 0) return;
             if (currentGold[0].gold >= bet) {
-                let chance = Math.random();
+                let chance = randomNumber(1, 2);
                 let side = args[0].toLowerCase();
                 if (side === 'heads' || side === 'head' || side === 'h') {
-                    if (chance <= 0.5) {
+                    if (chance == 1) {
                         queryData(`UPDATE stat SET gold=gold + ${bet} WHERE player_id="${message.author.id}" LIMIT 1`)
                         // message.channel.send(`**Heads**! You got ${bet} gold.`);
                         messageEmbed(message, bet, side, 'Heads', 1)
@@ -26,7 +27,7 @@ async function coinFlip(message, args) {
                         messageEmbed(message, bet, side, 'Tails', 0)
                     }
                 } else if (side === 'tails' || side === 'tail' || side === 't') {
-                    if (chance <= 0.5) {
+                    if (chance == 1) {
                         queryData(`UPDATE stat SET gold=gold + ${bet} WHERE player_id="${message.author.id}" LIMIT 1`)
                         messageEmbed(message, bet, side, 'Tails', 1)
                     } else {

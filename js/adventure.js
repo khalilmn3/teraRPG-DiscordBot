@@ -166,12 +166,12 @@ function messageSend(message, msgSend, stat, monsterInfo, monsterCurrentHp, turn
         fields: [
             {
                 name: `${monsterInfo.name}`,
-                value: `HP: ${monsterInfo.currentHP}/${monsterInfo.hp}\nAttack: ${Math.round((monsterInfo.min_damage + monsterInfo.max_damage) / 2)}`,
+                value: `HP: ${Math.floor(monsterInfo.currentHP)}/${monsterInfo.hp}\nAttack: ${Math.floor((monsterInfo.min_damage + monsterInfo.max_damage) / 2)}`,
                 inline: true,
             },
             {
                 name: `Player`,
-                value: `HP: ${stat.currentHP}/${stat.maxHP}\nAT: ${stat.playerAtt}`,
+                value: `HP: ${Math.floor(stat.currentHP)}/${stat.maxHP}\nAT: ${stat.playerAtt}`,
                 inline: true,
             },
             {

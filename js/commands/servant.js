@@ -62,7 +62,7 @@ async function servant(message) {
         color: 10115509,
         fields: [
             {
-                value: `__Att : ${Math.floor(attack + 3)}__\n\nType \`join ${randomNumberParty}\` to help **${message.author.username}**, \nthe more player join in, the higher the chance of winning`,
+                value: `\\⚔️__Att : ${Math.floor(attack + 3)}__\n\nType \`join ${randomNumberParty}\` to help **${message.author.username}**, \nthe more player join in, the higher the chance of winning`,
                 name: `${servants.emoji} ${servants.name} has spawned`
             },
         ],
@@ -100,6 +100,7 @@ async function servant(message) {
         const filter = (response) => {
             if (!usersExist.includes(response.author)) {
                 usersExist.push(response.author); // Prevent multiple join
+                // msg.edit()
                 return response.content.toLowerCase() === `join ${randomNumberParty}`
             } else {
                 return false;
@@ -110,10 +111,12 @@ async function servant(message) {
              .then(collected => {
                  collected.forEach(element => {
                      let player = element.author
+                     if (playerJoin) playerJoin += ', ';
+                     playerJoin += `\`${player.username}\``;
                      if (randomBattleResult <= chance) {
                          if (player.username !== message.author.username) {
                              chance += 5;
-                             playerJoin += `\`${player.username}\`,`;
+                            //  playerJoin += `\`${player.username}\`,`;
                              queryData(`UPDATE stat SET gold=gold+${randomSlayerGold} WHERE player_id="${player.id}" LIMIT 1`);
                          }
                      }
@@ -155,19 +158,19 @@ async function servant(message) {
         color: 10185509,
         fields: [
             {
-                value: `Failed to defeat the servant, \ntry again next time with more of people join`,
+                value: `\`Slayer/s\`: ${playerJoin ? playerJoin : '-'} \nFailed to defeat the servant, \ntry again next time with more of people join`,
                 name: `${servants.emoji}** ${servants.name}** has been running away`
             },
         ],
         author: {
-            name: `${message.author.username} servant`,
+            name: `${message.author.username}'s servant`,
             iconURL: `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
         },
         provider: null
     });
     
-    console.log(chance)
-    console.log(randomBattleResult)
+    // console.log(chance)
+    // console.log(randomBattleResult)
     if (randomBattleResult <= chance) {
         embedResult = embedWin;
         // QUEST PROGRESS
