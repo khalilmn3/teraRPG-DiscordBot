@@ -1,6 +1,7 @@
 import Discord from "discord.js";
 import currencyFormat from "../../helper/currency.js";
 import queryData from "../../helper/query.js";
+import { activeCommand, deactiveCommand } from "../../helper/setActiveCommand.js";
 import emojiCharacter from "../../utils/emojiCharacter.js";
 
 function blackjack(msg, args, stat) {
@@ -8,9 +9,15 @@ function blackjack(msg, args, stat) {
         return msg.channel.send(`${emojiCharacter.noEntry} | Please provide a valid amount of gold \n${emojiCharacter.blank} Correct usage \`tera blackjack [bet]\``)
     }
     var bet = args[0];
+    if (bet > 500000) {
+        return msg.channel.send(`${emojiCharacter.noEntry} | Cannot bet more than __${currencyFormat(500000)}__!`)
+    }
     if (bet > stat.gold) {
         return msg.channel.send(`${emojiCharacter.noEntry} | Nice try **${msg.author.username}**, your maximum bet is __${currencyFormat(stat.gold)}__!`)
     }
+    
+    activeCommand([msg.author.id]);
+
     var suits = ["Spades", "Hearts", "Diamonds", "Clubs"];
     var values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
     var backcardEmoji = '<:backcard:845313768606007327>';
@@ -167,12 +174,15 @@ function blackjack(msg, args, stat) {
             if (result == 0) {
                 embedColor = 3066993
                 embed.addField('Result', '🎉 ' + `${players[1].Points > 21 ? 'Dealer bust, you \`win\`' : 'You \`win\`'}!`)
+                deactiveCommand([message.author.id]);
             } else if (result == 1) {
                 embedColor = 15158332
                 embed.addField('Result', '👎 ' + `${players[0].Points > 21 ? 'Bust, you \`lost\`' : 'You \`lost\`'}!`)
+                deactiveCommand([message.author.id]);
             } else if (result == 2) {
                 embedColor = 9807270
                 embed.addField('Result', `It's a tie`)
+                deactiveCommand([message.author.id]);
             }
         
             await message.channel.send(embed)
@@ -206,9 +216,32 @@ function blackjack(msg, args, stat) {
                             }
                         })
                             .catch((err) => {
-                                //console.log('timeout')
-                                // //console.log('(dungeon)' + msg.author.id + ': ' + errorCode[err.code]);
-                                // return 0;
+                                deactiveCommand([message.author.id]);
+                                message.channel.send(new Discord.MessageEmbed({
+                                    type: "rich",
+                                    url: null,
+                                    color: embedColor,
+                                    fields: [
+                                        {
+                                            name: `Too slow, mwahahaha...`,
+                                            value: `You lost **${currencyFormat(bet)}**`,
+                                            inline: true,
+                                        }
+                                    ],
+                                    author: {
+                                        "name": `${message.author.username}'s blackjack`,
+                                        "url": null,
+                                        "iconURL": `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
+                                        "proxyIconURL": `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
+                                    },
+                                    thumbnail: {
+                                        url: `https://cdn.discordapp.com/attachments/845278131551469608/845278265970262016/black_jack_logo.png`,
+                                        proxyURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https://cdn.discordapp.com/attachments/845278131551469608/845278265970262016/black_jack_logo.png`,
+                                        height: 70,
+                                        width: 40
+                                    },
+                                    files: []
+                                }))
                             });
                     }
                 })
