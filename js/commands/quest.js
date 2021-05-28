@@ -7,6 +7,7 @@ import isCommandsReady from "../helper/isCommandsReady.js";
 import queryData from "../helper/query.js";
 import randomNumber from "../helper/randomNumberWithMinMax.js";
 import setCooldowns from "../helper/setCooldowns.js";
+import en from "../lang/en.js";
 import emojiCharacter from "../utils/emojiCharacter.js";
 import errorCode from "../utils/errorCode.js";
 import { updateStat2 } from "../utils/processQuery.js";
@@ -32,7 +33,7 @@ async function quest(message, stat) {
             updateStat2(message.author.id, 'quest_completed', '1');
         } else if (activeQuest && !cooldowns.isReady) {
             field = {
-                name: `Complete this quest to get rewards`,
+                name: en.quest.startQuest,
                 value: `\\📋 | Active quest: __${activeQuest.name}__\n\n**Rewards**\n\`+${currencyFormat(activeQuest.gold)}\` <:gold_coin:801440909006209025>\n\`+${currencyFormat(activeQuest.exp)}\` ${emojiCharacter.exp}`,
                 inline: true,
             }
@@ -50,7 +51,7 @@ async function quest(message, stat) {
             let gold = randomNumber(goldMin, goldMax);
             let exp = randomNumber(expMin, expMax);
             field = {
-                name: `Complete this quest to get rewards`,
+                name: en.quest.startQuest,
                 value: `\\📋 | Active quest: __${questList.name}__\n\n**Rewards**\n\`+${currencyFormat(gold)}\` <:gold_coin:801440909006209025>\n\`+${currencyFormat(exp)}\` ${emojiCharacter.exp}`,
                 inline: true,
             }

@@ -2,6 +2,7 @@ import { limitedTimeUse } from "../helper/variable.js";
 import Discord from 'discord.js';
 import emojiCharacter from "../utils/emojiCharacter.js";
 import errorCode from "../utils/errorCode.js";
+import en from "../lang/en.js";
 
 function info(message, args, commandBody) {
     let arrayName = commandBody.match(/[a-zA-Z]+/g);
@@ -17,84 +18,84 @@ function info(message, args, commandBody) {
     let obtain = '';
     if(!args){ return message.channel.send('Correct usage \`tera info [item name]\`')}
     if (itemName === 'lucky coin') {
-        name = limitedTimeUse.luckyCoinEmoji+'Lucky coin';
-        info = 'Item gold booster that gives you 25% more gold \nwhen using \`explore\` and \`mining expedition\`\n - **usage** \`use lucky coin\`';
-        obtain = '\`code\`, \`pirates invasion\'s drop\`'
+        name = en.info.luckyCoin.name;
+        info = en.info.luckyCoin.info;
+        obtain = en.info.luckyCoin.obtain
     } else if (itemName === 'discount card') {
-        name = limitedTimeUse.dicountCardEmoji+'Discount card';
-        info = 'Discount 25% item shop, \nit one time use when buying item shop';
-        obtain = '\`code\`, \`pirates invasion\'s drop\`'
+        name = en.info.discountCard.name;
+        info = en.info.discountCard.info;
+        obtain = en.info.discountCard.obtain;
     } else if (itemName === 'diamond') {
-        name = '<:diamond:801441006247084042> Diamond';
-        info = 'Currency item for buy item on market';
-        obtain = '\`7 daily strike\`, \`vote rewards\`'
+        name = en.info.diamond.name;
+        info = en.info.diamond.info;
+        obtain = en.info.diamond.obtain;
     } else if (itemName === 'piggy bank') {
-        name = '<:piggy_bank:801444684194906142> Piggy bank';
-        info = 'Deposit your gold and got bonus exp\ndepending on how much gold deposited\n- **usage** \`bank\`,\`deposit\`, \`withdraw\`';
-        obtain = '\`market\`'
+        name = en.info.piggyBank.name;
+        info = en.info.piggyBank.info;
+        obtain = en.info.piggyBank.obtain;
     } else if (itemName === 'mining helmet') {
-        name = '<:Mining_Helmet:824176323194650624> Mining helmet';
-        info = 'Grant you ores when using \`mine\`\nbye-bye rock';
-        obtain = '\`market\`'
+        name = en.info.miningHelmet.name;
+        info = en.info.miningHelmet.info;
+        obtain = en.info.miningHelmet.obtain;
     } else if (itemName === 'bug net') {
-        name = '<:Bug_Net:824176322908913687> Bug net';
-        info = 'Have 20% chance to get bait when using \`chop\`';
-        obtain = '\`market\`'
+        name = en.info.bugNet.name;
+        info = en.info.bugNet.info;
+        obtain = en.info.bugNet.obtain;
     } else if (itemName === 'pylon') {
-        name = '<:Forest_Pylon:826645637788598294> Pylon';
-        info = 'Using for teleport to any discovered \`zone/sub zone\`\n- **Usage**: \`zone\`';
-        obtain = '\`market\`'
+        name = en.info.pylon.name;
+        info = en.info.pylon.info;
+        obtain = en.info.pylon.obtain;
     } else if (itemName === 'healing potion') {
-        name = '<:Healing_Potion:810747622859735100> Healing potion';
-        info = 'Restores your HP';
-        obtain = '\`shop\`, \`vote\`'
+        name = en.info.healingPotion.name;
+        info = en.info.healingPotion.info;
+        obtain = en.info.healingPotion.obtain;
     } else if (itemName === 'apprentice bait') {
-        name = '<:Apprentice_Bait:824271452056059985> Apprentice bait';
-        info = 'Using on \`fish\`, it have 15% bait power';
-        obtain = '\`shop\`'
+        name = en.info.apprenticeBait.name;
+        info = en.info.apprenticeBait.info;
+        obtain = en.info.apprenticeBait.obtain;
     } else if (itemName === 'monarch butterfly') {
-        name = '<:Monarch_Butterfly:824268384937312277> Monarch butterfly';
-        info = 'Using on \`fish\`, it have 5% bait power';
-        obtain = '\`chop\` when you have bug net'
+        name = en.info.monarchButterfly.name;
+        info = en.info.monarchButterfly.info;
+        obtain = en.info.monarchButterfly.obtain;
     } else if (itemName === 'grasshopper') {
-        name = '<:Grasshopper:824268384979779596> Grasshopper';
-        info = 'Using on \`fish\`, it have 10% bait power';
-        obtain = '\`chop\` when you have bug net'
+        name = en.info.grasshopper.name;
+        info = en.info.grasshopper.info;
+        obtain = en.info.grasshopper.obtain;
     } else if (itemName === 'black dragonfly') {
-        name = '<:Black_Dragonfly:824268377576702002> Black dragonfly';
-        info = 'Using on \`fish\`, it have 15% bait power';
-        obtain = '\`chop\` when you have bug net'
+        name = en.info.blackDragonfly.name;
+        info = en.info.blackDragonfly.info;
+        obtain = en.info.blackDragonfly.obtain;
     
     } else if (itemName === 'ladybug') {
-        name = '<:Ladybug:824268377425707048> Ladybug';
-        info = 'Using on \`fish\`, it have 20% bait power';
-        obtain = '\`chop\` when you have bug net'
+        name = en.info.ladybug.name;
+        info = en.info.ladybug.info;
+        obtain = en.info.ladybug.obtain;
     } else if (itemName === 'worm') {
-        name = '<:Worm:824268370139414529> Worm';
-        info = 'Using on \`fish\`, it have 35% bait power';
-        obtain = '\`chop\` when you have bug net'
+        name = en.info.worm.name;
+        info = en.info.worm.info;
+        obtain = en.info.worm.obtain;
     } else if (itemName === 'gold worm') {
-        name = '<:Gold_Worm:824268369876221954> Gold worm';
-        info = 'Using on \`fish\`, it have 50% bait power';
-        obtain = '\`chop\` when having bug net'
+        name = en.info.goldWorm.name;
+        info = en.info.goldWorm.info;
+        obtain = en.info.goldWorm.obtain;
     } else if (itemName === 'bait power') {
-        name = 'Bait power';
-        info = 'Bait power influences the quality of the catch\nHigher bait powers means higher quality of the catch';
-        obtain = '\`bait\`'
+        name = en.info.baitPower.name;
+        info = en.info.baitPower.info;
+        obtain = en.info.baitPower.obtain;
     } else if (itemName === 'bait') {
-        name = 'Bait';
-        info = 'Bait is using on \`fish\`, If the player has multiple bait items in their inventory\nthey are used from the bottom slot of the backpack to the top.\nTherefore, the bottom bait item will be used first.';
-        obtain = '\`shop\`, \`chop\` when having bug net';
+        name = en.info.bait.name;
+        info = en.info.bait.info;
+        obtain = en.info.bait.obtain;
     }  else if (itemName === 'marketplace') {
-        name = 'Marketplace';
-        info = `a Place to buy and sell items on TeraRPG\n\n**Usage**\n**• tera marketplace\n\` Display list of marketplace\`\n• tera marketplace add [item name] [price]*\n\` List an item to the marketplace\`\n• tera marketplace buy [id]\n\` Buy an item from marketplace\`\n• tera marketplace remove [id]\n\` Remove an item from marketplace\`\n• tera marketplace search [item name]\n\` Search items from marketplace\`\n• tera marketplace list\n\` Display own list on marketplace\`\n• tera marketplace @[user]\n\` Display other user list on marketplace\`**`;
-        obtain = '*Level 5';
+        name = en.info.marketplace.name;
+        info = en.info.marketplace.info;
+        obtain = en.info.marketplace.obtain;
     } else if (itemName === 'armory') {
-        name = 'Armory';
-        info = `Put your equipment here, you can only store max 5 items\nfor each equipment type.\n**Usage**\n**• tera equip [id/name]\n\`equip an item from armory\`\n• tera unequip [equip type]\n**equip type: \`weapon\`,\`helmet\`,\`shirt\`,\`pants\`\n**• tera sell armory [id]\n\`sell an item from armory\`**`;
-        obtain = 'Anywhere';
+        name = en.info.armory.name;
+        info = en.info.armory.info;
+        obtain = en.info.armory.obtain;
     } else {
-        return message.channel.send(`Cannot found info related!`);
+        return message.channel.send(en.info.infoNotFound);
     }
     
     message.channel.send(embed(message, name, info, obtain))

@@ -1,4 +1,5 @@
 import queryData from "../helper/query.js";
+import en from "../lang/en.js";
 import emojiCharacter from "../utils/emojiCharacter.js";
 import { equipProcedure, unequipProcedure } from "../utils/processQuery.js";
 
@@ -70,7 +71,7 @@ async function queryEquip(message, args1, stat) {
             typeField = 'armor';
             slotField = 'pants'
         }
-        if (cekArmory.level > stat.level) { return message.channel.send(`${emojiCharacter.noEntry} | You are not a high enough level to equip this item.`) };
+        if (cekArmory.level > stat.level) { return message.channel.send(`${emojiCharacter.noEntry} | ${en.equipment.lowLevel}`) };
         // Get equipped item
         let cekEquipment = await queryData(`SELECT COUNT(*) as count, item.emoji, IFNULL(item.id,0) as item_id, IFNULL(equipment.${slotField}_modifier_id,0) as modifier_id, CONCAT(IFNULL(modifier_${typeField}.name,"")," ",item.name) as name FROM equipment
             LEFT JOIN ${typeField} ON (equipment.${slotField}_id=${typeField}.id)
@@ -84,7 +85,7 @@ async function queryEquip(message, args1, stat) {
         // equipProcedure(slotField, message.author.id, cekArmory.equip_id, cekArmory.id, cekArmory.item_id, cekEquipment.item_id, cekArmory.modifier_id, cekEquipment[`${slotField}_modifier_id`], `${slotField}_id`, `${slotField}_modifier_id`);
         message.channel.send(`📥 | equipped ${cekArmory.emoji}**${cekArmory.name}**.`)
     } else {
-        message.reply('Item not found, please recheck your armory!');
+        message.reply(en.equipment.itemNotFound);
     }
 }
 
@@ -116,7 +117,7 @@ async function queryUnequip(message, args1) {
         WHERE player_id="${message.author.id}" AND item.type_id=${typeId} LIMIT 5`);
     
     if (cekArmorySpace[0].Total >= 5) {
-        return message.reply(`⛔ | **${slotField}** armory is full\nyou can only store max 5 items in armory for each type!`);
+        return message.reply(`\\⛔ | **${slotField}** ${en.equipment.armoryFull}`);
     }
 
     let cekEquipment = await queryData(`SELECT item.id as item_id, item.emoji, ${slotField}_id, ${slotField}_modifier_id as modifier_id,

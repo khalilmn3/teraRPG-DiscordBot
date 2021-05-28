@@ -1,6 +1,7 @@
 import Discord from "discord.js";
 import queryData from "../helper/query.js";
 import { variable } from "../helper/variable.js";
+import en from "../lang/en.js";
 import errorCode from "../utils/errorCode.js";
 
 async function trade(message, stat, args) {
@@ -139,7 +140,7 @@ async function trade(message, stat, args) {
         let item = await queryData(`SELECT quantity FROM backpack WHERE item_id="${itemIDFrom}" AND quantity>=${amount} AND player_id="${message.author.id}" LIMIT 1`);
         item = item.length > 0 ? item[0].quantity : 0;
         if (item < amount) {
-            return message.channel.send(`Oh dear, I can't trade with what you have now <@${message.author.id}>!`);
+            return message.channel.send(`${en.trade.itemNotEnough} <@${message.author.id}>!`);
         }
         queryData(`CALL trade_procedure(${itemIDFrom},${amount}, ${itemIDTo}, ${qtyTo * qty}, ${message.author.id})`);
         message.channel.send(`${message.author.username} has trade \`x${amount}\` ${nameFrom} ⇢ \`x${qtyTo * qty}\` ${nameTo}`)

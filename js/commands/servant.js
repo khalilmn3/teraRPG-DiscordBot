@@ -6,6 +6,7 @@ import isCommandsReady from "../helper/isCommandsReady.js";
 import queryData from "../helper/query.js";
 import randomNumber from "../helper/randomNumberWithMinMax.js";
 import setCooldowns from "../helper/setCooldowns.js";
+import en from "../lang/en.js";
 import errorCode from "../utils/errorCode.js";
 import questProgress from "../utils/questProgress.js";
 
@@ -62,7 +63,7 @@ async function servant(message) {
         color: 10115509,
         fields: [
             {
-                value: `\\⚔️__Att : ${Math.floor(attack + 3)}__\n\nType \`join ${randomNumberParty}\` to help **${message.author.username}**, \nthe more player join in, the higher the chance of winning`,
+                value: `\\⚔️__Att : ${Math.floor(attack + 3)}__\n\nType \`join ${randomNumberParty}\` to help **${message.author.username}**, \nthe more player join in, the higher the chance of winning the fight`,
                 name: `${servants.emoji} ${servants.name} has spawned`
             },
         ],
@@ -101,7 +102,7 @@ async function servant(message) {
             if (!usersExist.includes(response.author)) {
                 usersExist.push(response.author); // Prevent multiple join
                 // msg.edit()
-                return response.content.toLowerCase() === `join ${randomNumberParty}`
+                return response.author.id !== message.author.id && response.content.toLowerCase() === `join ${randomNumberParty}`
             } else {
                 return false;
             }
@@ -158,8 +159,8 @@ async function servant(message) {
         color: 10185509,
         fields: [
             {
-                value: `\`Slayer/s\`: ${playerJoin ? playerJoin : '-'} \nFailed to defeat the servant, \ntry again next time with more of people join`,
-                name: `${servants.emoji}** ${servants.name}** has been running away`
+                value: `\`Slayer/s\`: ${playerJoin ? playerJoin : '-'} \nFailed to defeat the servant, \ntry again next time with more people`,
+                name: `${servants.emoji}** ${servants.name}** ${en.servant.failed2}`
             },
         ],
         author: {

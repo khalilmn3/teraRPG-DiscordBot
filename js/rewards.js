@@ -8,6 +8,7 @@ import addExpGold from "./helper/addExp.js";
 import { updateStat2 } from "./utils/processQuery.js";
 import errorCode from "./utils/errorCode.js";
 import { getMaxExp } from "./helper/getBattleStat.js";
+import en from "./lang/en.js";
 
 async function rewards(message,command, stat) {
     if (command == 'vote') {
@@ -22,9 +23,9 @@ async function rewards(message,command, stat) {
         let gold = (1352 * stat.level) * multiplyWeekend;
 
         if (cooldowns.isReady) {
-            status = 'You haven\'t voted yet';
+            status = en.rewards.notVote;
         } else {
-            status = `You already voted, \nYou can vote again in\n${cooldowns.waitingTime}`;
+            status = `${en.rewards.voted}\n${cooldowns.waitingTime}`;
         }
             // setCooldowns(message.author.id, 'vote');
             message.channel.send(new Discord.MessageEmbed({
@@ -35,7 +36,7 @@ async function rewards(message,command, stat) {
                 fields: [
                     {
                         name: `Vote`,
-                        value: `Wanna get more rewards?\n[Vote me on here](https://top.gg/bot/804295231838355466/vote)`,
+                        value: en.rewards.moreRewards,
                         inline: false,
                     },
                     {
@@ -50,7 +51,7 @@ async function rewards(message,command, stat) {
                     }
                 ],
                 footer: {
-                    text: 'Rewards doubled on weekends'
+                    text: en.rewards.doubleRewards
                 }
             })).catch((err) => {
                 console.log('(vote)' + message.author.id + ': ' + errorCode[err.code]);
@@ -122,7 +123,7 @@ async function rewards(message,command, stat) {
                     proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`
                 },
                 footer: {
-                    text: `Daily streak: #${dailyStreak} \nClaim daily reward for 7 days in a row to get bonus reward.`,
+                    text: `Daily streak: #${dailyStreak} \n${en.rewards.dailyStreak}`,
                     iconURL: null,
                     proxyIconURL: null
                 },
@@ -163,7 +164,7 @@ async function rewards(message,command, stat) {
             url: null,
             color: 10115509,
             fields: [{
-                name: 'Claimed weekly reward',
+                name: 'Claimed weekly rewards',
                 value: `<:gold_coin:801440909006209025> \`+${currencyFormat(gold)} gold\` \n<:exp:808837682561548288> \`+${currencyFormat(exp)} experience\``,
                 inline: false,
             }],

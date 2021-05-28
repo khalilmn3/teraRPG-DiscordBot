@@ -15,6 +15,7 @@ import currencyFormat from './helper/currency.js';
 import questProgress from './utils/questProgress.js';
 import { updateStat2 } from './utils/processQuery.js';
 import errorCode from './utils/errorCode.js';
+import en from './lang/en.js';
 
 async function adventure(message) {
     let cooldowns = await isCommandsReady(message.author.id, 'expedition');
@@ -98,7 +99,7 @@ async function adventure(message) {
             
             let playerLostHP = playerHP - playerCurrentHP;
             let HPLostMsg = playerLostHP > 0 ? `\n**${message.author.username}** lost ${playerLostHP} HP, remaining HP is ${playerCurrentHP} / ${playerMaxHP}` : "";
-            let weaponMsg = stat.weaponName ? `swing ${stat.wEmoji} **${stat.weaponName}**` : 'using 👊**bare hand**'
+            let weaponMsg = stat.weaponName ? `swung their ${stat.wEmoji} **${stat.weaponName}**` : 'using 👊**bare hand**'
             // PLAYER DIED
             if (playerCurrentHP <= 0) {
                 playerCurrentHP = 1;
@@ -106,25 +107,25 @@ async function adventure(message) {
                     playerMaxHP = getMaxHP(stat.basic_hp, stat.level - 1);
                     playerMaxMP = getMaxMP(stat.basic_mp, stat.level - 1);
                     queryData(`UPDATE stat SET hp=${playerMaxHP}, mp=${playerMaxMP}, level=level - 1, current_experience=0 WHERE player_id="${message.author.id}"`);
-                    logMsg = `${monster.emoji} ** ${monster.name} ** smack you down \nyou just die and lost a level.`;
+                    logMsg = `${monster.emoji} ** ${monster.name} ** ${en.grind.log2}`;
                     setTimeout(() => {
                         msg.embeds[0].fields[0].value = `HP: ${Math.floor(monsterCurrentHP)}/${monster.hp}\nAttack: ${Math.round((monster.min_damage + monster.max_damage) / 2)}`;
                         msg.embeds[0].fields[1].value = `HP: ${Math.floor(playerCurrentHP)}/${playerMaxHP}\nAttack: ${Math.round(playerAtt)}`;
                         msg.embeds[0].fields[2].value = logMsg;
-                        msg.embeds[0].footer.text = `Turn: ${turn}\nNote: rewards based on your mining depth and zone`;
+                        msg.embeds[0].footer.text = `Turn: ${turn}\n${en.grind.turnFooter}`;
                         msg.edit(msg.embeds[0]).catch((err) => {
                             console.log('(Adv)'+message.author.id+': '+errorCode[err.code]);
                         });
                     }, 1000);
                 } else {
                     queryData(`UPDATE stat SET hp=1, current_experience=0 WHERE player_id="${message.author.id}"`);
-                    logMsg = `:skull_crossbones: | ${monster.emoji} ** ${monster.name} ** smack you down,\n Be carefull next time and make sure \n you already prepared before going to wild.`;
+                    logMsg = `:skull_crossbones: | ${monster.emoji} ** ${monster.name} ** ${en.grind.log3}`;
                       
                     setTimeout(() => {
                         msg.embeds[0].fields[0].value = `HP: ${Math.floor(monsterCurrentHP)}/${monster.hp}\nAttack: ${Math.round((monster.min_damage + monster.max_damage) / 2)}`;
                         msg.embeds[0].fields[1].value = `HP: ${Math.floor(playerCurrentHP)}/${playerMaxHP}\nAttack: ${Math.round(playerAtt)}`;
                         msg.embeds[0].fields[2].value = logMsg;
-                        msg.embeds[0].footer.text = `Turn: ${turn}\nNote: rewards based on your mining depth and zone`;
+                        msg.embeds[0].footer.text = `Turn: ${turn}\n${en.grind.turnFooter}`;
                         msg.edit(msg.embeds[0]).catch((err) => {
                             console.log('(Adv)'+message.author.id+': '+errorCode[err.code]);
                         });
@@ -135,11 +136,11 @@ async function adventure(message) {
             
             let reward = `\n__**Rewards**__\n\`+${currencyFormat(exp)} 𝑒𝓍𝓅\n+${currencyFormat(gold)} 𝑔𝑜𝓁𝒹\``;
             setTimeout(() => {
-                logMsg = `**${message.author.username}** ${weaponMsg}\n${monster.emoji} **${monster.name}** has knocked down${reward}`;
+                logMsg = `**${message.author.username}** ${weaponMsg}\n${monster.emoji} **${monster.name}** ${en.grind.log4}${reward}`;
                 msg.embeds[0].fields[0].value = `HP: ${Math.floor(monsterCurrentHP)}/${monster.hp}\nAT: ${Math.round((monster.min_damage + monster.max_damage) / 2)}`;
                 msg.embeds[0].fields[1].value = `HP: ${Math.floor(playerCurrentHP)}/${playerMaxHP}\nAT: ${Math.round(playerAtt)}`;
                 msg.embeds[0].fields[2].value = logMsg;
-                msg.embeds[0].footer.text = `Turn: ${turn}\nNote: rewards based on your mining depth and zone`;
+                msg.embeds[0].footer.text = `Turn: ${turn}\n${en.grind.turnFooter}`;
                 msg.edit(msg.embeds[0])
                 
                 addExpGold(message, message.author, stat, exp, gold, { hp: playerCurrentHP });

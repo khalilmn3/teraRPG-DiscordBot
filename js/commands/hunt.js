@@ -14,6 +14,7 @@ import { getAttack, getDefense, getMaxHP, getMaxMP } from '../helper/getBattleSt
 import questProgress from "../utils/questProgress.js";
 import { updateStat2 } from "../utils/processQuery.js";
 import errorCode from "../utils/errorCode.js";
+import en from "../lang/en.js";
 
 async function hunt(message) {
     let cooldowns = await isCommandsReady(message.author.id, 'explore');
@@ -70,7 +71,7 @@ async function hunt(message) {
         monster.hp = parseInt(monster.hp) - parseInt(playerAttack)
         let dmgToPlayer = monster.hp > 0 && monsterDamage - playerDef > 0 ? monsterDamage - playerDef : 0;
         let playerHP = stat.hp - dmgToPlayer > 0 ? stat.hp - dmgToPlayer : 0;
-        let battleLog = `\nand successfully beaten ${monster.emoji}**${monster.name}\n** with **${weapon}** current HP __${playerHP}/${playerMaxHP}__`;
+        let battleLog = `\nand have successfully beaten a ${monster.emoji}**${monster.name}\n** with a **${weapon}**, current HP __${playerHP}/${playerMaxHP}__`;
         let reward = ``;
 
         if (playerHP <= 0) {
@@ -82,12 +83,12 @@ async function hunt(message) {
                 let maxHp = getMaxHP(stat.basic_hp, stat.level - 1);
                 let maxMp = getMaxMP(stat.basic_mp, stat.level - 1);
                 queryData(`UPDATE stat SET hp=${maxHp}, mp=${maxMp}, level=level - 1, current_experience=0 WHERE player_id="${message.author.id}"`);
-                battleLog = `\n${monster.emoji}**${monster.name}** beaten **${message.author.username}** down \nyou just die and drop a level.`;
+                battleLog = `\n${monster.emoji}**${monster.name}** beat **${message.author.username}**,\nyou died and drop a level.`;
                 // logMsg = `${message.author.sername} Lost in battle with ${monster.emoji} ** ${monster.name} **\nyou got nothig but a shameful and your level drop by 1.`;
                 return messageSend(message, stat, battleLog, reward, activeBooster);
             } else {
                 queryData(`UPDATE stat SET hp=1, current_experience=0 WHERE player_id="${message.author.id}"`);
-                battleLog = `\n${monster.emoji}**${monster.name}** beaten **${message.author.username}** down \nyou got nothing but a shameful`;
+                battleLog = `\n${monster.emoji}**${monster.name}** beat **${message.author.username}**,\nyou died and got nothing`;
                 // logMsg = `:skull_crossbones: | **${username}** Lost in battle with ${monster.emoji} ** ${monster.name} **,\n Be carefull next time and make sure \n you already prepared before going to wild.`;
                 return messageSend(message, stat, battleLog, reward, activeBooster);
             }
@@ -126,7 +127,7 @@ function messageSend(message, stat, battleLog, reward, booster) {
             },
         ],
         footer: {
-            text: booster.length > 0 ? `Booster is active cek with [tera booster]` : null
+            text: booster.length > 0 ? en.grind.footer1 : null
         }
     })).catch((err) => {
         console.log('(hunt)' + message.author.id + ': ' + errorCode[err.code]);

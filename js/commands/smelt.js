@@ -29,10 +29,10 @@ async function smelt(message, args) {
                 processSmelt(message, variable.platinumBarId, variable.platinumOreId, qty, emojiName.platinumBar);
             }
         } else {
-            message.channel.send('What are you trying to smelt? correct use \`tera smelt [item bar] [amount]\`\n e.g. \`tera smelt iron bar 10\`, smelt will give 80% item ore from crafting') 
+            message.channel.send('What are you trying to smelt? Correct use is \`tera smelt [item bar] [amount]\`\n e.g. \`tera smelt iron bar 10\`, smelting will give back 80% of the ore') 
         }
     } else {
-        message.channel.send('What are you trying to smelt? correct use \`tera smelt [item bar] [amount]\`\n e.g. \`tera smelt iron bar 10\`, smelt will give 80% item ore from crafting')
+        message.channel.send('What are you trying to smelt? Correct use is \`tera smelt [item bar] [amount]\`\n e.g. \`tera smelt iron bar 10\`, smelting will give back 80% of the ore')
     }
 }
 
@@ -54,7 +54,7 @@ async function processSmelt(message, itemID, itemIDTo, quantity, emojiNames) {
             url: null,
             color: 11115879,
             fields: [{
-                name: 'Smelthing Bar',
+                name: 'Smelting Bar',
                 value: `-${quantity} ${itemExist.emoji} \`${itemExist.name}\`\n+${qtyAfterSmelt} ${item[0].emoji} \`${item[0].name}\``,
                 inline: false,
             }],

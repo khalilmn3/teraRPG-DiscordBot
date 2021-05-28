@@ -12,6 +12,7 @@ import randomNumber from "../helper/randomNumberWithMinMax.js";
 import generateHPEmoji from "../helper/emojiGenerate.js";
 import questProgress from "../utils/questProgress.js";
 import errorCode from "../utils/errorCode.js";
+import en from "../lang/en.js";
 
 async function duel(message,stat) {
     let player2 = message.mentions.users.first();
@@ -149,12 +150,12 @@ async function duel(message,stat) {
                                             if (junkenResult.player1 == 0) {
                                                 console.log('player1 not responding')
                                                 junkenResult.player1 === '♿'
-                                                combat1Title = `${player1.username} is not responding and flee from the battle`;
+                                                combat1Title = `${player1.username} ${en.duel.notResponding}`;
                                                 combat1Detail = `Lost`;
                                             }
                                             if (junkenResult.player2 == 0) {
                                                 console.log('player2 not responding')
-                                                combat2Title = `${player2.username} is not responding and flee from the battle`;
+                                                combat2Title = `${player2.username} ${en.duel.notResponding}`;
                                                 combat2Detail = `Lost`;
                                             }
 
@@ -173,26 +174,26 @@ async function duel(message,stat) {
                                                     let chance = randomNumber(1, 100)
                                                     // Full counter apply
                                                     if (chance <= 25) {
-                                                        combat2Detail = `Full counter apply and reflect 100% damage taken`;
+                                                        combat2Detail = `Full counter applied and reflect 100% damage taken`;
                                                         player1Stat.hp = player1Stat.hp - damage;
                                                     } else {
-                                                        combat2Detail = `Reflect 50% damage taken and deal ${Math.floor(damage / 2)} dmg`;
+                                                        combat2Detail = `Reflected 50% damage taken and deals ${Math.floor(damage / 2)} dmg`;
                                                         player2Stat.hp = player2Stat.hp - (damage / 2);
                                                         player1Stat.hp = player1Stat.hp - (damage / 2);
                                                     }
                                                 } else if (junkenResult.player2 === '🤺') { // Dodge
                                                     let chance = randomNumber(1, 100);
                                                     if (chance <= 40) {
-                                                        combat2Detail = `Successfully dodge the attack and take no damage`;
+                                                        combat2Detail = en.duel.dodgeSuccess;
                                                         if (chance <= 5) {
                                                             let damage = Math.floor(calculateDamage(player1Stat.attack, player1Stat.def));
                                                             damage = Math.floor(damage / 2);
                                                             player1Stat.hp = player1Stat.hp - damage;
-                                                            combat2Detail = `Successfully dodge the attack and using stab deal ${damage} dmg `
+                                                            combat2Detail = `${en.duel.stabTriggered} ${damage} dmg `
                                                         }
                                                         combat1Detail = `Basic attack dealt 0 dmg`;
                                                     } else {
-                                                        combat2Detail = `Failed dodge the attack and received ${damage} dmg`;
+                                                        combat2Detail = `Failed to dodge the attack and received ${damage} dmg`;
                                                         player2Stat.hp = player2Stat.hp - damage;
                                                     }
                                                 } else {
@@ -221,33 +222,33 @@ async function duel(message,stat) {
                                             if (junkenResult.player2 === '🗡️') { // ATTACK
                                                 let damage = Math.floor(calculateDamage(player2Stat.attack, player1Stat.def));
                                                 combat2Title = `${player2.username} using basic attack`;
-                                                combat2Detail = `Basic attack dealt ${damage} dmg`;
+                                                combat2Detail = `Basic attack deals ${damage} dmg`;
                                                 let randomCrit = randomNumber(1, 100);
                                                 if (randomCrit <= 15) {
                                                     damage = damage * 3; // Apply critical 300%
-                                                    combat2Detail = `Critical attack deal ${damage} dmg`;
+                                                    combat2Detail = `Critical attack deals ${damage} dmg`;
                                                 }
                                                 if (junkenResult.player1 === '🛡️') {
                                                     let chance = randomNumber(1, 100)
                                                     // Full counter apply
                                                     if (chance <= 25) {
-                                                        combat1Detail = `Full counter triggered and reflect 100% damage taken`;
+                                                        combat1Detail = `Full counter triggered and reflected 100% damage taken`;
                                                         player2Stat.hp = player2Stat.hp - damage;
                                                     } else {
                                                         damage = Math.floor(damage / 2);
-                                                        combat1Detail = `Reflect 50% damage taken and deal ${damage} dmg`;
+                                                        combat1Detail = `Reflected 50% damage taken and deals ${damage} dmg`;
                                                         player2Stat.hp = player2Stat.hp - damage;
                                                         player1Stat.hp = player1Stat.hp - damage;
                                                     }
                                                 } else if (junkenResult.player1 === '🤺') { // Dodge
                                                     let chance = randomNumber(1, 100);
                                                     if (chance <= 40) {
-                                                        combat1Detail = `Successfully dodge the attack and take no damage`;
+                                                        combat1Detail = en.duel.dodgeSuccess;
                                                         if (chance <= 5) {
                                                             let damage = Math.floor(calculateDamage(player1Stat.attack, player1Stat.def));
                                                             damage = Math.floor(damage / 2);
                                                             player2Stat.hp = player2Stat.hp - damage;
-                                                            combat1Detail = `Successfully dodge the attack and using stab deal ${damage} dmg `
+                                                            combat1Detail = `${en.duel.stabTriggered} ${damage} dmg `
                                                         }
                                                         combat2Detail = `Basic attack dealt 0 dmg`;
                                                     } else {
@@ -283,10 +284,10 @@ async function duel(message,stat) {
                                             player2Stat.hp = player2Stat.hp > 0 ? player2Stat.hp : 0;
                                             if (junkenResult.player1 == 0 && junkenResult.player2 == 0) {
                                                 deactiveCommand([player1.id, player2.id])
-                                                return message.channel.send('Both user not responding the DM, Duel cancelled!');
+                                                return message.channel.send('Both users not responding the DM, Duel cancelled!');
                                             } else if (junkenResult.player1 == '♿' && junkenResult.player2 == '♿' || junkenResult.player1 == 0 && junkenResult.player2 == '♿' || junkenResult.player2 == 0 && junkenResult.player1 == '♿') {
                                                 deactiveCommand([player1.id, player2.id])
-                                                return message.channel.send('Both user has flee away from the battle!');
+                                                return message.channel.send('Both users has flee away from the battle!');
                                             } else {
                                                 let footerText = '';
                                                 let status1 = '';
@@ -304,7 +305,7 @@ async function duel(message,stat) {
                                                     let rewards = '';
                                                     let exp = 0;
                                                     if (player1Stat.hp <= 0 && player2Stat.hp <= 0) {
-                                                        combat1Title = `🪦 ${player1.username} has knock down`;
+                                                        combat1Title = `🪦 ${player1.username} has knocked down`;
                                                         combat1Detail = `cannot continue the battle`
                                                         combat1Title = `🪦 ${player2.username} has knock down`;
                                                         combat1Detail = `cannot continue the battle`
@@ -342,7 +343,7 @@ async function duel(message,stat) {
                                                         exp = (exp * 5) / 100;
                                                         exp = exp < 5 ? 5 : exp;
                                                         rewards = `\`+${exp} ${emojiCharacter.exp}\``
-                                                        footerText = `${player2.username} has winning the battle!\nRewards: ${rewards}`
+                                                        footerText = `${player2.username} has won the battle!\nRewards: ${rewards}`
                                                         addExpGold(message, player2, playerData[1], exp, 0, null);
                                                         queryData(`INSERT duel SET player_id=${player1.id}, points=${rating1}, battles=1 ON DUPLICATE KEY UPDATE points=${rating1}, battles=battles+1`);
                                                         queryData(`INSERT duel SET player_id=${player2.id}, points=${rating2}, battles=1 ON DUPLICATE KEY UPDATE points=${rating2}, battles=battles+1`);
@@ -362,7 +363,7 @@ async function duel(message,stat) {
                                                         exp = (exp * 5) / 100;
                                                         exp = exp < 5 ? 5 : exp;
                                                         rewards = `\`+${exp} ${emojiCharacter.exp}\``
-                                                        footerText = `${player1.username} has winning the battle!\nRewards: ${rewards}`
+                                                        footerText = `${player1.username} has won the battle!\nRewards: ${rewards}`
                                                         addExpGold(message, player1, playerData[0], exp, 0, null);
                                                         queryData(`INSERT duel SET player_id=${player2.id}, points=${rating1}, battles=1 ON DUPLICATE KEY UPDATE points=${rating1}, battles=battles+1`);
                                                         queryData(`INSERT duel SET player_id=${player1.id}, points=${rating2}, battles=1 ON DUPLICATE KEY UPDATE points=${rating2}, battles=battles+1`);

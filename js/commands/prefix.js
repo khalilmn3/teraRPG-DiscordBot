@@ -1,5 +1,6 @@
 import myCache from "../cache/leaderboardChace.js";
 import queryData from "../helper/query.js";
+import en from "../lang/en.js";
 import emojiCharacter from "../utils/emojiCharacter.js";
 
 function prefix(message, args) {
@@ -12,13 +13,13 @@ function prefix(message, args) {
             return message.channel.send(`${emojiCharacter.noEntry} | Correct usage \`tera prefix [new prefix]\``);
         }
         if (args[0].length > 4) {
-           return message.channel.send(`${emojiCharacter.noEntry} | Allowed prefix max length is 4 char.`)
+           return message.channel.send(`${emojiCharacter.noEntry} | ${en.prefix.allowedLength}`)
         }
         queryData(`INSERT prefix SET prefix="${args[0]}", guild_id=${message.guild.id} ON DUPLICATE KEY UPDATE prefix="${args[0]}"`)
         myCache.set(`prefix${message.guild.id}`, args[0]);
-        message.channel.send(`Prefix has been setup to \`${prefix}\``);
+        message.channel.send(`${en.prefix.setup} \`${prefix}\``);
     } else {
-        message.channel.send(`${emojiCharacter.noEntry} | You don't have permission to change the bot prefix!`)
+        message.channel.send(`${emojiCharacter.noEntry} | ${en.prefix.dontHavePermission}`)
     }
 }
 export default prefix;

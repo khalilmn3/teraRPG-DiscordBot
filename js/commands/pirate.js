@@ -2,6 +2,7 @@ import Discord from "discord.js"
 import currencyFormat from "../helper/currency.js";
 import queryData from "../helper/query.js";
 import randomNumber from "../helper/randomNumberWithMinMax.js";
+import en from "../lang/en.js";
 import emojiCharacter from "../utils/emojiCharacter.js";
 import errorCode from "../utils/errorCode.js";
 
@@ -13,8 +14,8 @@ async function pirate(message, stat) {
         color: 1231235,
         fields: [
             {
-                name: 'Pirate invasion',
-                value: `The pirates have arrived!\nType \`fight\` to fight the pirates \nget rewards depend of how much player join in`
+                name: en.pirates.title,
+                value: en.pirates.arrive
             }
         ],
         thumbnail: {
@@ -28,15 +29,15 @@ async function pirate(message, stat) {
         color: 12312355,
         fields: [
             {
-                name: 'ALERT!!!',
-                value: "Pirates are approaching from the west!"
+                name: en.pirates.alert,
+                value: en.pirates.piratesApproaches
             }
         ],
         thumbnail: {
             url: `https://cdn.discordapp.com/attachments/828836250286817280/833188536122998804/Flying_Dutchman.png`
         },
         footer: {
-            text: `Prepare your self, they are close enough`
+            text: en.pirates.footerAlert
         }
     });
 
@@ -47,7 +48,7 @@ async function pirate(message, stat) {
         color: 12312355,
         fields: [
             {
-                name: 'ALERT!!!',
+                name: en.pirates.alert,
                 value: "Pirates are approaching from the east!"
             }
         ],
@@ -55,7 +56,7 @@ async function pirate(message, stat) {
             url: `https://cdn.discordapp.com/attachments/828836250286817280/833188536122998804/Flying_Dutchman.png`
         },
         footer: {
-            text: `Prepare your self, they are close enough`
+            text: en.pirates.footerAlert
         }
     });
         message.channel.send(embedNotif1)
@@ -75,7 +76,7 @@ async function pirate(message, stat) {
             };
             
             let usersJoin = 0;
-            let winChance = 60;
+            let winChance = 70;
             let randomGold = randomNumber(500, 1000);
             let goldWin = (randomGold * stat.level) / 10;
             await msg.channel.awaitMessages(filter, { max: 5, time: 20000 })
@@ -160,7 +161,7 @@ async function pirate(message, stat) {
                 color: 1231235,
                 fields: [
                     {
-                        name: 'PIRATES HAS BEEN DEFEATED!',
+                        name: en.pirates.pirateDefeat,
                         value: `**Rewards**\n${luckyCoinWin ? `<:Lucky_Coin:833189137179344897> \`lucky coin\`: ${luckyCoinWin.username}\n` : ''}${discountCardWin ? `<:Discount_Card:833189137141334036> \`discount card\`: ${discountCardWin.username}\n` : ''}${cutlassWin ? `<:Cutlass:833189137213423636> cutlass: ${cutlassWin.username}\n` : ''}${playerGold ? `${emojiCharacter.gold2} \`+${currencyFormat(goldWin)} ${emojiCharacter.gold}\`: ${playerGold}` : ''}`
                     }
                 ],
@@ -175,8 +176,8 @@ async function pirate(message, stat) {
                 color: 1231235,
                 fields: [
                     {
-                        name: 'Pirates has not been defeated!!!',
-                        value: `Nobody got rewards`
+                        name: en.pirates.piratesNotDefeated,
+                        value: en.pirates.noRewards
                     }
                 ],
                 // footer: {
