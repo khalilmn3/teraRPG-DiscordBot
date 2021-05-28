@@ -10,12 +10,14 @@ function info(message, args, commandBody) {
     arrayName = arrayName.splice(1);
     arrayName.forEach(element => {
         if (element) {
+            if (itemName) { itemName += ' ' };
             itemName += element;
         }
     });
     let name = '';
     let info = '';
     let obtain = '';
+    console.log(itemName);
     if(!args){ return message.channel.send('Correct usage \`tera info [item name]\`')}
     if (itemName === 'lucky coin') {
         name = en.info.luckyCoin.name;
