@@ -191,14 +191,14 @@ client.on("message", async function (message) {
             } else if (command === "mtset") {
                     message.delete();
                     client.channels.cache.get("818359215562424330").setName(`\\🔴-Status`)
-                    client.channels.cache.get("818359215562424330").send(`\\🔴 Bot Offline\n-Under Maintenance\n\`\`\`${body}\`\`\``)
+                    client.channels.cache.get("818359215562424330").send(`\\🔴 Bot Offline`)
                     await queryData(`update configuration set value=0 where id=1;`);
                     await queryData(`update configuration set value=1 where id=6;`);
                     message.channel.send(`Server set maintenance`);
             }   else if (command === "mtunset") {
                     message.delete();
                     client.channels.cache.get("818359215562424330").setName(`\\🟢-Status`)
-                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online\n\`\`\`${body}\`\`\``)
+                    client.channels.cache.get("818359215562424330").send(`\\🟢 Bot Online`)
                     await queryData(`update configuration set value=0 where id=6;`);
                     message.channel.send(`Server unset maintenance`);
             }else if (command === "member") {

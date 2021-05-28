@@ -85,7 +85,7 @@ async function adventure(message) {
         stat.maxHP = playerMaxHP;
         let turn = 1;
         let logMsg = '';
-        logMsg = `**${message.author.username}** encountered ${monster.emoji} **${monster.name}**,\n preparing for battle...`;        
+        logMsg = `**${message.author.username}** explores their mining cave and finds \n${monster.emoji} **${monster.name}**, preparing for battle...`;        
         await message.channel.send(messageSend(message, logMsg, stat, monster, monsterCurrentHP, turn)).then((msg) => {
             do {
                 if (turn > 10) {
@@ -136,7 +136,7 @@ async function adventure(message) {
             
             let reward = `\n__**Rewards**__\n\`+${currencyFormat(exp)} 𝑒𝓍𝓅\n+${currencyFormat(gold)} 𝑔𝑜𝓁𝒹\``;
             setTimeout(() => {
-                logMsg = `**${message.author.username}** ${weaponMsg}\n${monster.emoji} **${monster.name}** ${en.grind.log4}${reward}`;
+                logMsg = `**${message.author.username}** ${weaponMsg}\n${en.grind.log4} ${monster.emoji} **${monster.name}** ${reward}`;
                 msg.embeds[0].fields[0].value = `HP: ${Math.floor(monsterCurrentHP)}/${monster.hp}\nAT: ${Math.round((monster.min_damage + monster.max_damage) / 2)}`;
                 msg.embeds[0].fields[1].value = `HP: ${Math.floor(playerCurrentHP)}/${playerMaxHP}\nAT: ${Math.round(playerAtt)}`;
                 msg.embeds[0].fields[2].value = logMsg;

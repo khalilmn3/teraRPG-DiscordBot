@@ -9,12 +9,12 @@ export default {
         dailyStreak: 'Claim daily reward for 7 days in a row to get bonus reward.'
     },
     grind: {
-        log1:  '**${message.author.username}** encountered ${monster.emoji} **${monster.name}**,\n preparing for battle...',
+        log1:  '**${message.author.username}** explores their mining cave and finds ${monster.emoji} **${monster.name}**,\n preparing for battle...',
         log2 : 'smacked you down, \nyou died and lost a level.',
         log3: 'smacked you down,\n Be more careful next time and make sure \n you are more prepared before going to wild.',
-        log4: 'has been knocked down',
+        log4: ' and knocked down',
 
-        logh1: '\nand have successfully beaten ${monster.emoji}**${monster.name}\n** with **${weapon}**, current HP __${playerHP}/${playerMaxHP}__',
+        logh1: '\n have successfully beaten ${monster.emoji}**${monster.name}\n** with **${weapon}**, current HP __${playerHP}/${playerMaxHP}__',
         logh2: '\n${monster.emoji}**${monster.name}** beat **${message.author.username}** \nyou died and drop a level.',
         logh3: '\n${monster.emoji}**${monster.name}** beat **${message.author.username}** \nyou died and got nothing',
         footer1: 'Booster is active right now, cek with [tera booster]',
