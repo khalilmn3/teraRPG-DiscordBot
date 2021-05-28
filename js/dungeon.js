@@ -63,7 +63,7 @@ async function dungeon(message, stat) {
             WHERE stat.player_id IN ('${player2.id}', '${player1.id}') ORDER BY FIELD(stat.player_id,'${player1.id}', '${player2.id}') LIMIT 2`);
         greatHealUsed = playerList[0].sub_zone >= 2 ? 5 : greatHealUsed;
         if (playerList.length <= 1) {
-            message.reply(`a user in your team is not registered yet, \nTeam up with user who already registered in **teraRPG**`)
+            message.reply(`Someone in your team is not registered yet, \nTeam up with user who already registered in **teraRPG**`)
             return
         }
         if (!playerList[1].is_active) {
@@ -72,12 +72,12 @@ async function dungeon(message, stat) {
         }
         
         if (playerList[0].zone_id !== playerList[1].zone_id) {
-            message.channel.send(`All team member must be in the same zone`);
+            message.channel.send(`All team members must be in the same zone`);
             return
         }
 
         if (playerList[0].sub_zone !== playerList[1].sub_zone) {
-            message.channel.send(`All team member must be in the same zone`);
+            message.channel.send(`All team members must be in the same zone`);
             return
         }
         
@@ -86,7 +86,7 @@ async function dungeon(message, stat) {
         let p2MaxHp = getMaxHP(playerList[1].basic_hp, playerList[1].level);
         let percentHp2 = playerList[1].hp / p2MaxHp * 100;
         if (percentHp1 <= 50 || percentHp2 <= 50){
-            message.channel.send(`All team member HP must be above 50% to do a dungeon`);
+            message.channel.send(`All team members HP must be above 50% to do a dungeon`);
             return
         }
         activeCommand([player1.id, player2.id]);
@@ -277,15 +277,15 @@ ${generateIcon(player2Stat.hp, maxPlayer2Stat.hp, true)}  HP ${player2Stat.hp}/$
             let newSubZone = playerList[0].sub_zone == 1 ? 2 : 1;
             let newZone = playerList[0].sub_zone > 1 ? parseInt(playerList[0].zone_id) + 1 : playerList[0].zone_id;
 
-            let maxZone1 = playerList[0].max_zone.split('|');
-            maxZone1 = maxZone1[0];
-            let maxSubZone1 = maxZone1[1];
+            let maxZoneList1 = playerList[0].max_zone.split('|');
+            let maxZone1 = maxZoneList[0];
+            let maxSubZone1 = maxZoneList[1];
             maxZone1 = maxZone1 > newZone ? maxZone1 : newZone;
             maxSubZone1 = maxSubZone1 > newSubZone ? maxSubZone1 : newSubZone;
 
-            let maxZone2 = playerList[1].max_zone.split('|');
-            maxZone2 = maxZone1[1];
-            let maxSubZone2 = maxZone1[1];
+            let maxZoneList2 = playerList[1].max_zone.split('|');
+            maxZone2 = maxZoneList2[1];
+            let maxSubZone2 = maxZoneList2[1];
             maxZone2 = maxZone2 > newZone ? maxZone2 : newZone;
             maxSubZone2 = maxSubZone2 > newSubZone ? maxSubZone2 : newSubZone;
 
@@ -347,11 +347,12 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
     } else if (player === 2) {
         turn = `> [Support] - <@${player2.id}> turn`;
         playerId = player2.id
-        commandList = ['heal', 'great heal', 'buff'];
+        commandList = ['heal', 'great heal', 'buff', 'sacrifice'];
         availableCommand = `\`\`\`Support Command
 - Heal       | HP +200% Att
 - Great Heal | HP +500% Att (use left:${greatHealUsed})
-- Buff       | Fighter Att +50%\`\`\``;
+- Buff       | Fighter Att +50%
+- Sacrifice  | Sacrifice HP 50% to the Fighter\`\`\``;
     }
     let commandMsg = new Discord.MessageEmbed({
         type: "rich",
@@ -371,32 +372,54 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
             time: 60000,
             errors: ['time']
         }).then(message => {
-                message = message.first();
-                let dmgToBoss = 0;
-                let commandMessageLog = ``;
-                let heal = 0;
-                let attackBossMultiplier = 1;
-                let dgmToPlayer1 = damage(bossStat.attack * attackBossMultiplier, player1Stat.def);
-                let dgmToPlayer2 = damage(bossStat.attack * attackBossMultiplier, player2Stat.def);
+            message = message.first();
+            let dmgToBoss = 0;
+            let commandMessageLog = ``;
+            let heal = 0;
+            let attackBossMultiplier = 1;
+            
+            let spellMessage = '';
+            if (turnX > 40) {
+                attackBossMultiplier = 3;
+            } else if (turnX > 30) {
+                attackBossMultiplier = 2.5;
+            } else if (turnX > 20) {
+                attackBossMultiplier = 2;
+            } else if (turnX > 15) {
+                attackBossMultiplier = 1.5;
+            }
+            let dmgToPlayer1 = 0;
+            let dmgToPlayer2 = 0;
+            try {
+                
+                dmgToPlayer1 = damage(bossStat.attack * attackBossMultiplier, player1Stat.def);
+                dmgToPlayer2 = damage(bossStat.attack * attackBossMultiplier, player2Stat.def);
+
+                dmgToPlayer1 = Math.floor(randomNumber(dmgToPlayer1 / 2, dmgToPlayer1));
+                dmgToPlayer2 = Math.floor(randomNumber(dmgToPlayer2 / 2, dmgToPlayer2));
+            } catch (error) {
+                console.log(error);
+            }
+
                 let dmgBossMessage = '';
                 if (message.content.toLowerCase() == 'slash' || message.content.toLowerCase() == 'stance') {
                     dmgToBoss = damage(parseInt(player1Stat.attack) + parseInt(player1Stat.buff), bossStat.def);
                     dmgToBoss = Math.floor(randomNumber(dmgToBoss / 2, dmgToBoss));
                     dmgToBoss = message.content.toLowerCase() == 'stance' ? dmgToBoss - (dmgToBoss * 50 / 100) : dmgToBoss * 350 / 100; // reduce damage to boss
                     bossStat.hp = (bossStat.hp - dmgToBoss) > 0 ? bossStat.hp - dmgToBoss : 0;
-                    dgmToPlayer1 = message.content.toLowerCase() == 'stance' ? dgmToPlayer1 - (dgmToPlayer1 * 50 / 100) : dgmToPlayer1;
-                    dgmToPlayer2 = message.content.toLowerCase() == 'stance' ? dgmToPlayer2 - (dgmToPlayer2 * 50 / 100) : dgmToPlayer2;
+                    dmgToPlayer1 = message.content.toLowerCase() == 'stance' ? dmgToPlayer1 - (dmgToPlayer1 * 50 / 100) : dmgToPlayer1;
+                    dmgToPlayer2 = message.content.toLowerCase() == 'stance' ? dmgToPlayer2 - (dmgToPlayer2 * 50 / 100) : dmgToPlayer2;
                     if (bossStat.hp > 0) {
-                        player1Stat.hp = (player1Stat.hp - dgmToPlayer1) > 0 ? player1Stat.hp - dgmToPlayer1 : 0;
-                        player2Stat.hp = (player2Stat.hp - dgmToPlayer2) > 0 ? player2Stat.hp - dgmToPlayer2 : 0
+                        player1Stat.hp = (player1Stat.hp - dmgToPlayer1) > 0 ? player1Stat.hp - dmgToPlayer1 : 0;
+                        player2Stat.hp = (player2Stat.hp - dmgToPlayer2) > 0 ? player2Stat.hp - dmgToPlayer2 : 0
                         player1Stat.mp = (player1Stat.mp - 20) >= 0 ? (player1Stat.mp - 20) : 0;
-                        dmgBossMessage = `\n💥 ${bossStat.name} using stomp deals total ${dgmToPlayer1 + dgmToPlayer2} dmg to all players`;
+                        dmgBossMessage = `\n💥 ${bossStat.name} using stomp deals total ${dmgToPlayer1 + dmgToPlayer2} dmg to all players`;
                     }
                     let player1DeadMessage = player1Stat.hp <= 0 ? `\n☠️ **${player1.username}** has died` : '';
                     let player2DeadMessage = player2Stat.hp <= 0 ? `\n☠️ **${player2.username}** has died` : '';
                     
                     if (player1Stat.mp >= 0) {
-                        let dmgDealMessage = message.content.toLowerCase() == 'slash' ? `\n🗡️ ${message.author.username} using slash, deals ${dmgToBoss} dmg to ${bossStat.name} ` : `\n🛡️ ${message.author.username} using stance, reflect damage taken by ${dgmToPlayer1} [50%] dmg  `
+                        let dmgDealMessage = message.content.toLowerCase() == 'slash' ? `\n🗡️ ${message.author.username} using slash, deals ${dmgToBoss} dmg to ${bossStat.name} ` : `\n🛡️ ${message.author.username} using stance, reflect damage taken by ${dmgToPlayer1} [50%] dmg  `
                         player1Stat.buff = 0;
                         if (bossStat.hp > 0) {
                             commandMessageLog = `__⚔️**Battle log**⚔️__${dmgBossMessage}${dmgDealMessage}${player2DeadMessage}${player1DeadMessage}`;
@@ -404,21 +427,20 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                             commandMessageLog = `__⚔️**Battle log**⚔️__${dmgBossMessage}${dmgDealMessage}\n☠️ ${bossStat.name} has been defeated`;
                         }
                     } else {
-                        commandMessageLog = `__⚔️**Battle log**⚔️__\n🗡️**${message.author.username}** don't have enough **MP** to **Fight**\n💥 ${bossStat.name} using stomp deals total ${dgmToPlayer1 + dgmToPlayer2} dmg to all players${player2DeadMessage}${player1DeadMessage}`
+                        commandMessageLog = `__⚔️**Battle log**⚔️__\n🗡️**${message.author.username}** don't have enough **MP** to **Fight**\n💥 ${bossStat.name} using stomp deals total ${dmgToPlayer1 + dmgToPlayer2} dmg to all players${player2DeadMessage}${player1DeadMessage}`
                     }
                     
                 } else if (message.content.toLowerCase() == 'heal' || message.content.toLowerCase() == 'great heal' || message.content.toLowerCase() == 'buff') {
                     if (player2Stat.mp >= 0) {
                         let attackPercent = message.content.toLowerCase() == 'heal' ? 200 : 500;
                         heal = (player2Stat.attack * attackPercent) / 100;
-                        let spellMessage = '';
                         if (message.content.toLowerCase() == 'great heal') {
                             if (greatHealUsed > 0) {
-                                dgmToPlayer1 = dgmToPlayer1 - dgmToPlayer1 * 50 / 100;
-                                dgmToPlayer2 = dgmToPlayer2 - dgmToPlayer2 * 50 / 100;
-                                spellMessage = ` restore ${heal} HP to all players and reduce damage taken by 50%`
+                                dmgToPlayer1 = dmgToPlayer1 - dmgToPlayer1 * 50 / 100;
+                                dmgToPlayer2 = dmgToPlayer2 - dmgToPlayer2 * 50 / 100;
+                                spellMessage = ` restore ${heal} HP\n to all players and reduce damage taken by 50%`
                             } else {
-                                spellMessage = ` great heal failed, 15 max used times`;
+                                spellMessage = ` great heal failed, \nyou already used all your great healing spell`;
                             }
                         } else if (message.content.toLowerCase() == 'heal') {
                             spellMessage = ` restore ${heal} HP to all players`;
@@ -429,24 +451,46 @@ async function status(msg, player1Stat, player2Stat, maxPlayer1Stat, maxPlayer2S
                         }
                         if (message.content.toLowerCase() == 'heal' || (message.content.toLowerCase() == 'great heal' && greatHealUsed > 0)) {
                             greatHealUsed = greatHealUsed > 0 ? greatHealUsed - 1 : 0;
-                            player1Stat.hp = player1Stat.hp + heal <= maxPlayer1Stat.hp ? player1Stat.hp + heal : maxPlayer1Stat.hp;
-                            player2Stat.hp = player2Stat.hp + heal <= maxPlayer2Stat.hp ? player2Stat.hp + heal : maxPlayer2Stat.hp;
+                            if (player1Stat.hp > 0) {
+                                player1Stat.hp = player1Stat.hp + heal <= maxPlayer1Stat.hp ? player1Stat.hp + heal : maxPlayer1Stat.hp;
+                            }
+                            if (player2Stat.hp > 0) { 
+                                player2Stat.hp = player2Stat.hp + heal <= maxPlayer2Stat.hp ? player2Stat.hp + heal : maxPlayer2Stat.hp;
+                           }
                         }
                     
-                        player1Stat.hp = (player1Stat.hp - dgmToPlayer1) > 0 ? player1Stat.hp - dgmToPlayer1 : 0;
-                        player2Stat.hp = (player2Stat.hp - dgmToPlayer2) > 0 ? player2Stat.hp - dgmToPlayer2 : 0;
+                        player1Stat.hp = (player1Stat.hp - dmgToPlayer1) > 0 ? player1Stat.hp - dmgToPlayer1 : 0;
+                        player2Stat.hp = (player2Stat.hp - dmgToPlayer2) > 0 ? player2Stat.hp - dmgToPlayer2 : 0;
                         player2Stat.mp = (player2Stat.mp - 20) >= 0 ? (player2Stat.mp - 20) : 0;
                         let player1DeadMessage = player1Stat.hp <= 0 ? `\n🪦 **${player1.username}** has died` : '';
                         let player2DeadMessage = player2Stat.hp <= 0 ? `\n🪦 **${player2.username}** has died` : '';
-                        commandMessageLog = `__⚔️**Battle log**⚔️__\n💗 **${message.author.username}** using **${message.content.toLowerCase()} spell**,${spellMessage}\n💥 ${bossStat.name} using stomp deals total ${dgmToPlayer1 + dgmToPlayer2} dmg to all players${player2DeadMessage}${player1DeadMessage}`
+                        commandMessageLog = `__⚔️**Battle log**⚔️__\n💗 **${message.author.username}** using **${message.content.toLowerCase()} spell**,${spellMessage}\n💥 ${bossStat.name} using stomp deals total ${dmgToPlayer1 + dmgToPlayer2} dmg to all players${player2DeadMessage}${player1DeadMessage}`
                     
                     } else {
                         let player1DeadMessage = player1Stat.hp <= 0 ? `\n🪦 **${player1.username}** has died` : '';
                         let player2DeadMessage = player2Stat.hp <= 0 ? `\n🪦 **${player2.username}** has died` : '';
-                        commandMessageLog = `__⚔️**Battle log**⚔️__\n**${message.author.username}** don't have enough **MP** to **Heal**\n💥 ${bossStat.name} using stomp deals total ${dgmToPlayer1 + dgmToPlayer2} dmg to all players${player2DeadMessage}${player1DeadMessage}`
+                        commandMessageLog = `__⚔️**Battle log**⚔️__\n**${message.author.username}** don't have enough **MP** to **Heal**\n💥 ${bossStat.name} using stomp deals total ${dmgToPlayer1 + dmgToPlayer2} dmg to all players${player2DeadMessage}${player1DeadMessage}`
                     }
                     
                     
+                } else if (message.content.toLowerCase() == 'sacrifice') {
+                    let hpSacrifice = 0;
+                    try {
+                        player2Stat.hp = Math.floor(player2Stat.hp - (maxPlayer2Stat.hp / 2));
+                        hpSacrifice = Math.floor(maxPlayer2Stat.hp / 2)
+                        player2Stat.hp = player2Stat.hp > 0 ? player2Stat.hp : 0;
+                        if (player1Stat.hp > 0) {
+                            player1Stat.hp = Math.floor(player1Stat.hp + (maxPlayer1Stat.hp / 2));
+                            player1Stat.hp = player1Stat.hp > maxPlayer1Stat.hp ? maxPlayer1Stat.hp : player1Stat.hp;
+                        }
+                        spellMessage = ` sacrifice their 50% HP and\ntried to restore ${hpSacrifice} HP to the fighter`;
+                        let player1DeadMessage = player1Stat.hp <= 0 ? `\n🪦 **${player1.username}** has died` : '';
+                        let player2DeadMessage = player2Stat.hp <= 0 ? `\n🪦 **${player2.username}** has died` : '';
+                        commandMessageLog = `__⚔️**Battle log**⚔️__\n💗 **${message.author.username}** using **${message.content.toLowerCase()} spell**,${spellMessage}\n💥 ${bossStat.name} using stomp deals total ${dmgToPlayer1 + dmgToPlayer2} dmg to all players${player2DeadMessage}${player1DeadMessage}`
+                    
+                    }catch (error) {
+                            console.log(error);
+                        }
                 }
                 let statusMessage =  new Discord.MessageEmbed({
                     type: "rich",
