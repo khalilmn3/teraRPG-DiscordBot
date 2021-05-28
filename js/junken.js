@@ -77,178 +77,182 @@ async function junken(message,stat) {
                             round = 5;
                         }
                         msgRound.delete();
-                activeCommand([message.author.id, player2.id]);
-                await message.channel.send(`Invite <@${player2.id}> to play ${round} round of junken, react ✅ to accept!`)
-                    .then(function (message2) {
-                        message2.react('✅')
-                        message2.react('❎')
-                        const filter = (reaction, user) => { return ['✅', '❎'].includes(reaction.emoji.name) && user.id === player2.id}
-                        message2.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
-                            .then(async collected => {
-                                const reaction = collected.first();
-                                if ( reaction.emoji.name == '❎') {
-                                    message2.delete();
-                                    message.channel.send('declined')
-                                } else {
-                                    message2.delete();
-                                    message.channel.send(embed)
-                                    
-                                    let winner;
-                                    let player1winCount = 0;
-                                    let player2winCount = 0;
-                                    let count = 1;
-                                    var myFunc01 = async function () {
-                                        setTimeout(async function () {
-                                            let dm1 = new Promise(async (resolve, reject) => {
-                                                junkenResult.player1 = await play(message,player1);
-                                                resolve();
-                                            })
-                                            let dm2 = new Promise(async (resolve, reject) => {
-                                                junkenResult.player2 = await play(message, player2);
-                                                resolve();
-                                            })
+                        activeCommand([message.author.id, player2.id]);
+                        await message.channel.send(`Invite <@${player2.id}> to play ${round} round of junken, react ✅ to accept!`)
+                            .then(function (message2) {
+                                message2.react('✅')
+                                message2.react('❎')
+                                const filter = (reaction, user) => { return ['✅', '❎'].includes(reaction.emoji.name) && user.id === player2.id }
+                                message2.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
+                                    .then(async collected => {
+                                        const reaction = collected.first();
+                                        if (reaction.emoji.name == '❎') {
+                                            message2.delete();
+                                            message.channel.send('declined')
+                                        } else {
+                                            message2.delete();
+                                            message.channel.send(embed)
+                                        
+                                            let winner;
+                                            let player1winCount = 0;
+                                            let player2winCount = 0;
+                                            let count = 1;
+                                            var myFunc01 = async function () {
+                                                setTimeout(async function () {
+                                                    let dm1 = new Promise(async (resolve, reject) => {
+                                                        junkenResult.player1 = await play(message, player1);
+                                                        resolve();
+                                                    })
+                                                    let dm2 = new Promise(async (resolve, reject) => {
+                                                        junkenResult.player2 = await play(message, player2);
+                                                        resolve();
+                                                    })
+                                                    
+                                                    await Promise.all([dm1, dm2]); // wait result
                                                 
-                                            await Promise.all([dm1, dm2]); // wait result
-                                            
-                                            if (junkenResult.player1 == 1 || junkenResult.player2 == 1) {
-                                                deactiveCommand([player1.id, player2.id])
-                                                return;
-                                            }
-                                            if (count == 1) {
-                                                setCooldowns(player1.id, 'junken');
-                                                setCooldowns(player2.id, 'junken');
-                                            }
-                                            if (junkenResult.player1 == 0) {
-                                                console.log('player1 not responding')
-                                            }
-                                            if (junkenResult.player2 == 0) {
-                                                console.log('player2 not responding')
-                                            }
-                                            if (junkenResult.player1 === junkenResult.player2) {
-                                                winner = 'Draw';
-                                                // player1winCount++;
-                                            } else if (junkenResult.player1 === '✊' && junkenResult.player2 === '✌️') {
-                                                winner = message.author;
-                                                player1winCount++;
-                                            } else if (junkenResult.player2 === '✊' && junkenResult.player1 === '✌️') {
-                                                winner = player2;
-                                                player2winCount++;
-                                            } else if (junkenResult.player1 === '✊' && junkenResult.player2 === '🖐️') {
-                                                winner = player2;
-                                                player2winCount++;
-                                            } else if (junkenResult.player2 === '✊' && junkenResult.player1 === '🖐️') {
-                                                winner = message.author;
-                                                player1winCount++;
-                                            } else if (junkenResult.player1 === '🖐️' && junkenResult.player2 === '✌️') {
-                                                winner = player2;
-                                                player2winCount++;
-                                            } else if (junkenResult.player2 === '🖐️' && junkenResult.player1 === '✌️') {
-                                                winner = message.author;
-                                                player1winCount++;
-                                            } else if (junkenResult.player1 === 0) {
-                                                winner = player2;
-                                                player2winCount++;
-                                            } else if (junkenResult.player2 === 0) {
-                                                winner = message.author;
-                                                player1winCount++;
-                                            }
-                                            
-                                            let winResult = winner == 'Draw' ? `> Round ${count} : **Draw**` : `Round ${count} winner : <@${winner.id}>`;
-                                            if (junkenResult.player1 == 0 && junkenResult.player2 == 0) {
-                                                message.channel.send('Both user not responding the DM, Junken cancelled!');
-                                                deactiveCommand([player1.id, player2.id])
-                                            } else {
-                                                if (count < round) {
-                                                    let resultEmbed = new Discord.MessageEmbed({
-                                                        type: "rich",
-                                                        description: `Janken **${message.author.username}** vs **${player2.username}**`,
-                                                        url: null,
-                                                        color: 'RANDOM',
-                                                        fields: [{
-                                                            name: `🪧__Round ${count} Result__`,
-                                                            value: `[${player1winCount}] \`${message.author.username} ${junkenResult.player1} --- ${junkenResult.player2} ${player2.username}\` [${player2winCount}]`,
-                                                            inline: false,
-                                                        }, {
-                                                            name: `__Next Round begin in 5 seconds__`,
-                                                            value: `Junken pon, check DM and choose your moves, \nresult will shown after both players have chosen.`,
-                                                            inline: false,
-                                                        }]
-                                                    });
-                                                    message.channel.send(winResult, resultEmbed).then((sent) => {
-                                                        player1.send(`Check result: https://discord.com/channels/${sent.guild.id}/${sent.channel.id}/${sent.id}`);
-                                                        player2.send(`Check result: https://discord.com/channels/${sent.guild.id}/${sent.channel.id}/${sent.id}`);
-                                                    })
-                                                    myFunc01();
-                                                } else {
-                                                    let finalWinner = player1winCount > player2winCount ? player1 : player1winCount < player2winCount ? player2 : lowLevelPlayer;
-                                                    let finalLooser = finalWinner == player1 ? player2 : player1;
-                                                    // console.log(lowLevelPlayer);
-                                                    let data = await queryData(`SELECT level, basic_hp, basic_mp, hp, mp, current_experience FROM stat WHERE player_id="${finalWinner.id}" LIMIT 1`);
-                                                    data = data[0]
-                                                    let exp = (((data.level - 1) * (data.level - 2) / 2 + 1) * 100) / 100;
-                                                    let winnerTag = `\`${finalWinner.tag}\``;
-                                                    let rewards = `\`+${currencyFormat(exp)} exp\``;
-                                                    // DRAW RESULT
-                                                    if (player1winCount == player2winCount) {
-                                                        exp = Math.floor(exp / 2);
-                                                        winnerTag = '\`Draw\`'
-                                                        rewards = `\`+${currencyFormat(exp)} exp each player\``;
-                                                        let data1 = await queryData(`SELECT level, basic_hp, basic_mp, hp, mp, current_experience FROM stat WHERE player_id="${player1.id}" LIMIT 1`);
-                                                        let data2 = await queryData(`SELECT level, basic_hp, basic_mp, hp, mp, current_experience FROM stat WHERE player_id="${player2.id}" LIMIT 1`);
-                                                        
-                                                        addExpGold(message, player1, data1[0], exp, 0, data1[0])
-                                                        addExpGold(message, player2, data2[0], exp, 0, data2[0])
-                                                    } else { 
-                                                        addExpGold(message, finalWinner, data, exp, 0, data)
-                                                        
-                                                        queryData(`INSERT junken SET win=win+1, player_id="${finalWinner.id}" ON DUPLICATE KEY UPDATE win=win+1`)
-                                                        queryData(`INSERT junken SET lose=lose+1, player_id="${finalLooser.id}" ON DUPLICATE KEY UPDATE lose=lose+1`)
+                                                    if (junkenResult.player1 == 1 || junkenResult.player2 == 1) {
+                                                        deactiveCommand([player1.id, player2.id])
+                                                        return;
                                                     }
-                                                    let finalResultEmbed = new Discord.MessageEmbed({
-                                                        type: "rich",
-                                                        description: `Janken **${message.author.username}** vs **${player2.username}**`,
-                                                        url: null,
-                                                        color: 'RANDOM',
-                                                        fields: [{
-                                                            name: `🪧__Final Result__`,
-                                                            value: `[${player1winCount}] \`${message.author.username} ${junkenResult.player1} --- ${junkenResult.player2} ${player2.username}\` [${player2winCount}]`,
-                                                            inline: false,
-                                                        },
-                                                        {
-                                                            name: `\\🏆 __Winner__`,
-                                                            value: winnerTag,
-                                                            inline: false,
+                                                    if (count == 1) {
+                                                        setCooldowns(player1.id, 'junken');
+                                                        setCooldowns(player2.id, 'junken');
+                                                    }
+                                                    if (junkenResult.player1 == 0) {
+                                                        console.log('player1 not responding')
+                                                    }
+                                                    if (junkenResult.player2 == 0) {
+                                                        console.log('player2 not responding')
+                                                    }
+                                                    if (junkenResult.player1 === junkenResult.player2) {
+                                                        winner = 'Draw';
+                                                        // player1winCount++;
+                                                    } else if (junkenResult.player1 === '✊' && junkenResult.player2 === '✌️') {
+                                                        winner = message.author;
+                                                        player1winCount++;
+                                                    } else if (junkenResult.player2 === '✊' && junkenResult.player1 === '✌️') {
+                                                        winner = player2;
+                                                        player2winCount++;
+                                                    } else if (junkenResult.player1 === '✊' && junkenResult.player2 === '🖐️') {
+                                                        winner = player2;
+                                                        player2winCount++;
+                                                    } else if (junkenResult.player2 === '✊' && junkenResult.player1 === '🖐️') {
+                                                        winner = message.author;
+                                                        player1winCount++;
+                                                    } else if (junkenResult.player1 === '🖐️' && junkenResult.player2 === '✌️') {
+                                                        winner = player2;
+                                                        player2winCount++;
+                                                    } else if (junkenResult.player2 === '🖐️' && junkenResult.player1 === '✌️') {
+                                                        winner = message.author;
+                                                        player1winCount++;
+                                                    } else if (junkenResult.player1 === 0) {
+                                                        winner = player2;
+                                                        player2winCount++;
+                                                    } else if (junkenResult.player2 === 0) {
+                                                        winner = message.author;
+                                                        player1winCount++;
+                                                    }
+                                                
+                                                    let winResult = winner == 'Draw' ? `> Round ${count} : **Draw**` : `Round ${count} winner : <@${winner.id}>`;
+                                                    if (junkenResult.player1 == 0 && junkenResult.player2 == 0) {
+                                                        message.channel.send('Both user not responding the DM, Junken cancelled!');
+                                                        deactiveCommand([player1.id, player2.id])
+                                                    } else {
+                                                        if (count < round) {
+                                                            let resultEmbed = new Discord.MessageEmbed({
+                                                                type: "rich",
+                                                                description: `Janken **${message.author.username}** vs **${player2.username}**`,
+                                                                url: null,
+                                                                color: 'RANDOM',
+                                                                fields: [{
+                                                                    name: `🪧__Round ${count} Result__`,
+                                                                    value: `[${player1winCount}] \`${message.author.username} ${junkenResult.player1} --- ${junkenResult.player2} ${player2.username}\` [${player2winCount}]`,
+                                                                    inline: false,
+                                                                }, {
+                                                                    name: `__Next Round begin in 5 seconds__`,
+                                                                    value: `Junken pon, check DM and choose your moves, \nresult will shown after both players have chosen.`,
+                                                                    inline: false,
+                                                                }]
+                                                            });
+                                                            message.channel.send(winResult, resultEmbed).then((sent) => {
+                                                                player1.send(`Check result: https://discord.com/channels/${sent.guild.id}/${sent.channel.id}/${sent.id}`);
+                                                                player2.send(`Check result: https://discord.com/channels/${sent.guild.id}/${sent.channel.id}/${sent.id}`);
+                                                            })
+                                                            myFunc01();
+                                                        } else {
+                                                            let finalWinner = player1winCount > player2winCount ? player1 : player1winCount < player2winCount ? player2 : lowLevelPlayer;
+                                                            let finalLooser = finalWinner == player1 ? player2 : player1;
+                                                            // console.log(lowLevelPlayer);
+                                                            let data = await queryData(`SELECT level, basic_hp, basic_mp, hp, mp, current_experience FROM stat WHERE player_id="${finalWinner.id}" LIMIT 1`);
+                                                            data = data[0]
+                                                            let exp = (((data.level - 1) * (data.level - 2) / 2 + 1) * 100) / 100;
+                                                            let winnerTag = `\`${finalWinner.tag}\``;
+                                                            let rewards = `\`+${currencyFormat(exp)} exp\``;
+                                                            // DRAW RESULT
+                                                            if (player1winCount == player2winCount) {
+                                                                exp = Math.floor(exp / 2);
+                                                                winnerTag = '\`Draw\`'
+                                                                rewards = `\`+${currencyFormat(exp)} exp each player\``;
+                                                                let data1 = await queryData(`SELECT level, basic_hp, basic_mp, hp, mp, current_experience FROM stat WHERE player_id="${player1.id}" LIMIT 1`);
+                                                                let data2 = await queryData(`SELECT level, basic_hp, basic_mp, hp, mp, current_experience FROM stat WHERE player_id="${player2.id}" LIMIT 1`);
+                                                            
+                                                                addExpGold(message, player1, data1[0], exp, 0, data1[0])
+                                                                addExpGold(message, player2, data2[0], exp, 0, data2[0])
+                                                            } else {
+                                                                addExpGold(message, finalWinner, data, exp, 0, data)
+                                                            
+                                                                queryData(`INSERT junken SET win=win+1, player_id="${finalWinner.id}" ON DUPLICATE KEY UPDATE win=win+1`)
+                                                                queryData(`INSERT junken SET lose=lose+1, player_id="${finalLooser.id}" ON DUPLICATE KEY UPDATE lose=lose+1`)
+                                                            }
+                                                            let finalResultEmbed = new Discord.MessageEmbed({
+                                                                type: "rich",
+                                                                description: `Janken **${message.author.username}** vs **${player2.username}**`,
+                                                                url: null,
+                                                                color: 'RANDOM',
+                                                                fields: [{
+                                                                    name: `🪧__Final Result__`,
+                                                                    value: `[${player1winCount}] \`${message.author.username} ${junkenResult.player1} --- ${junkenResult.player2} ${player2.username}\` [${player2winCount}]`,
+                                                                    inline: false,
+                                                                },
+                                                                {
+                                                                    name: `\\🏆 __Winner__`,
+                                                                    value: winnerTag,
+                                                                    inline: false,
+                                                                }
+                                                                    , {
+                                                                    name: `__Rewards__`,
+                                                                    value: rewards,
+                                                                    inline: false,
+                                                                }]
+                                                            });
+                                                            message.channel.send(winResult, finalResultEmbed).then((sent) => {
+                                                                player1.send(`Check result: https://discord.com/channels/${sent.guild.id}/${sent.channel.id}/${sent.id}`);
+                                                                player2.send(`Check result: https://discord.com/channels/${sent.guild.id}/${sent.channel.id}/${sent.id}`);
+                                                            })
+                                                            deactiveCommand([player1.id, player2.id])
                                                         }
-                                                            , {
-                                                            name: `__Rewards__`,
-                                                            value: rewards,
-                                                            inline: false,
-                                                        }]
-                                                    });
-                                                    message.channel.send(winResult, finalResultEmbed).then((sent) => {
-                                                        player1.send(`Check result: https://discord.com/channels/${sent.guild.id}/${sent.channel.id}/${sent.id}`);
-                                                        player2.send(`Check result: https://discord.com/channels/${sent.guild.id}/${sent.channel.id}/${sent.id}`);
-                                                    })
-                                                    deactiveCommand([player1.id, player2.id])
-                                                }
-                                                count++
+                                                        count++
+                                                    }
+                                                }, 5000)
                                             }
-                                        }, 5000)
-                                    }
-                                    myFunc01();
-                                }
-                            })
-                            .catch(collected => {
-                                message2.delete();
-                                message2.channel.send('Timeout, cancelled')
+                                            myFunc01();
+                                        }
+                                    })
+                                    .catch(collected => {
+                                        message2.delete();
+                                        message2.channel.send('Timeout, **Junken** cancelled')
+                                        deactiveCommand([message.author.id, player2.id])
+                                    });
+                    
+                            }).catch(collected => {
                                 deactiveCommand([message.author.id, player2.id])
+                                //Something
                             });
-                
-                    }).catch(function () {
+                    }).catch(collected => {
+                        message.delete();
+                        message.channel.send('Timeout, **Junken** cancelled')
                         deactiveCommand([message.author.id, player2.id])
-                        //Something
                     });
-                })
             }).catch((err) => {
                 console.log('(junken)'+message.author.id+': '+errorCode[err.code]);
             });
