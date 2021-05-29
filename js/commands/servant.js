@@ -160,7 +160,7 @@ async function servant(message) {
         fields: [
             {
                 value: `\`Slayer/s\`: ${playerJoin ? playerJoin : '-'} \nFailed to defeat the servant, \ntry again next time with more people`,
-                name: `${servants.emoji}** ${servants.name}** ${en.servant.failed2}`
+                name: `${servants.emoji}** ${servants.name}** ends up running away`
             },
         ],
         author: {

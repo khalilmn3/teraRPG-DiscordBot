@@ -72,7 +72,7 @@ async function work(message, workingCommand, zone_id) {
                             nextLevel = parseInt(levelPickaxe.pickaxe_level) + 1;
                         }
                         queryData(`UPDATE tools SET pickaxe_exp=${totalExp}, pickaxe_level=${nextLevel} WHERE player_id="${message.author.id}" LIMIT 1`);
-                        message.channel.send(`${data.pickaxeEmoji} | **${message.author.username}** swung their **${data.pickaxeName}**\nat ${itemDrop.emoji} **${itemDrop.name}** but it harder than your tool,\n lucky you gained **${Math.round(itemDrop.exp / 2)}xp**`)
+                        message.channel.send(`${data.pickaxeEmoji} | **${message.author.username}** swung their **${data.pickaxeName}**\nat ${itemDrop.emoji} **${itemDrop.name}** but you realize it's harder than your tool.\nLuckily, you still gain **${Math.round(itemDrop.exp / 2)}xp**`)
                     }
                     // QUEST PROGRESS
                     questProgress(message.author.id, 4);
@@ -107,7 +107,7 @@ async function work(message, workingCommand, zone_id) {
                         }
                         queryData(`CALL insert_item_backpack_procedure("${message.author.id}", "${itemDrop.id}", ${gainingItem})`);
                         queryData(`UPDATE tools SET axe_exp=${totalExp}, axe_level=${nextLevel} WHERE player_id="${message.author.id}" LIMIT 1`);
-                        message.channel.send(`${data.axeEmoji} | **${message.author.username}** working with **${data.axeName}**,\n${itemDrop.emoji} | got **${gainingItem} ${itemDrop.name}** and gained **${expGot}xp**`)
+                        message.channel.send(`${data.axeEmoji} | **${message.author.username}** swung their **${data.axeName}**,\n${itemDrop.emoji} | got **${gainingItem} ${itemDrop.name}** and gained **${expGot}xp**`)
                     } else {
                         totalExp = Math.round((parseInt(itemDrop.exp) / 2) + parseInt(levelAxe.axe_exp));
                         if (totalExp > expNextLevel) {
@@ -115,7 +115,7 @@ async function work(message, workingCommand, zone_id) {
                             nextLevel = parseInt(levelAxe.axe_level) + 1;
                         }
                         queryData(`UPDATE tools SET axe_exp=${totalExp}, axe_level=${nextLevel} WHERE player_id="${message.author.id}" LIMIT 1`);
-                        message.channel.send(`${data.axeEmoji} | **${message.author.username}** working with **${data.axeName}**,\n${itemDrop.emoji} | strike **${itemDrop.name}** but your tool tier is too low for it, lucky you gained **${Math.round(itemDrop.exp / 2)}xp**`)
+                        message.channel.send(`${data.axeEmoji} | **${message.author.username}** swung their **${data.axeName}**,\n${itemDrop.emoji} | at **${itemDrop.name}**  but you realize it's harder than your tool.\nLuckily, you still gain **${Math.round(itemDrop.exp / 2)}xp**`)
                     }
                     
                     // QUEST PROGRESS
@@ -127,7 +127,7 @@ async function work(message, workingCommand, zone_id) {
                         nextLevel = parseInt(levelAxe.axe_level) + 1;
                     }
                     queryData(`UPDATE tools SET axe_exp=${totalExp}, axe_level=${nextLevel} WHERE player_id="${message.author.id}" LIMIT 1`);
-                    message.channel.send(`${data.axeEmoji} | **${message.author.username}** is working with **${data.axeName}** \nbut you are too exhausted, at least you gained **${notFoundItemXP}xp**`)
+                    message.channel.send(`${data.axeEmoji} | **${message.author.username}** try to swung their **${data.axeName}** \nbut you are too exhausted, at least you gained **${notFoundItemXP}xp**`)
                 }
                 // BUG CATCH
                 let bugCatch = '';

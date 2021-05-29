@@ -19,10 +19,10 @@ async function teleport(message, stat, args) {
                         await queryData(`UPDATE stat SET zone_id=${args[0]}, sub_zone=${subZone} WHERE player_id="${message.author.id}"`)
                         message.channel.send(`**${message.author.username}** using <:Forest_Pylon:826645637788598294> pylon and teleported to Zone ${zone}-${subZone}.`)
                     } else {
-                        message.reply(`\\🚫 | you didn't discovered this zone yet!\ncek your discovered zones with \`tera zone\``)
+                        message.reply(`\\🚫 | you haven't unlocked this zone yet, \nplease check your discorvered zones with \nthe command \`tera zone\``)
                     }
                 } else {
-                    message.reply(`\\🚫 | you have already in this zone!`)
+                    message.reply(`\\🚫 | you are already in this zone!`)
                 }
             } else {
                 message.reply(`\\🚫 | you have can't teleporting without <:Forest_Pylon:826645637788598294> **pylon**\n<:Forest_Pylon:826645637788598294> **pylon** is available on market.`)
