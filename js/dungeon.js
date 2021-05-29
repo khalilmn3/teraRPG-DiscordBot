@@ -278,16 +278,16 @@ ${generateIcon(player2Stat.hp, maxPlayer2Stat.hp, true)}  HP ${player2Stat.hp}/$
             let newZone = playerList[0].sub_zone > 1 ? parseInt(playerList[0].zone_id) + 1 : playerList[0].zone_id;
 
             let maxZoneList1 = playerList[0].max_zone.split('|');
-            let maxZone1 = maxZoneList[0];
-            let maxSubZone1 = maxZoneList[1];
+            let maxZone1 = maxZoneList1[0];
+            let maxSubZone1 = maxZoneList1[1];
             maxZone1 = maxZone1 > newZone ? maxZone1 : newZone;
-            maxSubZone1 = maxSubZone1 > newSubZone ? maxSubZone1 : newSubZone;
+            maxSubZone1 = newZone >= maxZone1 ? newSubZone : maxSubZone1;
 
             let maxZoneList2 = playerList[1].max_zone.split('|');
-            maxZone2 = maxZoneList2[1];
+            let maxZone2 = maxZoneList2[0];
             let maxSubZone2 = maxZoneList2[1];
             maxZone2 = maxZone2 > newZone ? maxZone2 : newZone;
-            maxSubZone2 = maxSubZone2 > newSubZone ? maxSubZone2 : newSubZone;
+            maxSubZone2 = newZone >= maxZone2 ? newSubZone : maxSubZone2;
 
             queryData(`UPDATE stat SET zone_id='${newZone}', sub_zone='${newSubZone}', max_zone="${maxZone1}|${maxSubZone1}" WHERE player_id=${player1.id}`);
             queryData(`UPDATE stat SET zone_id='${newZone}', sub_zone='${newSubZone}', max_zone="${maxZone2}|${maxSubZone2}" WHERE player_id=${player2.id}`);
