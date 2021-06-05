@@ -1,31 +1,46 @@
 import Discord from "discord.js";
 import queryData from "./helper/query.js";
+import emojiCharacter from "./utils/emojiCharacter.js";
 
 // Command to teleport to specific Zone
 async function teleport(message, stat, args) {
     if (!isNaN(args[0])) {
         if (args.length > 0) {
-            let zone = args[0];
-            let subZone = args[1] !== undefined && args[1] > 0 && args[1] <= 2 ? args[1] : '1';
+            console.log(args);
+            let zone = '';
+            let subZone = '1';
+            if (args[0] % 1 != 0) {
+                let parseZone = args[0].toString().split('.');
+                zone = parseZone[0];
+                subZone = parseZone[1];
+            } else {
+                zone = Math.floor(args[0]);
+                subZone = args[1];
+            }
+            if(isNaN(subZone) || subZone <= 0 || subZone > 2) { return message.channel.send(`${emojiCharacter.noEntry} | **${message.author.username}**, Invalid sub zone`)}
+            if (!zone) { return message.channel.send(`**${message.author.username}**, please specify which **zone** you want to teleport \n Format \`teleport <zone> <sub_zone>\` \n eg. \`teleport 2 2\` | available zone: 1 - 7 `) }
+            if (zone > 7 || subZone >2) { return  message.reply(`\\🚫 | invalid zone!`)}
             let maxZone = stat.max_zone;
             let currentZone = `${stat.zone_id}${stat.sub_zone}`;
             let toZone = parseInt(`${zone}${subZone}`);
             let pylon = await queryData(`SELECT pylon FROM utility WHERE player_id="${message.author.id}" AND pylon=TRUE LIMIT 1`);
             maxZone = maxZone.toString().split('|');
             maxZone = maxZone[0] + maxZone[1];
+            console.log(maxZone);
+            console.log(toZone);
             if (pylon) {
                 if (currentZone != toZone) {
                     if (maxZone >= toZone || message.author.id === '668740503075815424') {
-                        await queryData(`UPDATE stat SET zone_id=${args[0]}, sub_zone=${subZone} WHERE player_id="${message.author.id}"`)
+                        await queryData(`UPDATE stat SET zone_id=${zone}, sub_zone=${subZone} WHERE player_id="${message.author.id}"`)
                         message.channel.send(`**${message.author.username}** using <:Forest_Pylon:826645637788598294> pylon and teleported to Zone ${zone}-${subZone}.`)
                     } else {
-                        message.reply(`\\🚫 | you haven't unlocked this zone yet, \nplease check your discorvered zones with \nthe command \`tera zone\``)
+                        message.channel.send(`${emojiCharacter.noEntry} | **${message.author.username}**, you haven't unlocked this zone yet, \nplease check your discorvered zones with \nthe command \`tera zone\``)
                     }
                 } else {
-                    message.reply(`\\🚫 | you are already in this zone!`)
+                    message.channel.send(`${emojiCharacter.noEntry} | **${message.author.username}**, you are already in this zone!`)
                 }
             } else {
-                message.reply(`\\🚫 | you have can't teleporting without <:Forest_Pylon:826645637788598294> **pylon**\n<:Forest_Pylon:826645637788598294> **pylon** is available on market.`)
+                message.channel.send(`${emojiCharacter.noEntry} | **${message.author.username}**, you can't teleporting without <:Forest_Pylon:826645637788598294> **pylon**\n<:Forest_Pylon:826645637788598294> **pylon** is available on market.`)
             }
         } else {
             message.reply(`please specify which **zone** you want to teleport \n Format \`teleport <zone> <sub_zone>\` \n eg. \`teleport 2 2\` | available zone: 1 - 7 `)
