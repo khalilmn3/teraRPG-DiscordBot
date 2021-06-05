@@ -89,6 +89,7 @@ async function junken(message,stat) {
                                         if (reaction.emoji.name == '❎') {
                                             message2.delete();
                                             message.channel.send('declined')
+                                            deactiveCommand([message.author.id, player2.id]);
                                         } else {
                                             message2.delete();
                                             message.channel.send(embed)
@@ -254,6 +255,7 @@ async function junken(message,stat) {
                         deactiveCommand([message.author.id, player2.id])
                     });
             }).catch((err) => {
+                deactiveCommand([message.author.id, player2.id])
                 console.log('(junken)'+message.author.id+': '+errorCode[err.code]);
             });
         }

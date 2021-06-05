@@ -21,6 +21,8 @@ async function rewards(message,command, stat) {
         let potion = (Math.floor(stat.level / 2) + 2) * multiplyWeekend;
         potion = potion <= 0 ? 1 : potion;
         let gold = (1352 * stat.level) * multiplyWeekend;
+        let diamond = 1 * multiplyWeekend;
+        let crate = 1 * multiplyWeekend;
 
         if (cooldowns.isReady) {
             status = en.rewards.notVote;
@@ -41,7 +43,7 @@ async function rewards(message,command, stat) {
                     },
                     {
                         name: `Rewards`,
-                        value: `• \`+1\`<:diamond:801441006247084042>\`Diamond\`\n• \`+1\`<:Iron_Crate:810034071307943976>\`Iron crate\`\n• \`+${potion}\`<:Healing_Potion:810747622859735100>\`Healing potion\`\n• \`+${currencyFormat(gold)}\`<:gold_coin:801440909006209025>\`gold\``,
+                        value: `• \`+${diamond}\`<:diamond:801441006247084042>\`Diamond\`\n• \`+${crate}\`<:Iron_Crate:810034071307943976>\`Iron crate\`\n• \`+${potion}\`<:Healing_Potion:810747622859735100>\`Healing potion\`\n• \`+${currencyFormat(gold)}\`<:gold_coin:801440909006209025>\`gold\``,
                         inline: true,
                     },
                     {
