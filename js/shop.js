@@ -10,7 +10,7 @@ async function shop(message, stat) {
 
     message.channel.send(new Discord.MessageEmbed({
         type: "rich",
-        description: 'Use \`tera buy [item] [amount]\` for buying items from shop',
+        description: 'Use \`tera buy [item] [amount]\` to buy items from the shop',
         url: null,
         color: 10115509,
         fields: [
@@ -44,7 +44,7 @@ async function shop(message, stat) {
             width: 0
         },
         footer: {
-            text: `use \`tera market\` to buy item with diamond`,
+            text: `use \`tera market\` to buy an item with diamonds`,
             iconURL: null,
             proxyIconURL: null
         },

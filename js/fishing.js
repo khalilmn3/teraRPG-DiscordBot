@@ -59,7 +59,7 @@ async function fishing(message, stat) {
                     message.channel.send(`${fishingPole.emoji} | **${message.author.username}** Casts **${fishingPole.name}** and catches ${itemCatch.emoji} **${itemCatch.name}**.`)
                 }
             } else {
-                message.reply(`you don't have bait on your backpack,\nbuy some on \`shop\` or catch it with **bug net**!`)
+                message.reply(`you don't have any bait on your backpack,\nbuy some in the \`shop\` or catch it with **bug net**!`)
             }
         } else {
             message.reply(`You didn't have Fishing Pole, \nType \`tera craft list\` to see full list of item craft`);

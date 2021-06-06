@@ -3,7 +3,7 @@ import errorCode from './utils/errorCode.js';
 function market(message) {
     message.channel.send(new Discord.MessageEmbed({
         type: "rich",
-        description: 'Use \`tera buy [item]\` for buy an item from market',
+        description: 'Use \`tera buy [item]\` to buy an item from the market',
         url: null,
         color: 10115509,
         fields: [

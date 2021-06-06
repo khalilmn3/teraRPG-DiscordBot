@@ -163,7 +163,7 @@ async function dungeon(message, stat) {
                 console.log('(dungeon)'+message.author.id+': '+errorCode[err.code]);
             });
     } else {
-        message.channel.send(`You have to team up with other player to do dungeon\nex.\`tera dungeon @sim\``);
+        message.channel.send(`You have to team up with another player to do dungeon\nex.\`tera dungeon @sim\``);
     }
 }
 
