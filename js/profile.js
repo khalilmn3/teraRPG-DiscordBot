@@ -9,7 +9,7 @@ import errorCode from './utils/errorCode.js';
 async function profile(message, client, id, avatar, args1) {
     let idMention = message.mentions.users.first();
     let tag = message.author.tag
-    let extFormatAvatar = avatar[1].match(/([_])/g);
+    let extFormatAvatar = avatar && avatar.length > 0 ? avatar[1].match(/([_])/g) : undefined;
     extFormatAvatar = extFormatAvatar ? 'gif' : 'png';
     if (idMention) {
         id = idMention.id;
