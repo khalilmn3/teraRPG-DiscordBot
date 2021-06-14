@@ -126,6 +126,7 @@ dbl.webhook.on('vote', (vote)=>{
 })
 // Command Prefix
 let teraRPGPrefix = config.PREFIX;
+let ownerId = '668740503075815424';
 client.on('ready', () => {
     console.log('Ready');
     if (config.SHOW_ACTIVITY) {
@@ -277,279 +278,251 @@ client.on("message", async function (message) {
             }
         }
         if (command != '') {
-            // FIND USER REGISTRATION
-            let isUserRegistred = await queryData(`SELECT id, active_command, depth, zone_id, max_zone, sub_zone, is_active, stat.gold, stat.level, stat.hp, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${message.author.id} LIMIT 1`)
-            if (waitingTime.has(message.author.id)) {
-                message.reply("Wait at least 1 second before getting typing this again.");
-                return;
-            }
-            if (isUserRegistred.length > 0) {
-                let stat = isUserRegistred[0];
-                if (isUserRegistred[0].is_active) { // Check Banned User
-                    let configuration = await queryData(`SELECT value FROM configuration WHERE id IN (1,6) ORDER BY id LIMIT 2`);
-                    let prepareMaintenance = configuration.length > 0 ? parseInt(configuration[0].value) : false;
-                    let maintenance = configuration.length > 0 ? parseInt(configuration[1].value) : false;
-                    if (isUserRegistred[0].active_command === 1) {
-                        message.reply(`you have an active command, end it before processing another!`)
-                        return;
-                    }
-                    if (maintenance && message.author.id !== '668740503075815424') {
-                        message.channel.send('🛠️ | Bot is under maintenance...!');
-                        return;
-                    }
-                    if (prepareMaintenance && message.author.id !== '668740503075815424') {
-                        message.channel.send('🛠️ | Bot is preparing for maintenance...!');
-                        return;
-                    }
-
-                    if (command == 'exp' || command == 'me' || command == 'chop' || command == 'mine' || command == 'fish' || command == 'mine expedition' || command == 'explore') {
-                        
-                        // RANDOM INVASION PIRATE
-                        let randomize = randomNumber(1, 500);
-                        if (randomize <= 1) {
-                            pirate(message,stat);
-                        }
-                    }
-
-                    if (command == 'p' || command == 'profile') {
-                        let notifIsRead = await queryData(`SELECT * FROM notification_read WHERE player_id=${message.author.id} AND is_read=1 LIMIT 1`);
-                        notifIsRead = notifIsRead.length > 0 ? notifIsRead[0] : undefined;
-
-                        if (!notifIsRead) {
-                            notification(message);
-                        }
-                        
-                        let authorTag = message.author.tag;
-                        let isStringByte4 = /[\u{10000}-\u{10FFFF}]/u.test(authorTag);
-                        authorTag = isStringByte4 ? message.author.id : authorTag;
-                        // UPDATE USERNAME
-                        queryData(`UPDATE player SET username="${authorTag}" WHERE id=${message.author.id} LIMIT 1`);
-                    }
-
-                    if (command === "ping") {
-                        log(message, commandBody);
-                        let timeTaken = Date.now() - message.createdTimestamp;
-                        if (timeTaken < 0) {
-                            timeTaken = -timeTaken;
-                        }
-                        message.channel.send(`Pong! ${timeTaken}ms.`);
-                    } else if (command === 'help') {
-                        log(message, commandBody);
-                        help(message, client);
-                    } else if (command === 'start') {
-                        log(message, commandBody);
-                        message.reply(`You already registered, type \`${teraRPGPrefix} help\` for more commands`)
-                    } else if (command === 'p' | command === 'profile') {
-                        log(message, commandBody);
-                        profile(message, client, message.author.id, message.author.avatar, args[0]);
-                    } else if (command === 'explore' | command === 'exp') {
-                        log(message, commandBody);
-                        hunt(message, 0, message.author.id, message.author.username);
-                        
-                    } else if (command === 'heal') {
-                        log(message, commandBody);
-                        healingPotion(message, 0, message.author.id, message.author.username);
-                    } else if (command === 'minex' || commandBody.includes('mine expedition') || command === 'me' || command === 'adventure' || command === 'adv') {
-                        log(message, commandBody);
-                        adventure(message,stat);
-                    } else if (command === 'mine' || command === 'chop') {
-                        log(message, commandBody);
-                        work(message, command, isUserRegistred[0].zone_id);
-                    } else if (command === 'backpack' || command === 'bp') {
-                        log(message, commandBody);
-                        backpack(message, args[0]);
-                    } else if (command === 'workspace' || command === 'ws') {
-                        log(message, commandBody);
-                        workspace(message, args[0]);
-                    } else if (command === 'tool' || command === 'tools') {
-                        log(message, commandBody);
-                        tools(message, args[0]);
-                    } else if (command === 'craft') {
-                        log(message, commandBody);
-                        crafting(message, commandBody, stat); 
-                    } else if (command === 'zone' || command === 'z') {
-                        log(message, commandBody);
-                        teleport(message, stat, args);
-                    } else if (command === 'sell') {
-                        log(message, commandBody);
-                        // let itemName = commandBody.slice(command.length + 1)
-                        // console.log(itemName);
-                        sellItem(message, args, commandBody)
-                    } else if (command === `cf`) {
-                        // log(message, commandBody);
-                        coinFlip(message, args)
-                    } else if (command === 'vote' || command === 'hourly' || command === 'daily' || command === 'weekly') {
-                        log(message, commandBody);
-                        rewards(message, command, isUserRegistred[0]);
-                    } else if (command === 'cd' || command === 'cooldowns' || command === 'rd' || command === 'ready') {
-                        log(message, commandBody);
-                        cooldowns(message, command, args[0]);
-                    } else if (command === 'lottery') {
-                        log(message, commandBody);
-                        lottery(message, client, args, stat)
-                    } else if (command === 'fish') {
-                        log(message, commandBody);
-                        fishing(message, stat);
-                    } else if (command === 'open') {
-                        log(message, commandBody);
-                        openCrate(client, message, args, stat);
-                    } else if (command === 'invite') {
-                        log(message, commandBody);
-                        invite(message);
-                    } else if (command === 'dungeon') {
-                        log(message, commandBody);
-                        dungeon(message, stat);
-                    } else if (command === 'junken') {
-                        log(message, commandBody);
-                        junken(message, stat);
-                    } else if (command === 'report') {
-                        log(message, commandBody);
-                        report(message, client, args, body);
-                    } else if (command === 'suggest') {
-                        log(message, commandBody);
-                        suggest(message, client, args, body);
-                    } else if (command === 'upgrade') {
-                        log(message, commandBody);
-                        upgrade(message, args[0]);
-                    } else if (command === 'ranks') {
-                        log(message, commandBody);
-                        ranks(message, args[0]);
-                    }else if (command === 'market') {
-                        log(message, commandBody);
-                        market(message);
-                    }  else if (command === 'shop') {
-                        log(message, commandBody);
-                        shop(message, stat);
-                    } else if (command === 'buy') {
-                        log(message, commandBody);
-                        buy(message, commandBody);
-                    } else if (command === 'deposit') {
-                        log(message, commandBody);
-                        deposit(message, args[0]);
-                    } else if (command === 'withdraw' || command === 'wd') {
-                        log(message, commandBody);
-                        withdraw(message, args[0]);
-                    } else if (command === 'bank') {
-                        log(message, commandBody);
-                        bank(message);
-                    } else if (command === 'booster') {
-                        log(message, commandBody);
-                        bonus(message);
-                    } else if (command === 'reforge') {
-                        log(message, commandBody);
-                        reforge(message, args[0], args[1]);
-                    }
-                    else if (command === 'armory') {
-                        log(message, commandBody);
-                        armory(message, args[0]);
-                    }
-                    else if (command === 'equip' || command === 'unequip') {
-                        log(message, commandBody);
-                        unOrEquip(message, command, args[0], commandBody, stat);
-                    } else if (command === 'trade') {
-                        log(message, commandBody);
-                        trade(message,stat, args);
-                    } else if (command === 'smelt') {
-                        log(message, commandBody);
-                        smelt(message, args);
-                    } else if (command === 'donate') {
-                        log(message, commandBody);
-                        donate(message);
-                    } else if (command === 'servant') {
-                        log(message, commandBody);
-                        servant(message);
-                    } else if (command === 'duel') {
-                        log(message, commandBody);
-                        duel(message,stat);
-                    } else if (command === 'quest') {
-                        log(message, commandBody);
-                        quest(message,stat);
-                    }
-                    // else if (command === 'pirate') {
-                    //     log(message, commandBody);
-                    //     pirate(message,stat);
-                    // }
-                    else if (command === 'use') {
-                        log(message, commandBody);
-                        use(message,commandBody);
-                    } else if (command === 'code') {
-                        log(message, commandBody);
-                        code(message,args);
-                    } else if (command === 'info') {
-                        log(message, commandBody);
-                        info(message,args, commandBody);
-                    } else if (command === 'notification' || command === 'notif') {
-                        log(message, commandBody);
-                        notification(message);
-                    } else if (command === 'stats' || command === 'stat') {
-                        log(message, commandBody);
-                        stats(message, args[0]);
-                    } else if (command === 'marketplace' && args[0] == 'add') {
-                        log(message, commandBody);
-                        marketAdd(message, args, commandBody, stat);
-                    } else if (command === 'marketplace' && args[0] == 'remove') {
-                        log(message, commandBody);
-                        marketRemove(message, args, body);
-                    }  else if (command === 'marketplace' && args[0] == 'buy') {
-                        log(message, commandBody);
-                        marketBuy(message, args, stat);
-                    } else if (command === 'marketplace' || command === 'mp') {
-                        log(message, commandBody);
-                        marketplace(message, args, stat);
-                    } else if (command === 'food' || command === 'fd') {
-                        log(message, commandBody);
-                        food(message, args);
-                    } else if (command === 'eat') {
-                        log(message, commandBody);
-                        eatFood(message, stat, commandBody);
-                    } else if (command === 'prefix') {
-                        log(message, commandBody);
-                        prefix(message, args);
-                    } else if (command === 'bj' || command === 'blackjack') {
-                        log(message, commandBody);
-                        blackjack( message, args, stat);
-                    }
+            try {
+                // FIND USER REGISTRATION
+                let isUserRegistred = await queryData(`SELECT id, active_command, depth, zone_id, max_zone, sub_zone, is_active, stat.gold, stat.level, stat.hp, stat.basic_hp, stat.basic_mp, stat.current_experience FROM player LEFT JOIN stat ON (player.id = stat.player_id) WHERE id=${message.author.id} LIMIT 1`)
+                if (waitingTime.has(message.author.id)) {
+                    message.reply("Wait at least 1 second before getting typing this again.");
+                    return;
                 }
-            } else if (command === 'start') {
-                // INSERT USER
-                let authorTag = message.author.tag;
-                let isStringByte4 = /[\u{10000}-\u{10FFFF}]/u.test(authorTag);
-                authorTag = isStringByte4 ? message.author.id : authorTag;
-                // console.log(cekIfStringByte4);         // true
-                // console.log(authorTag.replace(/[\u{10000}-\u{10FFFF}]/gu, '')); // `hello world!`
-                let log = await queryData(`CALL start_procedure("${message.author.id}","${authorTag}")`) // convert to base64
-                log = log.length > 0 ? log[0][0].log : 0;
-                let m = `Welcome to teraRPG, type \`${teraRPGPrefix} exp\` to begin your journey\nYou can also see other commands with \`${teraRPGPrefix} help\`. Oh almost forgot, \nhere is a present for you, hope it can help you through the cruelty of the world`
-                let embed = new Discord.MessageEmbed({
-                    type: "rich",
-                    title: null,
-                    description: null,
-                    url: null,
-                    color: 10115509,
-                    fields: [
-                        {
-                            name: `Register reward`,
-                            value: `\`x1\` \\🎁\`starter pack\``,
-                            inline: false
-                        },
-                        {
-                            name: `Info`,
-                            value: `use \`tera open starter pack\` to open it`,
-                            inline: false
-                        },
-                    ],
-                    footer: {
-                        text: '\`tera invite\` to get help on support server'
-                    },
-                })
-                message.reply(m, embed)
-                .catch((err) => {
-                    console.log('(Start)'+message.author.id+': '+errorCode[err.code]);
-                });
-                
-                if (log <= 0) return;
-                client.channels.cache.get('818360247647076382').send(
-                    new Discord.MessageEmbed({
+                if (isUserRegistred.length > 0) {
+                    let stat = isUserRegistred[0];
+                    if (isUserRegistred[0].is_active) { // Check Banned User
+                        let configuration = await queryData(`SELECT value FROM configuration WHERE id IN (1,6) ORDER BY id LIMIT 2`);
+                        let prepareMaintenance = configuration.length > 0 ? parseInt(configuration[0].value) : false;
+                        let maintenance = configuration.length > 0 ? parseInt(configuration[1].value) : false;
+                        if (isUserRegistred[0].active_command === 1) {
+                            message.reply(`you have an active command, end it before processing another!`)
+                            return;
+                        }
+                        if (maintenance && message.author.id !== '668740503075815424') {
+                            message.channel.send('🛠️ | Bot is under maintenance...!');
+                            return;
+                        }
+                        if (prepareMaintenance && message.author.id !== '668740503075815424') {
+                            message.channel.send('🛠️ | Bot is preparing for maintenance...!');
+                            return;
+                        }
+
+                        if (command == 'exp' || command == 'me' || command == 'chop' || command == 'mine' || command == 'fish' || command == 'mine expedition' || command == 'explore') {
+                        
+                            // RANDOM INVASION PIRATE
+                            let randomize = randomNumber(1, 500);
+                            if (randomize <= 1) {
+                                pirate(message, stat);
+                            }
+                        }
+
+                        if (command == 'p' || command == 'profile') {
+                            let notifIsRead = await queryData(`SELECT * FROM notification_read WHERE player_id=${message.author.id} AND is_read=1 LIMIT 1`);
+                            notifIsRead = notifIsRead.length > 0 ? notifIsRead[0] : undefined;
+
+                            if (!notifIsRead) {
+                                notification(message);
+                            }
+                        
+                            let authorTag = message.author.tag;
+                            let isStringByte4 = /[\u{10000}-\u{10FFFF}]/u.test(authorTag);
+                            authorTag = isStringByte4 ? message.author.id : authorTag;
+                            // UPDATE USERNAME
+                            queryData(`UPDATE player SET username="${authorTag}" WHERE id=${message.author.id} LIMIT 1`);
+                        }
+
+                        if (command === "ping") {
+                            log(message, commandBody);
+                            let timeTaken = Date.now() - message.createdTimestamp;
+                            if (timeTaken < 0) {
+                                timeTaken = -timeTaken;
+                            }
+                            message.channel.send(`Pong! ${timeTaken}ms.`);
+                        } else if (command === 'help') {
+                            log(message, commandBody);
+                            help(message, client);
+                        } else if (command === 'start') {
+                            log(message, commandBody);
+                            message.reply(`You already registered, type \`${teraRPGPrefix} help\` for more commands`)
+                        } else if (command === 'p' | command === 'profile') {
+                            log(message, commandBody);
+                            profile(message, client, message.author.id, message.author.avatar, args[0]);
+                        } else if (command === 'explore' | command === 'exp') {
+                            log(message, commandBody);
+                            hunt(message, 0, message.author.id, message.author.username);
+                        
+                        } else if (command === 'heal') {
+                            log(message, commandBody);
+                            healingPotion(message, 0, message.author.id, message.author.username);
+                        } else if (command === 'minex' || commandBody.includes('mine expedition') || command === 'me' || command === 'adventure' || command === 'adv') {
+                            log(message, commandBody);
+                            adventure(message, stat);
+                        } else if (command === 'mine' || command === 'chop') {
+                            log(message, commandBody);
+                            work(message, command, isUserRegistred[0].zone_id);
+                        } else if (command === 'backpack' || command === 'bp') {
+                            log(message, commandBody);
+                            backpack(message, args[0]);
+                        } else if (command === 'workspace' || command === 'ws') {
+                            log(message, commandBody);
+                            workspace(message, args[0]);
+                        } else if (command === 'tool' || command === 'tools') {
+                            log(message, commandBody);
+                            tools(message, args[0]);
+                        } else if (command === 'craft') {
+                            log(message, commandBody);
+                            crafting(message, commandBody, stat);
+                        } else if (command === 'zone' || command === 'z') {
+                            log(message, commandBody);
+                            teleport(message, stat, args);
+                        } else if (command === 'sell') {
+                            log(message, commandBody);
+                            // let itemName = commandBody.slice(command.length + 1)
+                            // console.log(itemName);
+                            sellItem(message, args, commandBody)
+                        } else if (command === `cf`) {
+                            // log(message, commandBody);
+                            coinFlip(message, args)
+                        } else if (command === 'vote' || command === 'hourly' || command === 'daily' || command === 'weekly') {
+                            log(message, commandBody);
+                            rewards(message, command, isUserRegistred[0]);
+                        } else if (command === 'cd' || command === 'cooldowns' || command === 'rd' || command === 'ready') {
+                            log(message, commandBody);
+                            cooldowns(message, command, args[0]);
+                        } else if (command === 'lottery') {
+                            log(message, commandBody);
+                            lottery(message, client, args, stat)
+                        } else if (command === 'fish') {
+                            log(message, commandBody);
+                            fishing(message, stat);
+                        } else if (command === 'open') {
+                            log(message, commandBody);
+                            openCrate(client, message, args, stat);
+                        } else if (command === 'invite') {
+                            log(message, commandBody);
+                            invite(message);
+                        } else if (command === 'dungeon') {
+                            log(message, commandBody);
+                            dungeon(message, stat);
+                        } else if (command === 'junken') {
+                            log(message, commandBody);
+                            junken(message, stat);
+                        } else if (command === 'report') {
+                            log(message, commandBody);
+                            report(message, client, args, body);
+                        } else if (command === 'suggest') {
+                            log(message, commandBody);
+                            suggest(message, client, args, body);
+                        } else if (command === 'upgrade') {
+                            log(message, commandBody);
+                            upgrade(message, args[0]);
+                        } else if (command === 'ranks') {
+                            log(message, commandBody);
+                            ranks(message, args[0]);
+                        } else if (command === 'market') {
+                            log(message, commandBody);
+                            market(message);
+                        } else if (command === 'shop') {
+                            log(message, commandBody);
+                            shop(message, stat);
+                        } else if (command === 'buy') {
+                            log(message, commandBody);
+                            buy(message, commandBody);
+                        } else if (command === 'deposit') {
+                            log(message, commandBody);
+                            deposit(message, args[0]);
+                        } else if (command === 'withdraw' || command === 'wd') {
+                            log(message, commandBody);
+                            withdraw(message, args[0]);
+                        } else if (command === 'bank') {
+                            log(message, commandBody);
+                            bank(message);
+                        } else if (command === 'booster') {
+                            log(message, commandBody);
+                            bonus(message);
+                        } else if (command === 'reforge') {
+                            log(message, commandBody);
+                            reforge(message, args[0], args[1]);
+                        }
+                        else if (command === 'armory') {
+                            log(message, commandBody);
+                            armory(message, args[0]);
+                        }
+                        else if (command === 'equip' || command === 'unequip') {
+                            log(message, commandBody);
+                            unOrEquip(message, command, args[0], commandBody, stat);
+                        } else if (command === 'trade') {
+                            log(message, commandBody);
+                            trade(message, stat, args);
+                        } else if (command === 'smelt') {
+                            log(message, commandBody);
+                            smelt(message, args);
+                        } else if (command === 'donate') {
+                            log(message, commandBody);
+                            donate(message);
+                        } else if (command === 'servant') {
+                            log(message, commandBody);
+                            servant(message);
+                        } else if (command === 'duel') {
+                            log(message, commandBody);
+                            duel(message, stat);
+                        } else if (command === 'quest') {
+                            log(message, commandBody);
+                            quest(message, stat);
+                        }
+                        // else if (command === 'pirate') {
+                        //     log(message, commandBody);
+                        //     pirate(message,stat);
+                        // }
+                        else if (command === 'use') {
+                            log(message, commandBody);
+                            use(message, commandBody);
+                        } else if (command === 'code') {
+                            log(message, commandBody);
+                            code(message, args);
+                        } else if (command === 'info') {
+                            log(message, commandBody);
+                            info(message, args, commandBody);
+                        } else if (command === 'notification' || command === 'notif') {
+                            log(message, commandBody);
+                            notification(message);
+                        } else if (command === 'stats' || command === 'stat') {
+                            log(message, commandBody);
+                            stats(message, args[0]);
+                        } else if (command === 'marketplace' && args[0] == 'add') {
+                            log(message, commandBody);
+                            marketAdd(message, args, commandBody, stat);
+                        } else if (command === 'marketplace' && args[0] == 'remove') {
+                            log(message, commandBody);
+                            marketRemove(message, args, body);
+                        } else if (command === 'marketplace' && args[0] == 'buy') {
+                            log(message, commandBody);
+                            marketBuy(message, args, stat);
+                        } else if (command === 'marketplace' || command === 'mp') {
+                            log(message, commandBody);
+                            marketplace(message, args, stat);
+                        } else if (command === 'food' || command === 'fd') {
+                            log(message, commandBody);
+                            food(message, args);
+                        } else if (command === 'eat') {
+                            log(message, commandBody);
+                            eatFood(message, stat, commandBody);
+                        } else if (command === 'prefix') {
+                            log(message, commandBody);
+                            prefix(message, args);
+                        } else if (command === 'bj' || command === 'blackjack') {
+                            log(message, commandBody);
+                            blackjack(message, args, stat);
+                        }
+                    }
+                } else if (command === 'start') {
+                    // INSERT USER
+                    let authorTag = message.author.tag;
+                    let isStringByte4 = /[\u{10000}-\u{10FFFF}]/u.test(authorTag);
+                    authorTag = isStringByte4 ? message.author.id : authorTag;
+                    // console.log(cekIfStringByte4);         // true
+                    // console.log(authorTag.replace(/[\u{10000}-\u{10FFFF}]/gu, '')); // `hello world!`
+                    let log = await queryData(`CALL start_procedure("${message.author.id}","${authorTag}")`) // convert to base64
+                    log = log.length > 0 ? log[0][0].log : 0;
+                    let m = `Welcome to teraRPG, type \`${teraRPGPrefix} exp\` to begin your journey\nYou can also see other commands with \`${teraRPGPrefix} help\`. Oh almost forgot, \nhere is a present for you, hope it can help you through the cruelty of the world`
+                    let embed = new Discord.MessageEmbed({
                         type: "rich",
                         title: null,
                         description: null,
@@ -557,31 +530,64 @@ client.on("message", async function (message) {
                         color: 10115509,
                         fields: [
                             {
-                                value: `:bust_in_silhouette: ${message.author.tag}\n:id: ${message.author.id}`,
-                                name: 'User',
-                                inline: true
+                                name: `Register reward`,
+                                value: `\`x1\` \\🎁\`starter pack\``,
+                                inline: false
+                            },
+                            {
+                                name: `Info`,
+                                value: `use \`tera open starter pack\` to open it`,
+                                inline: false
                             },
                         ],
-                        author: {
-                            name: ` #${log} | User Registered`,
-                            url: null,
-                            iconURL: `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
-                            proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`,
+                        footer: {
+                            text: '\`tera invite\` to get help on support server'
                         },
-                        provider: null,
-                        timestamp: new Date(),
                     })
-                )
-            } else {
-                message.reply(`you are not registered yet, to start playing type \`${teraRPGPrefix}start\``)
-            }
+                    message.reply(m, embed)
+                        .catch((err) => {
+                            console.log('(Start)' + message.author.id + ': ' + errorCode[err.code]);
+                        });
+                
+                    if (log <= 0) return;
+                    client.channels.cache.get('818360247647076382').send(
+                        new Discord.MessageEmbed({
+                            type: "rich",
+                            title: null,
+                            description: null,
+                            url: null,
+                            color: 10115509,
+                            fields: [
+                                {
+                                    value: `:bust_in_silhouette: ${message.author.tag}\n:id: ${message.author.id}`,
+                                    name: 'User',
+                                    inline: true
+                                },
+                            ],
+                            author: {
+                                name: ` #${log} | User Registered`,
+                                url: null,
+                                iconURL: `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=512`,
+                                proxyIconURL: `https://images-ext-1.discordapp.net/external/ZU6e2R1XAieBZJvWrjd-Yj2ARoyDwegTLHrpzT3i5Gg/%3Fsize%3D512/https/cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`,
+                            },
+                            provider: null,
+                            timestamp: new Date(),
+                        })
+                    )
+                } else {
+                    message.reply(`you are not registered yet, to start playing type \`${teraRPGPrefix}start\``)
+                }
 
-            // Adds the user to the set so that they can't type for a second
-            waitingTime.add(message.author.id);
-            setTimeout(() => {
-                // Removes the user from the set after a second
-                waitingTime.delete(message.author.id);
-            }, 1200);
+                // Adds the user to the set so that they can't type for a second
+                waitingTime.add(message.author.id);
+                setTimeout(() => {
+                    // Removes the user from the set after a second
+                    waitingTime.delete(message.author.id);
+                }, 1200);
+            } catch (error) {
+                client.users.cache.get(ownerId).send('Error: ' + error);
+                console.log('Error')
+            }
         }
     }
 

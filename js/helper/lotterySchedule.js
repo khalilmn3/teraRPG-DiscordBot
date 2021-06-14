@@ -48,7 +48,7 @@ async function lotteryWinnerRunSchedule(client) {
             fields: [
             {
                 name: `:tada:__Congratulations ${client.users.cache.get(winner.player_id).username}__:tada:`,
-                value: `You win the Lottery -- <:gold_coin:801440909006209025> **${currencyFormat(prize)}**`,
+                value: `You won the Lottery -- <:gold_coin:801440909006209025> **${currencyFormat(prize)}**`,
                 inline: false,
                 }],
             timestamp: new Date()

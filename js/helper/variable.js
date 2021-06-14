@@ -228,6 +228,38 @@ var  materialList = {
                 { id: variable.frostCore, name: 'platinum bar', quantity: 4 },
                 { id: variable.shadowScale, name: 'platinum bar', quantity: 6 }
         ],
+        coockedFish: [
+                { id: 235, name: 'bass', quantity: 1 },
+                { id: 236, name: 'atlantic cod', quantity: 1 },
+                { id: 261, name: 'trout', quantity: 2 },
+        ],
+        coockedShrimp: [
+                { id: 235, name: 'shrimp', quantity: 1 },
+        ],
+        seafoodDinner: [
+                { id: 237, name: 'Armored Cavefish', quantity: 2 },
+                { id: 239, name: 'Chaos Fish', quantity: 2 },
+                { id: 240, name: 'Crimson Tiger Fish', quantity: 2 },
+                { id: 241, name: 'Damselfish', quantity: 2 },
+                { id: 242, name: 'Double Cod    ', quantity: 2 },
+                { id: 243, name: 'Ebon Koi', quantity: 2 },
+                { id: 244, name: 'Flarefin Koi', quantity: 2 },
+                { id: 246, name: 'Frost Minnow', quantity: 2 },
+                { id: 254, name: 'Flarefin Koi', quantity: 2 },
+                { id: 249, name: 'Flarefin Koi', quantity: 2 },
+                { id: 250, name: 'Flarefin Koi', quantity: 2 },
+                { id: 251, name: 'Flarefin Koi', quantity: 2 },
+                { id: 253, name: 'Flarefin Koi', quantity: 2 },
+                { id: 254, name: 'Flarefin Koi', quantity: 2 },
+                { id: 259, name: 'Flarefin Koi', quantity: 2 },
+                { id: 260, name: 'Flarefin Koi', quantity: 2 },
+                { id: 263, name: 'Flarefin Koi', quantity: 2 },
+        ],
+        sashimi: [
+                { id: 245, name: 'Flarefin Koi', quantity: 2 },
+                { id: 255, name: 'Flarefin Koi', quantity: 2 },
+                { id: 262, name: 'Flarefin Koi', quantity: 2 },
+        ]
 }
 var materialUpgradeTool= {
         ironPickaxe: [ 

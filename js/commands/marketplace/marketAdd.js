@@ -13,6 +13,7 @@ async function marketAdd(message, args, commandBody, stat) {
         if (!arrayPrice) { return message.channel.send(`${emojiCharacter.noEntry} | Please provide the price!\n${emojiCharacter.blank} usage \`tera marketplace add [item name] [price]\``) }
         let itemName = '';
         let price = parseInt(arrayPrice[0]);
+        if(price > 10000000000) { return message.channel.send(`${emojiCharacter.noEntry} | The price cannot be greater than 10.000.000.000!`) }
         if(price <= 0){ return message.channel.send(`${emojiCharacter.noEntry} | You cannot list item with zero price!`) }
         arrayName.forEach(element => {
             if (itemName) {

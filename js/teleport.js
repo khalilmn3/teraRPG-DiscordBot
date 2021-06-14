@@ -6,7 +6,6 @@ import emojiCharacter from "./utils/emojiCharacter.js";
 async function teleport(message, stat, args) {
     if (!isNaN(args[0])) {
         if (args.length > 0) {
-            console.log(args);
             let zone = '';
             let subZone = '1';
             if (args[0] % 1 != 0) {
@@ -26,8 +25,6 @@ async function teleport(message, stat, args) {
             let pylon = await queryData(`SELECT pylon FROM utility WHERE player_id="${message.author.id}" AND pylon=TRUE LIMIT 1`);
             maxZone = maxZone.toString().split('|');
             maxZone = maxZone[0] + maxZone[1];
-            console.log(maxZone);
-            console.log(toZone);
             if (pylon) {
                 if (currentZone != toZone) {
                     if (maxZone >= toZone || message.author.id === '668740503075815424') {
